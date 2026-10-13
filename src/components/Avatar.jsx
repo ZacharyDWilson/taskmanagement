@@ -16,5 +16,10 @@ export default function Avatar({ name = '?', path, color, frame = 'frame-none', 
     )
 
   if (!pad) return face
-  return <span className={`frame ${frame}`} style={{ padding: pad }}>{face}</span>
+  return <span className={`frame ${frame}`} style={{ padding: pad, '--s': size + 'px' }}>{face}</span>
+}
+
+// A sample face in a frame, for the shop and the pickers.
+export function FramePreview({ id, size = 48 }) {
+  return <Avatar name="A" color="blue" frame={id} size={size} />
 }

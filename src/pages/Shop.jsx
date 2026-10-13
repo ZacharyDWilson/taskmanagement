@@ -7,6 +7,7 @@ import { useMyXp } from '../lib/xp.jsx'
 import { xpForLevel } from '../lib/levels.js'
 import { TIMER_STYLES } from '../lib/timerStyles.js'
 import TimerFace from '../components/TimerFace.jsx'
+import { FramePreview } from '../components/Avatar.jsx'
 
 const themeById = Object.fromEntries(THEMES.map(t => [t.id, t]))
 
@@ -29,6 +30,7 @@ export default function Shop() {
   const banners = items.filter(i => i.kind === 'banner')
   const frames = items.filter(i => i.kind === 'frame')
   const timers = items.filter(i => i.kind === 'timer')
+  const perks = items.filter(i => i.kind === 'perk')
 
   async function run(id, action, success) {
     setBusy(id)
@@ -125,9 +127,9 @@ export default function Shop() {
         {themes.length === 0 && <p className="muted">The shop is empty right now.</p>}
       </section>
 
-      {[['Banners', banners, 'banner'], ['Frames', frames, 'frame'], ['Timer styles', timers, 'timer']].map(([title, list, kind]) => list.length > 0 && (
+      {[['Banners', banners, 'banner'], ['Frames', frames, 'frame'], ['Timer styles', timers, 'timer'], ['Profile perks', perks, 'perk']].map(([title, list, kind]) => list.length > 0 && (
         <section className="card" key={kind}>
-          <h2>{title} <small>{kind === 'timer' ? 'for the Study timer' : 'show on your profile'}</small></h2>
+          <h2>{title} <small>{kind === 'timer' ? 'for the Study timer' : kind === 'perk' ? 'unlock once, keep forever' : 'show on your profile'}</small></h2>
           <div className="themes">
             {list.map(item => {
               const has = owned.has(item.id)
@@ -136,10 +138,12 @@ export default function Shop() {
                 <div key={item.id} className="theme-opt shop-card">
                   {kind === 'timer'
                     ? <span className="timer-thumb" aria-hidden="true"><TimerFace styleId={item.id.replace('timer-', '')} left={600000} total={1500000} mode="focus" running={false} small /></span>
+                    : kind === 'frame' ? <span className="shop-frame-thumb"><FramePreview id={item.id} size={64} /></span>
+                    : kind === 'perk' ? <span className="perk-thumb" aria-hidden="true"><i>GIF</i></span>
                     : <span className={'swatch-preview shop-' + kind + ' ' + item.id} aria-hidden="true" />}
                   <strong>{item.name}</strong>
                   {has
-                    ? <span className="owned">✓ Owned {kind === 'timer' ? <Link to="/study" className="small">Use it on Study</Link> : <Link to="/profile" className="small">Equip on your profile</Link>}</span>
+                    ? <span className="owned">✓ Owned {kind === 'timer' ? <Link to="/study" className="small">Use it on Study</Link> : kind === 'perk' ? <Link to="/profile" className="small">Upload a GIF on your profile</Link> : <Link to="/profile" className="small">Equip on your profile</Link>}</span>
                     : (
                       <button onClick={() => purchase(item.id, item.name)} disabled={short > 0 || !!busy}
                         title={short > 0 ? `You need ${short} more coins` : ''}>

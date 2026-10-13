@@ -10,6 +10,7 @@
     "dev:intro": "vite --mode intro --port 5175 --strictPort",
     "dev:both": "node scripts/dev-both.mjs",
     "build": "vite build",
+    "build:wip": "node scripts/gen-fake-seed.mjs && vite build --mode wip --outDir dist-wip",
     "preview": "vite preview"
   },
   "dependencies": {

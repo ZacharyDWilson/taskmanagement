@@ -2070,3 +2070,112 @@ textarea { border-radius: calc(var(--r) * .8); }
   padding: .12rem .5rem; border-radius: 999px; color: var(--accent-ink);
   background: color-mix(in srgb, var(--accent) 18%, transparent); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
 }
+
+/* ---- More picture frames: general, sleek, cute, nerdy and animated ------------------------------------------
+   A frame is the padded ring around the face (.frame, with --s = the avatar's size). The cute and nerdy ones also
+   decorate it with ::before / ::after (ears, hearts, a terminal prompt). The face sits above any decoration. */
+.frame { position: relative; }
+.frame > .avatar { position: relative; z-index: 1; }
+
+/* general */
+.frame-sunset { background: linear-gradient(135deg, #ffb347, #ff5e7e 55%, #7b4bff); }
+.frame-forest { background: linear-gradient(135deg, #a3e635, #2f9e44 55%, #14532d); }
+.frame-ocean  { background: linear-gradient(160deg, #7ee8fa, #2d8fe6 55%, #0b3d91); }
+
+/* sleek */
+.frame-onyx   { background: #0b0d12; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .5), 0 2px 8px rgba(0, 0, 0, .35); }
+.frame-chrome { background: conic-gradient(from 30deg, #f4f7fa, #98a3b0, #fff, #6b7683, #e9eef3, #98a3b0, #f4f7fa); box-shadow: 0 2px 8px rgba(0, 0, 0, .25); }
+.frame-mono   { background: #fff; box-shadow: 0 0 0 1.5px #111, inset 0 0 0 1.5px #111; }
+
+/* cute */
+.frame-cat   { background: linear-gradient(135deg, #ffc9dc, #ff8fb1); }
+.frame-cat::before, .frame-cat::after {
+  content: ''; position: absolute; top: -17%; width: 34%; height: 34%; background: #ff8fb1; z-index: 0;
+  clip-path: polygon(0 100%, 50% 0, 100% 100%);
+}
+.frame-cat::before { left: 7%; rotate: -14deg; }
+.frame-cat::after  { right: 7%; rotate: 14deg; }
+.frame-bunny { background: linear-gradient(135deg, #fff, #ffd9e8); box-shadow: 0 0 0 1px #f3b6cd; }
+.frame-bunny::before, .frame-bunny::after {
+  content: ''; position: absolute; top: -38%; width: 21%; height: 52%; z-index: 0;
+  background: linear-gradient(#ffd9e8 0 30%, #fff 30%); border: 1px solid #f3b6cd; border-radius: 50% 50% 38% 38%;
+}
+.frame-bunny::before { left: 20%; rotate: -10deg; }
+.frame-bunny::after  { right: 20%; rotate: 10deg; }
+.frame-hearts { background: linear-gradient(135deg, #ff9ec3, #ff5c93); }
+.frame-hearts::before, .frame-hearts::after { position: absolute; z-index: 2; line-height: 1; pointer-events: none; }
+.frame-hearts::before { content: '♥'; top: -9%; right: -9%; font-size: calc(var(--s, 40px) * .34); color: #ff2e74; text-shadow: 0 1px 0 #fff; }
+.frame-hearts::after  { content: '♥'; bottom: 2%; left: -9%; font-size: calc(var(--s, 40px) * .22); color: #ffb3cc; text-shadow: 0 1px 0 #fff; }
+
+/* nerdy */
+.frame-pixel {
+  border-radius: 18%;
+  background: repeating-conic-gradient(#4ade80 0 25%, #166534 0 50%) 0 0 / calc(var(--s, 40px) * .14) calc(var(--s, 40px) * .14);
+  box-shadow: 0 0 0 2px #052e16;
+  image-rendering: pixelated;
+}
+.frame-terminal { border-radius: 16%; background: #08100a; box-shadow: inset 0 0 0 2px #22c55e, 0 0 10px rgba(34, 197, 94, .45); }
+.frame-terminal::after {
+  content: '>_'; position: absolute; right: -6%; bottom: -8%; z-index: 2; line-height: 1; white-space: nowrap;
+  font: 700 calc(var(--s, 40px) * .21) / 1 ui-monospace, Consolas, monospace; color: #22c55e;
+  background: #08100a; border: 1px solid #22c55e; border-radius: 4px; padding: .14em .3em;
+}
+.frame-circuit {
+  border-radius: 16%;
+  background:
+    radial-gradient(circle at 18% 20%, #facc15 0 2px, transparent 3px),
+    radial-gradient(circle at 82% 28%, #facc15 0 2px, transparent 3px),
+    radial-gradient(circle at 68% 86%, #facc15 0 2px, transparent 3px),
+    repeating-linear-gradient(45deg, #15693f 0 4px, #0f3d2a 4px 8px);
+  box-shadow: inset 0 0 0 1px #4ade80;
+}
+.frame-d20 { background: linear-gradient(135deg, #a78bfa, #6d28d9); }
+.frame-d20::after {
+  content: '20'; position: absolute; top: -9%; right: -12%; z-index: 2; line-height: 1;
+  font: 800 calc(var(--s, 40px) * .25) / 1 ui-monospace, Consolas, monospace; color: #3b0764;
+  background: #fde047; border-radius: 6px; padding: .16em .3em; box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+}
+
+/* animated */
+.frame-aurora { background: none; box-shadow: 0 0 12px rgba(168, 85, 247, .5); }
+.frame-aurora::before {
+  content: ''; position: absolute; inset: 0; border-radius: 50%; z-index: 0;
+  background: conic-gradient(#22d3ee, #6366f1, #a855f7, #ec4899, #f59e0b, #22d3ee);
+  animation: frame-spin 5s linear infinite;
+}
+.frame-pulse { background: linear-gradient(135deg, #22d3ee, #ec4899); animation: frame-pulse 1.7s ease-in-out infinite alternate; }
+.frame-sparkle { background: conic-gradient(#fde68a, #d4a017, #fff3b0, #d4a017, #fde68a); box-shadow: 0 0 10px rgba(250, 204, 21, .55); }
+.frame-sparkle::before, .frame-sparkle::after { content: '✦'; position: absolute; z-index: 2; line-height: 1; color: #ffe27a; text-shadow: 0 0 6px #f59e0b; pointer-events: none; }
+.frame-sparkle::before { top: -12%; left: -8%; font-size: calc(var(--s, 40px) * .36); animation: frame-twinkle 1.7s ease-in-out infinite; }
+.frame-sparkle::after  { bottom: -8%; right: -8%; font-size: calc(var(--s, 40px) * .26); animation: frame-twinkle 1.7s ease-in-out -.85s infinite; }
+.frame-glitch { background: #22d3ee; animation: frame-glitch 1.5s steps(1) infinite; }
+@keyframes frame-spin { to { rotate: 360deg; } }
+@keyframes frame-pulse {
+  from { box-shadow: 0 0 3px #22d3ee, 0 0 6px rgba(34, 211, 238, .5); }
+  to   { box-shadow: 0 0 9px #ec4899, 0 0 22px rgba(236, 72, 153, .7); }
+}
+@keyframes frame-twinkle { 0%, 100% { opacity: .25; scale: .6; } 50% { opacity: 1; scale: 1.15; } }
+@keyframes frame-glitch {
+  0%   { background: #22d3ee; box-shadow: 2px 0 #f0f, -2px 0 #0ff; }
+  18%  { background: #f43f5e; box-shadow: -2px 0 #f0f, 2px 0 #0ff; }
+  36%  { background: #22d3ee; box-shadow: 0 2px #f0f, 0 -2px #0ff; }
+  60%  { background: #a3e635; box-shadow: 2px 1px #f0f, -2px -1px #0ff; }
+  78%  { background: #22d3ee; box-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .frame-aurora::before, .frame-pulse, .frame-sparkle::before, .frame-sparkle::after, .frame-glitch { animation: none; }
+}
+
+/* shop thumbnails: a sample face in the frame, and the GIF perk badge */
+.shop-frame-thumb { display: grid; place-items: center; min-height: 84px; }
+.perk-thumb { display: grid; place-items: center; min-height: 84px; }
+.perk-thumb i {
+  display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; font-style: normal; font-weight: 800; font-size: .95rem; color: #fff;
+  background: linear-gradient(135deg, #22d3ee, #6366f1, #ec4899, #f59e0b, #22d3ee); background-size: 300% 300%;
+  animation: perk-shift 3.2s ease-in-out infinite alternate; box-shadow: 0 4px 14px rgba(99, 102, 241, .4);
+}
+@keyframes perk-shift { to { background-position: 100% 100%; } }
+.style-opt .frame, .customize-preview .frame { margin: 4px auto; }
+
+.preview-note { font-size: .85rem; line-height: 1.45; margin: 0; padding: .6rem .75rem; border-radius: 12px; background: color-mix(in srgb, var(--accent) 14%, transparent); border: 1px dashed color-mix(in srgb, var(--accent) 50%, transparent); }
+.preview-note code { display: inline-block; margin: 0 .15rem; padding: 0 .35rem; border-radius: 6px; background: var(--glass-inner, rgba(255,255,255,.5)); font-size: .8rem; user-select: all; }

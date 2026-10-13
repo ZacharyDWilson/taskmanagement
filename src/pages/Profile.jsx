@@ -6,7 +6,7 @@ import { DAY_NAMES, fmtMinutes, startOfWeek } from '../lib/dates.js'
 import { levelFromXp, useCosmetics, useXp } from '../lib/levels.js'
 import { publicUrl, uploadImage } from '../lib/storage.js'
 import { DEMO, demoProfile, isDemoId } from '../lib/demo.js' // DEMO
-import Avatar from '../components/Avatar.jsx'
+import Avatar, { FramePreview } from '../components/Avatar.jsx'
 import FancyName from '../components/FancyName.jsx'
 import PickerModal from '../components/PickerModal.jsx'
 import { replayTour } from '../components/Tour.jsx'
@@ -53,7 +53,7 @@ function StylePicker({ title, items, value, level, shopIds, owned, onChange }) {
               onClick={() => onChange(c.id)}
               title={locked ? `Unlocks at level ${c.min_level}` : c.name}
             >
-              <span className={'swatch-preview ' + c.id} />
+              {c.kind === 'frame' ? <FramePreview id={c.id} size={44} /> : <span className={'swatch-preview ' + c.id} />}
               <span>{c.name}</span>
               <small>{shopIds.has(c.id) ? 'From the Shop' : locked ? `🔒 Lv ${c.min_level}` : `Lv ${c.min_level}`}</small>
             </button>
@@ -132,15 +132,22 @@ export default function Profile() {
     setMsg(error
       ? (IS_ADMIN && /reach level/i.test(error.message)
         ? 'Admin preview only: that style is above your real level, so it was not saved.'
+        : /gif/i.test(error.message) ? 'Admin preview only: the GIF picture perk is not bought on this account, so it was not saved.'
         : error.code === '23505' ? 'That username is already taken. Add a number or a middle initial.' : error.message)
       : 'Saved!')
     if (!error && username) setLockedAtLoad(true)
   }
 
+  const canGif = IS_ADMIN || shop.owned.has('perk-gif')
+
   async function onAvatar(e) {
     const file = e.target.files[0]
     if (!file) return
-    try { edit({ avatar_path: await uploadImage(file, user.id) }) }
+    try {
+      const gif = file.type === 'image/gif'
+      edit({ avatar_path: await uploadImage(file, user.id, { allowGif: canGif }) })
+      if (gif && !canGif) setMsg('Animated GIFs are a Shop perk, so this one was saved as a still picture.')
+    }
     catch (err) { setMsg(err.message) }
   }
 
@@ -237,6 +244,7 @@ export default function Profile() {
           </label>
           <label>Profile picture
             <input type="file" accept="image/*" onChange={onAvatar} />
+            <small className="muted">{canGif ? 'Animated GIFs work for you (up to 3 MB).' : <>Want it to move? <Link to="/shop">Animated pictures are in the Shop</Link>.</>}</small>
           </label>
           </div>
           <label>Bio
@@ -256,7 +264,7 @@ export default function Profile() {
               preview={<span className="theme-swatch mini" aria-hidden="true">{currentTheme.preview.map((c, i) => <i key={i} style={{ background: c }} />)}</span>} />
             <CustomizeRow label="Picture frame" name={cosmetics.find(c => c.id === profile.frame)?.name ?? 'No frame'}
               onClick={() => setPicker('frame')}
-              preview={<span className={'swatch-preview ' + profile.frame} aria-hidden="true" />} />
+              preview={<FramePreview id={profile.frame} size={42} />} />
             <CustomizeRow label="Banner" name={cosmetics.find(c => c.id === profile.banner)?.name ?? 'Solid'}
               onClick={() => setPicker('banner')}
               preview={<span className={'swatch-preview ' + profile.banner} aria-hidden="true" />} />

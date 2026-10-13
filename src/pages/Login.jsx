@@ -6,6 +6,8 @@ import { useSound } from '../lib/sfx.jsx'
 import { useMusic } from '../lib/music.jsx'
 import { usernameProblem } from '../lib/username.js'
 import { COLLEGES, collegeFromEmail } from '../lib/colleges.js'
+import { IS_FAKE } from '../lib/env.js'
+import { FAKE_EMAIL, FAKE_PASSWORD } from '../lib/fakeSupabase.js'
 
 // ---- The welcome splash ------------------------------------------------------------------------
 // A little world of friends: a slowly turning globe, with faces and local times around it.
@@ -101,8 +103,8 @@ export default function Login({ preview = false }) {
   const [username, setUsername] = useState('')  // first and last name
   const [college, setCollege] = useState('')
   const [collegeTouched, setCollegeTouched] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState(IS_FAKE ? FAKE_EMAIL : '')
+  const [password, setPassword] = useState(IS_FAKE ? FAKE_PASSWORD : '')
   const [inviteCode, setInviteCode] = useState('')
   const [mode, setMode] = useState('login')
   const [msg, setMsg] = useState('')
@@ -152,6 +154,12 @@ export default function Login({ preview = false }) {
       <form onSubmit={submit} className="card narrow stack login-card">
         <div className="login-brand">LOCK IN</div>
         <h1>{mode === 'login' ? 'Log in' : 'Join the group'}</h1>
+        {IS_FAKE && (
+          <p className="preview-note">
+            <strong>Preview build.</strong> Nothing here is real or saved on a server. The login is filled in for you:
+            <code>{FAKE_EMAIL}</code> / <code>{FAKE_PASSWORD}</code>. Just press Log in.
+          </p>
+        )}
         {mode === 'signup' && (
           <>
             <label>Your name

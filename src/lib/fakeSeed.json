@@ -1,0 +1,483 @@
+{
+ "cosmetics": [
+  {
+   "id": "frame-none",
+   "kind": "frame",
+   "name": "No frame",
+   "min_level": 1
+  },
+  {
+   "id": "frame-ring",
+   "kind": "frame",
+   "name": "Classic ring",
+   "min_level": 1
+  },
+  {
+   "id": "frame-gold",
+   "kind": "frame",
+   "name": "Gold",
+   "min_level": 3
+  },
+  {
+   "id": "frame-gradient",
+   "kind": "frame",
+   "name": "Gradient",
+   "min_level": 5
+  },
+  {
+   "id": "frame-rainbow",
+   "kind": "frame",
+   "name": "Rainbow",
+   "min_level": 8
+  },
+  {
+   "id": "frame-glow",
+   "kind": "frame",
+   "name": "Neon glow",
+   "min_level": 12
+  },
+  {
+   "id": "frame-royal",
+   "kind": "frame",
+   "name": "Royal",
+   "min_level": 16
+  },
+  {
+   "id": "banner-solid",
+   "kind": "banner",
+   "name": "Solid",
+   "min_level": 1
+  },
+  {
+   "id": "banner-sunset",
+   "kind": "banner",
+   "name": "Sunset",
+   "min_level": 2
+  },
+  {
+   "id": "banner-ocean",
+   "kind": "banner",
+   "name": "Ocean",
+   "min_level": 4
+  },
+  {
+   "id": "banner-aurora",
+   "kind": "banner",
+   "name": "Aurora",
+   "min_level": 6
+  },
+  {
+   "id": "banner-galaxy",
+   "kind": "banner",
+   "name": "Galaxy",
+   "min_level": 9
+  },
+  {
+   "id": "banner-neon",
+   "kind": "banner",
+   "name": "Neon grid",
+   "min_level": 12
+  },
+  {
+   "id": "banner-hive",
+   "kind": "banner",
+   "name": "Honey Hollow",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-grove",
+   "kind": "banner",
+   "name": "Sky Grove",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-cabin",
+   "kind": "banner",
+   "name": "Rainy Cabin",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-orbit",
+   "kind": "banner",
+   "name": "Orbit",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-sunset",
+   "kind": "frame",
+   "name": "Sunset",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-forest",
+   "kind": "frame",
+   "name": "Forest",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-ocean",
+   "kind": "frame",
+   "name": "Ocean",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-onyx",
+   "kind": "frame",
+   "name": "Onyx",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-chrome",
+   "kind": "frame",
+   "name": "Chrome",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-mono",
+   "kind": "frame",
+   "name": "Mono",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-cat",
+   "kind": "frame",
+   "name": "Cat ears",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-bunny",
+   "kind": "frame",
+   "name": "Bunny ears",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-hearts",
+   "kind": "frame",
+   "name": "Hearts",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-pixel",
+   "kind": "frame",
+   "name": "Pixel",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-terminal",
+   "kind": "frame",
+   "name": "Terminal",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-circuit",
+   "kind": "frame",
+   "name": "Circuit board",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-d20",
+   "kind": "frame",
+   "name": "Critical roll",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-aurora",
+   "kind": "frame",
+   "name": "Aurora",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-pulse",
+   "kind": "frame",
+   "name": "Pulse",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-sparkle",
+   "kind": "frame",
+   "name": "Sparkle",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-glitch",
+   "kind": "frame",
+   "name": "Glitch",
+   "min_level": 9999
+  }
+ ],
+ "shop_items": [
+  {
+   "id": "sprout",
+   "kind": "theme",
+   "name": "Sprout Squad",
+   "price": 300,
+   "sort": 1
+  },
+  {
+   "id": "console",
+   "kind": "theme",
+   "name": "Retro Console",
+   "price": 500,
+   "sort": 2
+  },
+  {
+   "id": "capsule",
+   "kind": "theme",
+   "name": "Capsule Quest",
+   "price": 300,
+   "sort": 3
+  },
+  {
+   "id": "island",
+   "kind": "theme",
+   "name": "Cozy Island",
+   "price": 500,
+   "sort": 4
+  },
+  {
+   "id": "meadow",
+   "kind": "theme",
+   "name": "Hero's Meadow",
+   "price": 450,
+   "sort": 5
+  },
+  {
+   "id": "arcade",
+   "kind": "theme",
+   "name": "Starlit Arcade",
+   "price": 500,
+   "sort": 6
+  },
+  {
+   "id": "banner-hive",
+   "kind": "banner",
+   "name": "Honey Hollow",
+   "price": 200,
+   "sort": 20
+  },
+  {
+   "id": "banner-grove",
+   "kind": "banner",
+   "name": "Sky Grove",
+   "price": 250,
+   "sort": 21
+  },
+  {
+   "id": "banner-cabin",
+   "kind": "banner",
+   "name": "Rainy Cabin",
+   "price": 250,
+   "sort": 22
+  },
+  {
+   "id": "banner-orbit",
+   "kind": "banner",
+   "name": "Orbit",
+   "price": 250,
+   "sort": 23
+  },
+  {
+   "id": "lofi",
+   "kind": "theme",
+   "name": "Lofi Nights",
+   "price": 500,
+   "sort": 7
+  },
+  {
+   "id": "shore",
+   "kind": "theme",
+   "name": "Coral Shore",
+   "price": 300,
+   "sort": 8
+  },
+  {
+   "id": "twilight",
+   "kind": "theme",
+   "name": "Twilight Sky",
+   "price": 300,
+   "sort": 9
+  },
+  {
+   "id": "timer-bar",
+   "kind": "timer",
+   "name": "Progress bar",
+   "price": 80,
+   "sort": 30
+  },
+  {
+   "id": "timer-digital",
+   "kind": "timer",
+   "name": "Digital",
+   "price": 120,
+   "sort": 31
+  },
+  {
+   "id": "timer-ring",
+   "kind": "timer",
+   "name": "Ring",
+   "price": 160,
+   "sort": 32
+  },
+  {
+   "id": "timer-analog",
+   "kind": "timer",
+   "name": "Analog",
+   "price": 200,
+   "sort": 33
+  },
+  {
+   "id": "timer-flip",
+   "kind": "timer",
+   "name": "Flip clock",
+   "price": 240,
+   "sort": 34
+  },
+  {
+   "id": "timer-hourglass",
+   "kind": "timer",
+   "name": "Hourglass",
+   "price": 280,
+   "sort": 35
+  },
+  {
+   "id": "timer-garden",
+   "kind": "timer",
+   "name": "Garden",
+   "price": 320,
+   "sort": 36
+  },
+  {
+   "id": "aero",
+   "kind": "theme",
+   "name": "Frutiger Aero",
+   "price": 600,
+   "sort": 10
+  },
+  {
+   "id": "frame-sunset",
+   "kind": "frame",
+   "name": "Sunset",
+   "price": 100,
+   "sort": 40
+  },
+  {
+   "id": "frame-forest",
+   "kind": "frame",
+   "name": "Forest",
+   "price": 100,
+   "sort": 41
+  },
+  {
+   "id": "frame-ocean",
+   "kind": "frame",
+   "name": "Ocean",
+   "price": 100,
+   "sort": 42
+  },
+  {
+   "id": "frame-mono",
+   "kind": "frame",
+   "name": "Mono",
+   "price": 120,
+   "sort": 43
+  },
+  {
+   "id": "frame-onyx",
+   "kind": "frame",
+   "name": "Onyx",
+   "price": 150,
+   "sort": 44
+  },
+  {
+   "id": "frame-chrome",
+   "kind": "frame",
+   "name": "Chrome",
+   "price": 180,
+   "sort": 45
+  },
+  {
+   "id": "frame-cat",
+   "kind": "frame",
+   "name": "Cat ears",
+   "price": 160,
+   "sort": 46
+  },
+  {
+   "id": "frame-bunny",
+   "kind": "frame",
+   "name": "Bunny ears",
+   "price": 160,
+   "sort": 47
+  },
+  {
+   "id": "frame-hearts",
+   "kind": "frame",
+   "name": "Hearts",
+   "price": 160,
+   "sort": 48
+  },
+  {
+   "id": "frame-pixel",
+   "kind": "frame",
+   "name": "Pixel",
+   "price": 180,
+   "sort": 49
+  },
+  {
+   "id": "frame-terminal",
+   "kind": "frame",
+   "name": "Terminal",
+   "price": 180,
+   "sort": 50
+  },
+  {
+   "id": "frame-circuit",
+   "kind": "frame",
+   "name": "Circuit board",
+   "price": 180,
+   "sort": 51
+  },
+  {
+   "id": "frame-d20",
+   "kind": "frame",
+   "name": "Critical roll",
+   "price": 180,
+   "sort": 52
+  },
+  {
+   "id": "frame-pulse",
+   "kind": "frame",
+   "name": "Pulse",
+   "price": 260,
+   "sort": 53
+  },
+  {
+   "id": "frame-glitch",
+   "kind": "frame",
+   "name": "Glitch",
+   "price": 280,
+   "sort": 54
+  },
+  {
+   "id": "frame-aurora",
+   "kind": "frame",
+   "name": "Aurora",
+   "price": 300,
+   "sort": 55
+  },
+  {
+   "id": "frame-sparkle",
+   "kind": "frame",
+   "name": "Sparkle",
+   "price": 320,
+   "sort": 56
+  },
+  {
+   "id": "perk-gif",
+   "kind": "perk",
+   "name": "Animated profile picture (GIF)",
+   "price": 500,
+   "sort": 60
+  }
+ ]
+}
