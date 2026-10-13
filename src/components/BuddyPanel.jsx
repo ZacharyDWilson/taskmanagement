@@ -188,8 +188,8 @@ export default function BuddyPanel({ buddy, children }) {
       )}
 
       {error && <p className="warn">{error}</p>}
-      {children}
       <AlertsRow />
+      {children}
       {popup && me && partner && <MatchPopup buddy={buddy} onClose={() => setPopup(false)} />}
     </section>
   )

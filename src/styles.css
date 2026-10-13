@@ -3767,3 +3767,41 @@ button.danger { color: #c0392b; border-color: color-mix(in srgb, #c0392b 45%, tr
 @media (max-height: 780px) {
   .study .buddy-panel > .stack > p.muted:first-child { display: none; }   /* the long "let friends know" blurb */
 }
+
+/* friends card: content never overlaps. The list takes the room it needs; if the card is too short the card scrolls. */
+.study .buddy-panel { overflow-y: auto; overflow-x: hidden; }
+.study .buddy-open { flex: 1 0 auto; min-height: 0; }
+.study .buddy-open .buddies.scroll { flex: none; max-height: none; min-height: 0; overflow: visible; }
+.study .buddy-panel > * { flex-shrink: 0; }
+
+
+/* ---- Study timer card: word-art title and the switches down the side, the timer itself in the middle (2.19) -------------- */
+.study .study-timer { display: grid; grid-template-columns: minmax(9.5rem, 34%) minmax(0, 1fr); gap: .5rem 1.1rem; align-items: stretch;
+  text-align: left; padding: 1rem 1.1rem; }
+.study .st-rail { display: flex; flex-direction: column; align-items: stretch; gap: .6rem; min-width: 0; }
+.study .st-title { margin: 0 0 .15rem; line-height: 1; font-size: clamp(2.4rem, 4.6vw, 3.6rem); letter-spacing: -.01em; }
+.study .st-title * { font-size: inherit; }
+.study .st-tabs { flex-direction: column; align-items: stretch; width: 100%; margin: 0; padding: .3rem; gap: .35rem; }
+.study .st-tabs button { width: 100%; min-width: 0; padding: .55rem .8rem; }
+.study .st-rail .timer-style-btn { margin-top: .2rem; width: 100%; padding: .55rem .7rem; font-size: .85rem; white-space: normal; text-align: center; }
+.study .st-rail > small { text-align: center; }
+.study .st-main { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .7rem; min-width: 0; text-align: center; }
+.study .st-main > * { max-width: 100%; }
+.study .st-main .countup { width: 100%; }
+@media (max-width: 1000px) {
+  .study .study-timer { grid-template-columns: minmax(0, 1fr); }
+  .study .st-tabs { flex-direction: row; }
+  .study .st-title { text-align: center; }
+}
+
+
+/* friends card, final: controls on top, the list takes what is left and scrolls inside itself (nothing overlaps) */
+.study .buddy-panel { overflow: hidden; }
+.study .buddy-open { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
+.study .buddy-open .buddies.scroll { flex: 1 1 0; min-height: 0; max-height: none; overflow-y: auto; overflow-x: hidden; }
+.study .buddy-panel > .stack, .study .buddy-panel > form, .study .buddy-panel > p, .study .buddy-panel > h2 { flex: none; }
+.study .buddy-panel .alerts-row, .study .buddy-panel > p.small { margin: .4rem 0 0; }
+
+/* the "Study" word art, bigger (it has to beat the generic page heading size) */
+.study .pomodoro h1.st-title, .overview h1.st-title { font-size: clamp(2.6rem, 5.2vw, 4rem); margin: 0 0 .1rem; line-height: 1; }
+.study h1.st-title .fancy-name, .study h1.st-title span { font-size: inherit; line-height: 1.05; }
