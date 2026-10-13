@@ -3,7 +3,6 @@ import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
 import { usePomodoro, mmss, hms } from '../lib/pomodoro.jsx'
 import { fmtMinutes, startOfWeek } from '../lib/dates.js'
-import Leaderboard from '../components/Leaderboard.jsx'
 import TimerFace from '../components/TimerFace.jsx'
 import PickerModal from '../components/PickerModal.jsx'
 import { TIMER_STYLES, timerItemId, useTimerStyle } from '../lib/timerStyles.js'
@@ -129,23 +128,6 @@ export default function Study() {
 
       </div>
 
-      <div className="col">
-        <BuddyPanel buddy={buddy} />
-        <section className="card fill">
-          <h2>Open to study now</h2>
-          {buddy.open.length === 0 && <p className="muted">Nobody else is open right now.</p>}
-          <ul className="buddies scroll">
-            {buddy.open.map(r => (
-              <Person key={r.user_id} row={r}>
-                <button disabled={!buddy.me || !!buddy.partner} title={buddy.me ? '' : 'Open to study together first'}
-                  onClick={() => buddy.pick(r)}>Study together</button>
-              </Person>
-            ))}
-          </ul>
-        </section>
-
-      </div>
-
       {pickStyle && (
         <PickerModal title="Timer style" hint={`Buy more ways to watch the clock with coins. You have ${shop.balance} coins.`} onClose={() => setPickStyle(false)}>
           <div className="styles timer-styles">
@@ -167,9 +149,7 @@ export default function Study() {
 
 
       <div className="col">
-        <Leaderboard version={p.logged} />
-
-        <section className="card fill">
+        <section className="card focus-time-card">
           <h2>Your focus time</h2>
           <div className="stats">
             <div><strong>{fmtMinutes(sum(today))}</strong><span>today</span></div>
@@ -192,6 +172,21 @@ export default function Study() {
             ))}
           </ul>
         </section>
+
+        <BuddyPanel buddy={buddy}>
+          <div className="buddy-open">
+            <h3>Open to study now {buddy.open.length > 0 && <span className="status-chip">{buddy.open.length}</span>}</h3>
+            {buddy.open.length === 0 && <p className="muted small">Nobody else is open right now. When a friend opens up to study, they show up here.</p>}
+            <ul className="buddies scroll">
+              {buddy.open.map(r => (
+                <Person key={r.user_id} row={r}>
+                  <button disabled={!buddy.me || !!buddy.partner} title={buddy.me ? '' : 'Open to study together first'}
+                    onClick={() => buddy.pick(r)}>Study together</button>
+                </Person>
+              ))}
+            </ul>
+          </div>
+        </BuddyPanel>
       </div>
     </div>
   )

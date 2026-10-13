@@ -75,6 +75,14 @@ db.notifications ??= [
   { id: 'demo-n3', user_id: ME, actor_id: 'demo-m2', kind: 'reaction', post_id: 'demo-p2', detail: 'Chem notes done', read: false, created_at: new Date(Date.now() - 55 * 60000).toISOString() },
   { id: 'demo-n4', user_id: ME, actor_id: 'demo-m2', kind: 'mention_post', post_id: 'demo-p3', detail: 'Study group at 7, @Preview Admin you in?', read: true, created_at: new Date(Date.now() - 5 * 3600000).toISOString() },
 ]
+// a couple of friends who are open to study, so the Study page has someone to show
+if (!db.study_queue?.length) {
+  const until = new Date(Date.now() + 2 * 3600000).toISOString()
+  db.study_queue = [
+    { user_id: 'demo-m1', role: 'have_room', room: 'Jenks 421', room_until: until, note: 'Organic chemistry problem set', matched_with: null, joined_at: new Date().toISOString() },
+    { user_id: 'demo-m2', role: 'need_room', room: '', room_until: null, note: '', matched_with: null, joined_at: new Date().toISOString() },
+  ]
+}
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)) } catch { /* ignore */ } }
 
 // ---- filters --------------------------------------------------------------------------------

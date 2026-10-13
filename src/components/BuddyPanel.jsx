@@ -99,7 +99,7 @@ function AlertsRow() {
 }
 
 // "Study with a friend": the whole old Study Buddy page, boiled down to one card plus a pop-up on match.
-export default function BuddyPanel({ buddy }) {
+export default function BuddyPanel({ buddy, children }) {
   const { me, partner, error } = buddy
   const { play } = useSound()
   const [role, setRole] = useState('need_room')
@@ -187,8 +187,9 @@ export default function BuddyPanel({ buddy }) {
         </div>
       )}
 
-      <AlertsRow />
       {error && <p className="warn">{error}</p>}
+      {children}
+      <AlertsRow />
       {popup && me && partner && <MatchPopup buddy={buddy} onClose={() => setPopup(false)} />}
     </section>
   )

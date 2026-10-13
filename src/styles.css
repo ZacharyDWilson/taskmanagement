@@ -3714,3 +3714,56 @@ a.mention:hover { text-decoration: underline; }
 .lb-rest .rank { flex: none; }
 
 button.danger { color: #c0392b; border-color: color-mix(in srgb, #c0392b 45%, transparent); }
+
+
+/* ---- Study page people rows: avatar and details on top, the button full width underneath (2.19) ------------------------- */
+.buddies { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .6rem; }
+.buddies .buddy { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: .5rem .75rem; }
+.buddies .buddy > button { grid-column: 1 / -1; width: 100%; }
+.buddies .buddy .buddy-info { gap: .1rem; }
+.buddies .buddy .buddy-info a { font-weight: 700; font-size: 1rem; overflow-wrap: anywhere; }
+.buddies .buddy .buddy-info small { overflow-wrap: anywhere; line-height: 1.35; }
+.buddies .buddy:hover { scale: 1; translate: 0 0; }
+.buddies .room-until { color: var(--accent-ink, var(--accent)); font-weight: 700; }
+.study .card > h2 .status-chip { margin-left: .5rem; }
+
+
+/* ---- Study layout without the leaderboard: timer | study with a friend | focus time + who is open (2.19) ----------------- */
+.study .buddy-panel { max-height: none; flex: 1 1 0; min-height: 0; overflow: auto; }
+.study .focus-time-card { flex: none; }
+.study .focus-time-card .stats { margin-bottom: .5rem; }
+.study .focus-time-card .scroll { max-height: 5.5rem; }
+.study .focus-time-card .share-row { margin: .2rem 0 .5rem; }
+.study .col > .card.fill { flex: 1 1 0; min-height: 0; }
+.study .focus-time-card .share-row { flex-wrap: nowrap; gap: .4rem; }
+.study .focus-time-card .share-row button { padding: .3rem .6rem; font-size: .8rem; min-height: 0; white-space: nowrap; }
+@media (max-height: 780px) {
+  .study .focus-time-card .scroll { display: none; }
+  .study .focus-time-card .muted:not(.small) { margin: 0 0 .3rem; }
+}
+
+
+/* ---- Study page: two columns. Timer on the left with room to breathe; focus time and friends on the right (2.19) --------- */
+.overview.study { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+.study .pomodoro { overflow: visible; padding-top: .8rem; padding-bottom: .8rem; gap: .6rem; }
+.study .pomodoro h1 { margin: 0; font-size: 1.15rem; }
+.study .buddy-panel { display: flex; flex-direction: column; flex: 1 1 0; min-height: 0; overflow: hidden; }
+.study .buddy-open { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; margin-top: .7rem; padding-top: .7rem; border-top: 1px solid var(--line); }
+.study .buddy-open h3 { margin: 0 0 .5rem; font-size: 1rem; }
+.study .buddy-open .buddies { flex: 1 1 0; min-height: 0; overflow-y: auto; overflow-x: hidden; }
+.study .buddy-panel > .stack, .study .buddy-panel > form { flex: none; }
+@media (max-height: 820px) {
+  .study .countup > p.muted.small:first-child { display: none; }       /* the ? button explains the count-up */
+  .study .pomodoro { gap: .4rem; }
+  .study .timer-style-btn { padding: .3rem .8rem; }
+}
+@media (max-width: 1000px) {
+  .overview.study { grid-template-columns: minmax(0, 1fr); }
+  .study .buddy-panel { overflow: visible; flex: none; }
+}
+.study .buddy-panel { overflow: auto; }
+.study .buddy-open .buddies { min-height: 8.5rem; }
+.study .buddy-panel .alerts-row, .study .buddy-panel > p.small { margin: .5rem 0 0; font-size: .78rem; }
+@media (max-height: 780px) {
+  .study .buddy-panel > .stack > p.muted:first-child { display: none; }   /* the long "let friends know" blurb */
+}

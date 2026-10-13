@@ -3,6 +3,15 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.19', date: '2026-10-14', title: 'A tidier Study page',
+    points: [
+      'The study leaderboard now lives only on the Overview page.',
+      'Study with a friend and Open to study now are one card, and each person is easier to read: name, where, until when, then a full-width Study together button.',
+      'The timer has the left half of the page to itself and no longer scrolls.',
+      'Count up: Reset now asks first, and can save your time before clearing it.',
+    ],
+  },
+  {
     version: '2.18', date: '2026-10-14', title: 'A clearer Overview',
     points: [
       'A single LOCK IN: Focus button now sits at the top of Due today.',
