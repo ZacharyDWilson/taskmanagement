@@ -54,11 +54,11 @@ export default function WeekProgress({ name, xp, tasks, version }) {
       </div>
 
       <div className="row between wk-nav">
-        <h2>Study time · {weekLabel(offset, current.start)}</h2>
-        <div className="row">
+        <h2><span className="wk-pre">Study time · </span>{weekLabel(offset, current.start)}</h2>
+        <div className="row wk-btns">
           <button className="secondary" aria-label="Previous week" disabled={offset <= -WEEKS_BACK}
             onClick={() => setOffset(o => o - 1)}>‹</button>
-          <button className="secondary" disabled={offset === 0} onClick={() => setOffset(0)}>This week</button>
+          {offset !== 0 && <button className="secondary" onClick={() => setOffset(0)}>This week</button>}
           <button className="secondary" aria-label="Next week" disabled={offset >= 0}
             onClick={() => setOffset(o => o + 1)}>›</button>
         </div>

@@ -3652,3 +3652,39 @@ a.mention:hover { text-decoration: underline; }
   .overview .week-card { flex: none; overflow: visible; }
   .overview .week-card .daybars { min-height: 130px; }
 }
+
+
+/* ---- week card on narrow columns and short windows (2.18) ----------------------------------------------------------------- */
+.week-card { container-type: inline-size; container-name: wk; }
+.week-card .wk-btns { flex-wrap: nowrap; flex: none; gap: .35rem; }
+@container wk (max-width: 540px) {
+  .week-card .wk-pre { display: none; }
+  .week-card .level.compact small { display: none; }
+  .week-card .stats { gap: 1rem; }
+  .week-card .stats span { font-size: .72rem; }
+}
+@media (max-height: 820px) {
+  .overview .week-card .daybar-date { display: none; }
+  .overview .week-card .daybar-value { min-height: 0; font-size: .68rem; }
+  .overview .week-card .daybars { min-height: 64px; }
+  .overview .week-card .daybar-track { min-height: 30px; }
+  .overview .week-card .stats { margin: .3rem 0; }
+  .overview .week-card .wk-head { padding-bottom: .4rem; margin-bottom: .4rem; }
+}
+
+/* the week card keeps its own natural height (nothing inside it scrolls); if the left column is taller than the window,
+   the column itself scrolls and the assignments summary is below it */
+.overview .week-card { flex: 0 0 auto; overflow: visible; }
+.overview .week-card .daybars { flex: none; min-height: 0; }
+.overview .week-card .daybar { height: auto; }
+.overview .week-card .daybar-track { flex: none; height: clamp(60px, 17vh, 130px); min-height: 0; }
+.overview > .col:first-child { overflow-y: auto; scrollbar-width: thin; padding-right: 2px; }
+.overview > .col:first-child > .card { flex: none; }
+@media (max-height: 720px) {
+  .found-row { padding: .45rem .6rem; }
+  .found-count { width: 2rem; height: 2rem; font-size: 1rem; }
+}
+@media (max-width: 1000px) {
+  .overview > .col:first-child { overflow: visible; }
+}
+.overview .week-card .daybar-value { white-space: nowrap; font-size: .66rem; }
