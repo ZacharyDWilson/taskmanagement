@@ -3243,3 +3243,7 @@ html, body { max-width: 100%; overflow-x: clip; }
 }
 @media (prefers-reduced-motion: reduce) { :root[data-theme='golden'] .scene::before, :root[data-theme='golden'] .scene span { animation: none; } }
 .theme-opt[data-t='golden'] strong { font-family: 'Fredoka', 'Nunito', sans-serif; font-weight: 700; }
+
+/* ---- small badges next to names on the leaderboard and the feed ------------------------------------------------ */
+.mini-badges { display: inline-flex; gap: 2px; margin-left: .35rem; vertical-align: middle; text-decoration: none; }
+.badge.mini { width: 1.35rem; height: 1.35rem; font-size: .8rem; border-width: 1.5px; box-shadow: 0 1px 3px rgba(0, 0, 0, .18); }

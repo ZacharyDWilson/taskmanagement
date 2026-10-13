@@ -14,6 +14,37 @@ export const useAchievements = () => useContext(AchievementsContext)
 
 // The achievements catalogue, what you have earned and how far along you are. It asks the database to grant anything
 // newly earned whenever your XP changes or you change page, and pops up a message for each new badge.
+// The top badges (pinned first, then highest tier, then newest) for a list of people, in one query.
+// Returns a Map of userId -> [achievement, ...]. Used next to names on the leaderboard and the feed.
+const TIER_RANK = { gold: 3, silver: 2, bronze: 1 }
+export function useTopBadges(userIds, perPerson = 3) {
+  const { catalog } = useContext(AchievementsContext)
+  const [rows, setRows] = useState([])
+  const key = [...new Set(userIds.filter(Boolean))].sort().join(',')
+  useEffect(() => {
+    if (!key || !supabase) { setRows([]); return }
+    let live = true
+    supabase.from('user_achievements').select('user_id, achievement_id, earned_at, pinned').in('user_id', key.split(','))
+      .then(({ data }) => { if (live) setRows(data ?? []) })
+    return () => { live = false }
+  }, [key])
+  return useMemo(() => {
+    const byId = new Map(catalog.map(a => [a.id, a]))
+    const out = new Map()
+    for (const r of rows) {
+      const a = byId.get(r.achievement_id)
+      if (!a) continue
+      if (!out.has(r.user_id)) out.set(r.user_id, [])
+      out.get(r.user_id).push({ ...a, pinned: r.pinned, earned_at: r.earned_at })
+    }
+    for (const [uid, list] of out) {
+      list.sort((x, y) => (y.pinned - x.pinned) || (TIER_RANK[y.tier] - TIER_RANK[x.tier]) || String(y.earned_at).localeCompare(String(x.earned_at)))
+      out.set(uid, list.slice(0, perPerson))
+    }
+    return out
+  }, [rows, catalog, perPerson])
+}
+
 export function AchievementsProvider({ children }) {
   const { user } = useAuth()
   const { xp } = useMyXp()

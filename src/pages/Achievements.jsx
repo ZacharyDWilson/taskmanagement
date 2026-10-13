@@ -1,9 +1,12 @@
-import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { supabase } from '../lib/supabase.js'
+import { useAuth } from '../lib/auth.jsx'
 import { useAchievements } from '../lib/achievements.jsx'
 import { useShop } from '../lib/shop.jsx'
 import { useToast } from '../lib/toast.jsx'
 import { THEMES } from '../lib/theme.jsx'
+import FancyName from '../components/FancyName.jsx'
 
 const TIERS = [['all', 'All'], ['bronze', 'Bronze'], ['silver', 'Silver'], ['gold', 'Gold']]
 
@@ -16,12 +19,35 @@ const UNIT = {
 }
 const fmt = (stat, v) => (UNIT[stat] ? UNIT[stat](v) : String(v))
 
+// Your own achievements (with progress and pinning) at /achievements, or anyone's earned badges at /achievements/:id.
 export default function Achievements() {
-  const { catalog, earned, stats, loaded, pin } = useAchievements()
+  const { id } = useParams()
+  const { user } = useAuth()
+  const mine = !id || id === user.id
+  const own = useAchievements()
   const { items } = useShop()
   const toast = useToast()
   const [tier, setTier] = useState('all')
-  const [show, setShow] = useState('all')   // all | earned | todo
+  const [show, setShow] = useState('all')   // all | earned | todo (your own page only)
+
+  // someone else's page: their earned rows and their name
+  const [other, setOther] = useState({ rows: null, name: '' })
+  useEffect(() => {
+    if (mine) return
+    let live = true
+    Promise.all([
+      supabase.from('user_achievements').select('*').eq('user_id', id),
+      supabase.from('profiles').select('display_name').eq('id', id).maybeSingle(),
+    ]).then(([a, p]) => { if (live) setOther({ rows: a.data ?? [], name: p.data?.display_name ?? 'Someone' }) })
+    return () => { live = false }
+  }, [id, mine])
+
+  const { catalog, loaded, pin, stats } = own
+  const earned = useMemo(
+    () => (mine ? own.earned : new Map((other.rows ?? []).map(r => [r.achievement_id, r]))),
+    [mine, own.earned, other.rows],
+  )
+  const ready = mine ? loaded : loaded && other.rows !== null
 
   const itemName = useMemo(() => {
     const m = new Map(items.map(i => [i.id, i.name]))
@@ -30,13 +56,13 @@ export default function Achievements() {
   }, [items])
 
   const list = catalog.filter(a => (tier === 'all' || a.tier === tier)
-    && (show === 'all' || (show === 'earned') === earned.has(a.id)))
+    && (!mine ? earned.has(a.id) : show === 'all' || (show === 'earned') === earned.has(a.id)))
   const done = catalog.filter(a => earned.has(a.id)).length
   const coins = [...earned.values()].reduce((n, r) => n + (r.coins_paid ?? 0), 0)
   const pinned = [...earned.values()].filter(r => r.pinned).map(r => r.achievement_id)
 
-  async function togglePin(id) {
-    const next = pinned.includes(id) ? pinned.filter(x => x !== id) : [...pinned, id]
+  async function togglePin(aid) {
+    const next = pinned.includes(aid) ? pinned.filter(x => x !== aid) : [...pinned, aid]
     if (next.length > 3) return toast('You can pin up to 3 badges. Unpin one first.', 'info', { silent: true })
     const err = await pin(next)
     if (err) toast(err)
@@ -46,32 +72,40 @@ export default function Achievements() {
     <div className="achievements">
       <header className="card ach-head">
         <div>
-          <h1>Achievements</h1>
-          <p className="muted">Reach a goal to earn a badge for your profile, plus coins and a few styles you can't buy.</p>
+          <h1>{mine ? 'Achievements' : <><FancyName name={other.name} />'s achievements</>}</h1>
+          <p className="muted">
+            {mine
+              ? "Reach a goal to earn a badge for your profile, plus coins and a few styles you can't buy."
+              : 'Badges they have earned. Everyone in the group can see these.'}
+          </p>
         </div>
-        <div className="ach-summary" aria-label="Your progress">
+        <div className="ach-summary" aria-label="Progress">
           <strong>{done}<small> / {catalog.length}</small></strong>
-          <span className="muted small">badges · 🪙 {coins.toLocaleString()} earned</span>
+          <span className="muted small">badges{mine ? ` · 🪙 ${coins.toLocaleString()} earned` : ''}</span>
         </div>
       </header>
 
       <div className="ach-filters">
-        <div className="seg" role="tablist" aria-label="Show">
-          {[['all', 'All'], ['earned', 'Earned'], ['todo', 'To earn']].map(([id, label]) => (
-            <button key={id} type="button" role="tab" aria-selected={show === id}
-              className={'seg-btn' + (show === id ? ' on' : '')} onClick={() => setShow(id)}>{label}</button>
-          ))}
-        </div>
+        {mine && (
+          <div className="seg" role="tablist" aria-label="Show">
+            {[['all', 'All'], ['earned', 'Earned'], ['todo', 'To earn']].map(([sid, label]) => (
+              <button key={sid} type="button" role="tab" aria-selected={show === sid}
+                className={'seg-btn' + (show === sid ? ' on' : '')} onClick={() => setShow(sid)}>{label}</button>
+            ))}
+          </div>
+        )}
         <div className="seg" role="tablist" aria-label="Tier">
-          {TIERS.map(([id, label]) => (
-            <button key={id} type="button" role="tab" aria-selected={tier === id}
-              className={'seg-btn' + (tier === id ? ' on' : '')} onClick={() => setTier(id)}>{label}</button>
+          {TIERS.map(([tid, label]) => (
+            <button key={tid} type="button" role="tab" aria-selected={tier === tid}
+              className={'seg-btn' + (tier === tid ? ' on' : '')} onClick={() => setTier(tid)}>{label}</button>
           ))}
         </div>
       </div>
 
-      {!loaded && <p className="muted">Loading…</p>}
-      {loaded && list.length === 0 && <p className="muted">Nothing here yet. Try another filter.</p>}
+      {!ready && <p className="muted">Loading…</p>}
+      {ready && list.length === 0 && (
+        <p className="muted">{mine ? 'Nothing here yet. Try another filter.' : 'No badges earned yet.'}</p>
+      )}
 
       <div className="ach-grid">
         {list.map(a => {
@@ -97,7 +131,7 @@ export default function Achievements() {
                   {a.reward_item && <span className="reward-chip exclusive">✦ {itemName.get(a.reward_item) ?? 'Exclusive style'}</span>}
                 </div>
               </div>
-              {row && (
+              {mine && row && (
                 <button type="button" className={'secondary ach-pin' + (row.pinned ? ' on' : '')}
                   onClick={() => togglePin(a.id)} aria-pressed={!!row.pinned}
                   title={row.pinned ? 'Shown first on your profile' : 'Show this first on your profile'}>
@@ -108,7 +142,9 @@ export default function Achievements() {
           )
         })}
       </div>
-      <p className="muted small"><Link to="/profile">Back to your profile</Link></p>
+      <p className="muted small">
+        {mine ? <Link to="/profile">Back to your profile</Link> : <Link to={`/profile/${id}`}>Back to their profile</Link>}
+      </p>
     </div>
   )
 }

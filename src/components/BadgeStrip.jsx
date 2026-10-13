@@ -37,7 +37,7 @@ export default function BadgeStrip({ userId, mine = false, max = 6 }) {
           </span>
         )
       })}
-      <Link to="/achievements" className="badge-more small">{mine ? 'All achievements ›' : ''}</Link>
+      <Link to={mine ? '/achievements' : `/achievements/${userId}`} className="badge-more small">All achievements ›</Link>
     </div>
   )
 }

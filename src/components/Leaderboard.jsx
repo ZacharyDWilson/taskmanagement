@@ -5,6 +5,8 @@ import { useAuth } from '../lib/auth.jsx'
 import { fmtMinutes, startOfWeek } from '../lib/dates.js'
 import { DEMO, demoLeaderboard, demoSessions } from '../lib/demo.js' // DEMO
 import Avatar from './Avatar.jsx'
+import MiniBadges from './MiniBadges.jsx'
+import { useTopBadges } from '../lib/achievements.jsx'
 
 // Weekly study ranking, with your own placement called out at the top.
 export default function Leaderboard({ version }) {
@@ -34,6 +36,7 @@ export default function Leaderboard({ version }) {
   }, [version, user.id])
 
   const rank = rows.findIndex(r => r.user_id === user.id)
+  const badges = useTopBadges(rows.map(r => r.user_id))
 
   return (
     <section className="card fill">
@@ -53,6 +56,7 @@ export default function Leaderboard({ version }) {
             <span className="rank">{i + 1}</span>
             <Avatar name={r.display_name} path={r.avatar_path} color={r.color} frame={r.frame} size={34} />
             <Link to={`/profile/${r.user_id}`}>{r.display_name}{r.user_id === user.id ? ' (you)' : ''}</Link>
+            <MiniBadges userId={r.user_id} list={badges.get(r.user_id)} />
             <span className="spacer" />
             <strong>{fmtMinutes(r.minutes)}</strong>
           </li>

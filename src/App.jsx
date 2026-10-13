@@ -151,6 +151,7 @@ export default function App() {
             <Route path="/profile/:id" element={<RequireAuth><Profile /></RequireAuth>} />
             <Route path="/shop" element={<RequireAuth><Shop /></RequireAuth>} />
             <Route path="/achievements" element={<RequireAuth><Achievements /></RequireAuth>} />
+            <Route path="/achievements/:id" element={<RequireAuth><Achievements /></RequireAuth>} />
             <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
             {IS_DEV_BUILD && <Route path="/preview/login" element={<Login preview />} />}
             <Route path="*" element={<p>Page not found.</p>} />

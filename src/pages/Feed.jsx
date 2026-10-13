@@ -4,6 +4,8 @@ import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
 import { publicUrl, removeImage, uploadImage } from '../lib/storage.js'
 import { useToast } from '../lib/toast.jsx'
+import { useTopBadges } from '../lib/achievements.jsx'
+import MiniBadges from '../components/MiniBadges.jsx'
 import Avatar from '../components/Avatar.jsx'
 import { DEMO, demoComments, demoPosts } from '../lib/demo.js' // DEMO
 
@@ -147,7 +149,7 @@ function Comments({ post, onCount }) {
   )
 }
 
-function PostCard({ post, onChanged }) {
+function PostCard({ post, onChanged, badges }) {
   const { user } = useAuth()
   const toast = useToast()
   const author = post.profiles
@@ -188,6 +190,7 @@ function PostCard({ post, onChanged }) {
         <Avatar name={author?.display_name} path={author?.avatar_path} color={author?.color}
           frame={author?.frame} size={40} />
         <Link to={`/profile/${post.user_id}`}>{author?.display_name ?? 'Someone'}</Link>
+        <MiniBadges userId={post.user_id} list={badges?.get(post.user_id)} />
         <span className="muted small">{new Date(post.created_at).toLocaleString()}</span>
         <span className="spacer" />
         {post.user_id === user.id && <button className="link" onClick={remove}>delete</button>}
@@ -233,6 +236,7 @@ export default function Feed() {
       : data)
   }
   useEffect(() => { load() }, [])
+  const badges = useTopBadges(posts.map(p => p.user_id))
 
   return (
     <div className="narrow">
@@ -240,7 +244,7 @@ export default function Feed() {
       <Composer onPosted={load} />
       {error && <p className="warn">{error}</p>}
       {posts.length === 0 && !error && <p className="muted">No posts yet. Be the first to share your progress!</p>}
-      {posts.map(p => <PostCard key={p.id} post={p} onChanged={load} />)}
+      {posts.map(p => <PostCard key={p.id} post={p} onChanged={load} badges={badges} />)}
     </div>
   )
 }
