@@ -7,6 +7,7 @@ export const CHANGELOG = [
     points: [
       'A single LOCK IN: Focus button now sits at the top of Due today.',
       'Canvas / Brightspace assignments moved under your week and show a short summary ("Found 3 assignments") for this week and next. Open shows the full list by day with Add, or Add all.',
+      'Your week card fits without scrolling: your name, level and XP share one line, and the day bars stretch to the space available.',
       'The leaderboard has the whole right side: your place and how far the next person is, a podium for the top three, and bars for everyone else.',
     ],
   },

@@ -3629,3 +3629,26 @@ a.mention:hover { text-decoration: underline; }
 .lb-bar > span { display: block; height: 100%; border-radius: 99px; background: color-mix(in srgb, var(--accent) 70%, transparent); }
 @media (max-width: 860px) { .lb-podium { margin-top: .5rem; } }
 .lb-row-line strong { flex: none; white-space: nowrap; }
+
+
+/* ---- Overview week card: one slim header line, bars that stretch to the space there is, no scrolling (2.18) ------------- */
+.week-card .wk-head { display: flex; align-items: center; gap: .7rem; flex-wrap: nowrap; }
+.week-card .wk-head h1 { margin: 0; white-space: nowrap; flex: none; }
+.week-card .level.compact { flex: 1; min-width: 0; gap: .5rem; flex-wrap: nowrap; }
+.week-card .level.compact .level-badge { font-size: .72rem; padding: .08rem .5rem; flex: none; }
+.week-card .level.compact .level-bar { min-width: 40px; height: 8px; }
+.week-card .level.compact small { flex: none; font-size: .72rem; white-space: nowrap; }
+.overview .week-card { display: flex; flex-direction: column; flex: 1 1 0; min-height: 0; overflow: auto; }
+.overview .week-card .wk-head { padding-bottom: .6rem; margin-bottom: .6rem; }
+.overview .week-card .wk-nav { flex-wrap: nowrap; gap: .5rem; }
+.overview .week-card .wk-nav h2 { font-size: 1rem; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.overview .week-card .wk-nav button { padding: .2rem .65rem; min-height: 0; font-size: .85rem; }
+.overview .week-card .stats { margin: .5rem 0; gap: 1.3rem; flex-wrap: nowrap; }
+.overview .week-card .stats strong { font-size: 1.15rem; }
+.overview .week-card .daybars { flex: 1 1 auto; min-height: 90px; align-items: stretch; }
+.overview .week-card .daybar { height: 100%; }
+.overview .week-card .daybar-track { flex: 1 1 auto; height: auto; min-height: 36px; }
+@media (max-width: 1000px) {
+  .overview .week-card { flex: none; overflow: visible; }
+  .overview .week-card .daybars { min-height: 130px; }
+}

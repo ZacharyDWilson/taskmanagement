@@ -44,17 +44,16 @@ export default function WeekProgress({ name, xp, tasks, version }) {
   }
 
   const current = summary(offset)
-  const recent = Array.from({ length: WEEKS_BACK + 1 }, (_, i) => summary(-i)).reverse() // oldest -> this week
   const todayIdx = offset === 0 ? (new Date().getDay() + 6) % 7 : -1
 
   return (
-    <section className="card">
-      <div className="progress-head">
+    <section className="card week-card">
+      <div className="progress-head wk-head">
         <h1>Hey{name ? <>, <FancyName name={name} /></> : ''}</h1>
-        <LevelCard xp={xp} />
+        <LevelCard xp={xp} compact />
       </div>
 
-      <div className="row between">
+      <div className="row between wk-nav">
         <h2>Study time · {weekLabel(offset, current.start)}</h2>
         <div className="row">
           <button className="secondary" aria-label="Previous week" disabled={offset <= -WEEKS_BACK}
@@ -73,15 +72,6 @@ export default function WeekProgress({ name, xp, tasks, version }) {
 
       <DayBars minutes={current.minutes} start={current.start} highlight={todayIdx} />
 
-      <div className="weeks" role="group" aria-label="Recent weeks">
-        {recent.map(w => (
-          <button key={w.off} type="button" className={'week-chip' + (w.off === offset ? ' on' : '')}
-            onClick={() => setOffset(w.off)}>
-            <strong>{fmtMinutes(w.total)}</strong>
-            <small>{w.off === 0 ? 'This week' : `Wk of ${fmtDay(w.start)}`}</small>
-          </button>
-        ))}
-      </div>
     </section>
   )
 }
