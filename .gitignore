@@ -11,3 +11,4 @@ dist
 
 # Sound library workspace (the package is installed in the project itself)
 SFX/
+dist-wip
