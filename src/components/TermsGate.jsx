@@ -7,10 +7,8 @@ import { TERMS, TERMS_VERSION } from '../lib/terms.js'
 // Asks everyone to accept the community rules, one rule at a time. Each rule has to be read (a short pause) and agreed
 // to on its own before the next one opens, and only then can the whole set be accepted. It shows after sign-in, and again
 // if the rules change (TERMS_VERSION). Until then the rest of the site stays behind it.
-const readSeconds = section => {
-  const words = section.body.join(' ').split(/\s+/).length
-  return Math.min(10, Math.max(3, Math.ceil(words / 8)))
-}
+const READ_SECONDS = 2        // a short, fixed pause on every rule
+const readSeconds = () => READ_SECONDS
 
 export default function TermsGate() {
   const { user } = useAuth()
