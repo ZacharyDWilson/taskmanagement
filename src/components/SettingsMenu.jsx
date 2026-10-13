@@ -3,6 +3,7 @@ import { useSound, PACK_LABELS, SOUND_PACKS, SIGNATURE } from '../lib/sfx.jsx'
 import { useMusic } from '../lib/music.jsx'
 import { useNotify } from '../lib/notify.jsx'
 import { useReducedMotion } from '../lib/motion.js'
+import { useInstall, platform } from '../lib/install.js'
 import { useTheme } from '../lib/theme.jsx'
 import { replayTour } from './Tour.jsx'
 import PickerModal from './PickerModal.jsx'
@@ -15,6 +16,18 @@ export default function SettingsMenu() {
   const notify = useNotify()
   const { theme } = useTheme()
   const [calm, setCalm] = useReducedMotion()
+  const inst = useInstall()
+  const [installMsg, setInstallMsg] = useState('')
+  const os = platform()
+  const mac = /Mac/.test(navigator.platform)
+  const ua = navigator.userAgent || ''
+  const safari = /Safari/.test(ua) && !/Chrome|Chromium|Edg|OPR|Android/.test(ua)
+  const firefox = /Firefox/.test(ua)
+
+  async function installApp() {
+    const r = await inst.install()
+    setInstallMsg(r === 'accepted' ? 'Installed. Look for LOCK IN on your device.' : r === 'unavailable' ? '' : 'No problem. You can install it any time from here.')
+  }
 
   return (
     <>
@@ -76,6 +89,30 @@ export default function SettingsMenu() {
                 Alert me when a study buddy matches with me
               </label>
             )}
+          </section>
+
+          <section className="settings-group">
+            <h3>Install the app</h3>
+            {inst.standalone ? (
+              <p className="small">✓ LOCK IN is installed on this device. You're using the app version.</p>
+            ) : inst.canPrompt ? (
+              <>
+                <p className="muted small">Install LOCK IN so it opens in its own window with its own icon, on your {os === 'desktop' ? 'computer' : 'phone'}.</p>
+                <div className="row"><button type="button" onClick={installApp}>Install LOCK IN</button></div>
+              </>
+            ) : (
+              <>
+                <p className="muted small">Your browser doesn't offer a one-tap install here, but you can add it by hand:</p>
+                <ul className="install-steps small">
+                  {os === 'ios' && <li>Tap the <strong>Share</strong> button in Safari, then <strong>Add to Home Screen</strong>.</li>}
+                  {os === 'android' && <li>Open the browser menu <strong>⋮</strong>, then choose <strong>Install app</strong> or <strong>Add to Home screen</strong>.</li>}
+                  {os === 'desktop' && safari && <li>In Safari, choose <strong>File</strong>, then <strong>Add to Dock</strong>.</li>}
+                  {os === 'desktop' && firefox && <li>Firefox on a computer can't install web apps. Open LOCK IN in Chrome or Edge to install it, or bookmark it with <strong>{mac ? '⌘ D' : 'Ctrl + D'}</strong>.</li>}
+                  {os === 'desktop' && !safari && !firefox && <li>In Chrome or Edge, click the <strong>install icon</strong> at the right of the address bar, or open the menu <strong>⋮</strong> and choose <strong>Install LOCK IN</strong>.</li>}
+                </ul>
+              </>
+            )}
+            {installMsg && <p className="small" role="status">{installMsg}</p>}
           </section>
 
           <section className="settings-group">

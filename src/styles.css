@@ -2600,3 +2600,5 @@ html, body { max-width: 100%; overflow-x: clip; }
   100% { border-radius: 54% 46% 48% 52% / 46% 58% 42% 54%; }
 }
 @media (prefers-reduced-motion: reduce) { .blob::before { animation: none; } }
+
+.install-steps { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .35rem; }
