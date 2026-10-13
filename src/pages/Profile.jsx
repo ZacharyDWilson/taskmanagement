@@ -19,6 +19,7 @@ import LevelCard from '../components/LevelCard.jsx'
 import DayBars from '../components/DayBars.jsx'
 import { THEMES, useTheme } from '../lib/theme.jsx'
 import { useShop } from '../lib/shop.jsx'
+import { useReducedMotion } from '../lib/motion.js'
 import { IS_ADMIN } from '../lib/env.js'
 
 // One row per customization: shows what you have now; click to open the choices.
@@ -84,6 +85,7 @@ export default function Profile() {
   const shopIds = new Set(shop.items.map(i => i.id))
   const sound = useSound()
   const music = useMusic()
+  const [calm, setCalm] = useReducedMotion()
   const [lockedAtLoad, setLockedAtLoad] = useState(false)     // had a username when the page loaded
   const lockedUsername = lockedAtLoad && mine
   const [tab, setTab] = useState('details')   // edit form tab: details | style | sound
@@ -320,6 +322,11 @@ export default function Profile() {
                 {SIGNATURE && <option value="theme">Match my theme ({PACK_LABELS[SOUND_PACKS[theme]] ?? 'Minimal'})</option>}
                 {Object.entries(PACK_LABELS).map(([id, name]) => <option key={id} value={id}>{name}</option>)}
               </select>
+            </label>
+            <div className="muted small">Motion</div>
+            <label className="row">
+              <input type="checkbox" checked={calm} onChange={e => setCalm(e.target.checked)} />
+              Calm mode: turn off animations and moving backgrounds
             </label>
           </div>
           )}

@@ -14,6 +14,7 @@ import { XpProvider } from './lib/xp.jsx'
 import { ShopProvider } from './lib/shop.jsx'
 import { NotifyProvider } from './lib/notify.jsx'
 import { installDragLift } from './lib/dragLift.js'
+import './lib/motion.js'      // applies the saved "calm mode" before anything is drawn
 import './lib/install.js'     // starts listening for the browser's install offer right away
 import './styles.css'
 

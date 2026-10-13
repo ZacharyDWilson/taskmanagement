@@ -2179,3 +2179,40 @@ textarea { border-radius: calc(var(--r) * .8); }
 
 .preview-note { font-size: .85rem; line-height: 1.45; margin: 0; padding: .6rem .75rem; border-radius: 12px; background: color-mix(in srgb, var(--accent) 14%, transparent); border: 1px dashed color-mix(in srgb, var(--accent) 50%, transparent); }
 .preview-note code { display: inline-block; margin: 0 .15rem; padding: 0 .35rem; border-radius: 6px; background: var(--glass-inner, rgba(255,255,255,.5)); font-size: .8rem; user-select: all; }
+
+/* ---- Calm mode also quiets the side buttons: no idle glow, only on hover. -------------------------------------
+   Only applies when Calm mode is switched on (Profile > Sound > Motion); the normal look keeps its glow. */
+:root[data-motion='reduced'][data-theme='aero'] .dock::before, :root[data-motion='reduced'][data-theme='aero'] .dock::after { display: none; }
+:root[data-motion='reduced'][data-theme='aero'] .dock a,
+:root[data-motion='reduced'][data-theme='island'] .dock a,
+:root[data-motion='reduced'][data-theme='arcade'] .dock a { animation: none; }
+:root[data-motion='reduced'][data-theme='aero'] .dock a:not(:hover):not(:focus-visible) {
+  box-shadow: inset 0 -8px 16px rgba(40, 170, 255, .28), inset 0 3px 8px rgba(255, 255, 255, .9), 0 5px 12px rgba(10, 100, 190, .2);
+}
+:root[data-motion='reduced'][data-theme='aero'] .dock a.active:not(:hover):not(:focus-visible) {
+  box-shadow: inset 0 -8px 16px rgba(40, 170, 255, .28), inset 0 3px 8px #fff, 0 5px 12px rgba(10, 100, 190, .2), 0 0 0 2px rgba(255, 255, 255, .95);
+}
+:root[data-motion='reduced'][data-theme='island'] .dock a:not(:hover):not(:focus-visible),
+:root[data-motion='reduced'][data-theme='island'] .dock a.active:not(:hover):not(:focus-visible) { filter: drop-shadow(0 2px 3px rgba(150, 20, 60, .2)); }
+:root[data-motion='reduced'][data-theme='island'] .dock a.active:not(:hover):not(:focus-visible) { --pa: #ffc0d3; --pb: #f2688f; }
+:root[data-motion='reduced'][data-theme='arcade'] .dock a:not(:hover):not(:focus-visible) { filter: none; }
+:root[data-motion='reduced'][data-theme='arcade'] .dock a:hover, :root[data-motion='reduced'][data-theme='arcade'] .dock a:focus-visible { filter: drop-shadow(0 0 9px rgba(255, 220, 130, .9)); }
+:root[data-motion='reduced'][data-theme='console'] .dock a.active:not(:hover):not(:focus-visible) { box-shadow: inset 0 0 10px rgba(255, 255, 255, .22), 0 11px 0 -8px #c7c1ac, 0 6px 9px rgba(0, 0, 0, .22); }
+:root[data-motion='reduced'][data-theme='lofi'] .dock a.active:not(:hover):not(:focus-visible) { box-shadow: 0 0 0 2px rgba(255, 112, 120, .75), 0 6px 12px rgba(40, 10, 70, .3); }
+:root[data-motion='reduced'][data-theme='lofi'] .dock a:hover, :root[data-motion='reduced'][data-theme='lofi'] .dock a:focus-visible { box-shadow: 0 8px 16px rgba(40, 10, 70, .45), 0 0 14px rgba(255, 112, 120, .75); }
+
+@media (max-width: 700px) {
+  :root[data-motion='reduced'][data-theme='aero'] .tabbar a .icon,
+  :root[data-motion='reduced'][data-theme='island'] .tabbar a .icon,
+  :root[data-motion='reduced'][data-theme='arcade'] .tabbar a .icon { animation: none; }
+  :root[data-motion='reduced'][data-theme='aero'] .tabbar a.active .icon { box-shadow: inset 0 -5px 10px rgba(40, 170, 255, .3), inset 0 2px 5px #fff, 0 0 0 2px rgba(255, 255, 255, .95), 0 4px 10px rgba(10, 100, 190, .25); }
+  :root[data-motion='reduced'][data-theme='island'] .tabbar a.active .icon { filter: drop-shadow(0 2px 3px rgba(150, 20, 60, .25)); }
+  :root[data-motion='reduced'][data-theme='arcade'] .tabbar a.active .icon { filter: none; }
+  :root[data-motion='reduced'][data-theme='console'] .tabbar a.active .icon { box-shadow: inset 0 0 8px rgba(255, 255, 255, .22), 0 4px 6px rgba(0, 0, 0, .22); }
+  :root[data-motion='reduced'][data-theme='lofi'] .tabbar a.active .icon { box-shadow: 0 0 0 2px rgba(255, 112, 120, .75), 0 4px 8px rgba(40, 10, 70, .3); }
+}
+
+/* ---- Calm mode (Profile > Sound > Motion): every animation and transition off ------------------------------- */
+:root[data-motion='reduced'] *, :root[data-motion='reduced'] *::before, :root[data-motion='reduced'] *::after {
+  animation: none !important; transition: none !important; scroll-behavior: auto !important;
+}
