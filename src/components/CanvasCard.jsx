@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useCanvas } from '../lib/canvas.js'
+import { useCanvas, PROVIDERS } from '../lib/canvas.js'
 import { addDays, fmtDay, isoDate, startOfWeek } from '../lib/dates.js'
 import PickerModal from './PickerModal.jsx'
 
@@ -10,6 +10,20 @@ const fmtDue = a => {
 }
 const dayKey = a => (a.allDay ? a.due : isoDate(new Date(a.due)))
 
+const STEPS_BY = {
+  brightspace: [
+    ['Open Brightspace', 'Go to your school\'s Brightspace in a web browser and log in. Use a browser, not the phone app.'],
+    ['Open the Calendar', 'Click "Calendar" in the top bar (or on your home page).'],
+    ['Turn on the feed', 'Click the settings gear in the calendar, then "Enable Calendar Feeds" if it is off. Some schools hide this: if you cannot find it, ask your school\'s IT help.'],
+    ['Copy the link', 'Click "Subscribe" and copy the link it shows. It usually has .ics in it.'],
+    ['Paste it here', 'Paste the link into the box below and press Connect.'],
+  ],
+  other: [
+    ['Find your calendar\'s subscribe link', 'Most school calendars (Brightspace, Blackboard, Moodle, Google) can give you a private "iCal" or ".ics" subscription link. Look for Subscribe, Export or Calendar Feed.'],
+    ['Copy the link', 'It starts with https:// or webcal://.'],
+    ['Paste it here', 'Paste the link into the box below and press Connect.'],
+  ],
+}
 const STEPS = [
   ['Open Canvas', 'Go to your school\'s Canvas in a web browser and log in (for Gordon that is gordon.instructure.com). Use a browser, not the phone app.'],
   ['Click "Calendar"', 'It is in the menu down the left side.'],
@@ -19,27 +33,34 @@ const STEPS = [
 ]
 
 function ConnectDialog({ canvas, onClose }) {
+  const [which, setWhich] = useState(canvas.provider || 'canvas')
   const [url, setUrl] = useState('')
   const [msg, setMsg] = useState('')
   const [busy, setBusy] = useState(false)
   async function submit(e) {
     e.preventDefault()
     setBusy(true)
-    const problem = await canvas.save(url)
+    const problem = await canvas.save(url, which)
     setBusy(false)
     if (problem) setMsg(problem)
     else onClose()
   }
   return (
-    <PickerModal title="Connect your Canvas" onClose={onClose}
+    <PickerModal title="Connect your school calendar" onClose={onClose}
       hint="Your assignments will show up here so you can add them to your week with one click.">
+      <div className="seg" role="tablist" aria-label="Where are your classes?">
+        {Object.entries(PROVIDERS).map(([id, p]) => (
+          <button key={id} type="button" role="tab" aria-selected={which === id}
+            className={'seg-btn' + (which === id ? ' on' : '')} onClick={() => { setWhich(id); setMsg('') }}>{p.name}</button>
+        ))}
+      </div>
       <ol className="canvas-steps">
-        {STEPS.map(([title, text], i) => (
+        {(which === 'canvas' ? STEPS : STEPS_BY[which]).map(([title, text], i) => (
           <li key={title}><span className="num">{i + 1}</span><div><strong>{title}</strong><p className="muted small">{text}</p></div></li>
         ))}
       </ol>
       <form className="stack" onSubmit={submit}>
-        <input value={url} onChange={e => { setUrl(e.target.value); setMsg('') }} placeholder="https://…/feeds/calendars/user_….ics"
+        <input value={url} onChange={e => { setUrl(e.target.value); setMsg('') }} placeholder={which === 'canvas' ? 'https://…/feeds/calendars/user_….ics' : 'https://…/feed.ics?token=…  or  webcal://…'}
           autoComplete="off" spellCheck="false" required />
         <div className="row">
           <button type="submit" disabled={busy}>{busy ? 'Connecting…' : 'Connect'}</button>
@@ -49,7 +70,7 @@ function ConnectDialog({ canvas, onClose }) {
       </form>
       <p className="muted small">
         🔒 This link is private: only you can see it, and LOCK IN only ever reads your due dates. It can't change or
-        submit anything in Canvas. If you ever want to stop, press Disconnect and, in Canvas, a new link replaces the old one.
+        submit anything. If you ever want to stop, press Disconnect and, in your school's calendar, a new link replaces the old one.
       </p>
     </PickerModal>
   )
@@ -80,14 +101,14 @@ export default function CanvasCard({ tasks = [], onAdd }) {
 
   return (
     <section className="card fill canvas-card">
-      <h2>Canvas assignments</h2>
+      <h2>{canvas.connected ? `${canvas.providerName} assignments` : 'Assignments'}</h2>
 
       {canvas.connected === null && <p className="muted">Checking…</p>}
 
       {canvas.connected === false && (
         <div className="stack">
-          <p className="muted">Connect your Canvas calendar so due dates show up here and can be added to your week in one click.</p>
-          <button type="button" onClick={() => setConnect(true)}>Connect Canvas</button>
+          <p className="muted">Connect your Canvas or Brightspace calendar so due dates show up here and can be added to your week in one click.</p>
+          <button type="button" onClick={() => setConnect(true)}>Connect a calendar</button>
           {canvas.error && <p className="warn">{canvas.error}</p>}
         </div>
       )}
@@ -124,7 +145,7 @@ export default function CanvasCard({ tasks = [], onAdd }) {
             <button type="button" className="link" onClick={canvas.refresh} disabled={canvas.loading}>{canvas.loading ? 'Refreshing…' : 'Refresh'}</button>
             <span>
               <button type="button" className="link" onClick={() => setConnect(true)}>Change link</button>
-              <button type="button" className="link" onClick={() => { if (confirm('Disconnect Canvas?')) canvas.disconnect() }}>Disconnect</button>
+              <button type="button" className="link" onClick={() => { if (confirm(`Disconnect ${canvas.providerName}?`)) canvas.disconnect() }}>Disconnect</button>
             </span>
           </div>
           {canvas.error && <p className="warn">{canvas.error}</p>}

@@ -5,8 +5,8 @@ import { useMyXp } from './xp.jsx'
 import { IS_ADMIN } from './env.js'
 
 const ShopContext = createContext({
-  items: [], owned: new Set(), balance: 0, starterChosen: true,
-  buy: async () => null, chooseStarter: async () => null, refresh: async () => {},
+  items: [], bundles: [], owned: new Set(), balance: 0, starterChosen: true,
+  buy: async () => null, buyBundle: async () => null, chooseStarter: async () => null, refresh: async () => {},
 })
 export const useShop = () => useContext(ShopContext)
 
@@ -15,6 +15,7 @@ export function ShopProvider({ children }) {
   const { user } = useAuth()
   const { xp } = useMyXp()
   const [items, setItems] = useState([])
+  const [bundles, setBundles] = useState([])
   const [owned, setOwned] = useState(new Set())
   const [balance, setBalance] = useState(0)
   // Assume "already chosen" until we know, so the starter picker never flashes up by mistake.
@@ -22,13 +23,15 @@ export function ShopProvider({ children }) {
 
   const refresh = useCallback(async () => {
     if (!user || !supabase) return
-    const [shop, bought, coins, profile] = await Promise.all([
+    const [shop, bought, coins, profile, bund] = await Promise.all([
       supabase.from('shop_items').select('*').order('sort'),
       supabase.from('purchases').select('item_id').eq('user_id', user.id),
       supabase.rpc('coin_balance', { uid: user.id }),
       supabase.from('profiles').select('starter_chosen').eq('id', user.id).maybeSingle(),
+      supabase.from('shop_bundles').select('*').order('sort'),
     ])
     setItems(shop.data ?? [])
+    setBundles(bund.data ?? [])
     setOwned(new Set((bought.data ?? []).map(r => r.item_id)))
     setBalance(coins.data ?? 0)
     setStarterChosen(profile.data?.starter_chosen ?? true)
@@ -43,6 +46,12 @@ export function ShopProvider({ children }) {
     return error?.message ?? null
   }, [refresh])
 
+  const buyBundle = useCallback(async id => {
+    const { error } = await supabase.rpc('buy_bundle', { bundle: id })
+    await refresh()
+    return error?.message ?? null
+  }, [refresh])
+
   const chooseStarter = useCallback(async id => {
     const { error } = await supabase.rpc('choose_starter_theme', { item: id })
     await refresh()
@@ -52,11 +61,11 @@ export function ShopProvider({ children }) {
   return (
     // Admin dev build: show everything as owned. This is view-only; the database is not touched.
     <ShopContext.Provider value={{
-      items,
+      items, bundles,
       owned: IS_ADMIN ? new Set(items.map(i => i.id)) : owned,
       balance: IS_ADMIN ? 9999 : balance,
       starterChosen: IS_ADMIN ? true : starterChosen,
-      buy, chooseStarter, refresh,
+      buy, buyBundle, chooseStarter, refresh,
     }}>
       {children}
     </ShopContext.Provider>

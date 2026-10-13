@@ -3247,3 +3247,92 @@ html, body { max-width: 100%; overflow-x: clip; }
 /* ---- small badges next to names on the leaderboard and the feed ------------------------------------------------ */
 .mini-badges { display: inline-flex; gap: 2px; margin-left: .35rem; vertical-align: middle; text-decoration: none; }
 .badge.mini { width: 1.35rem; height: 1.35rem; font-size: .8rem; border-width: 1.5px; box-shadow: 0 1px 3px rgba(0, 0, 0, .18); }
+
+/* ---- Count-up timer on the Study page ------------------------------------------------------------------------- */
+.kind-tabs { margin-bottom: .2rem; }
+.countup { align-items: center; padding: .4rem 0 .2rem; }
+.countup-clock {
+  font-variant-numeric: tabular-nums; font-size: clamp(2.6rem, 9vw, 4rem); font-weight: 800; letter-spacing: .02em; line-height: 1.1;
+  padding: .6rem 1.2rem; border-radius: var(--r, 20px); background: var(--glass-inner); border: 1px solid var(--glass-line);
+}
+.countup-clock.running { color: var(--accent); }
+
+/* ---- the small ? help button and its pop-up ----------------------------------------------------------------------- */
+.help-btn {
+  width: 2rem; height: 2rem; padding: 0; border-radius: 50%; display: inline-grid; place-items: center; flex: none;
+  font-weight: 800; font-size: 1rem; line-height: 1; margin-left: .25rem;
+  background: var(--glass-inner); color: var(--text); border: 1px solid var(--glass-line); box-shadow: none;
+}
+.help-btn:hover { background: var(--glass-strong); }
+.help-steps { margin: 0 0 .9rem; padding-left: 1.25rem; display: grid; gap: .55rem; line-height: 1.45; }
+
+/* ---- Timer bundles: Neon, Battery, Rocket (Tech Set) and Candle, Vinyl, Sunrise (Desk Set) ----------------------------- */
+/* neon: a sign-like double ring that glows */
+.timer-face.neon { position: relative; display: grid; place-items: center; }
+.timer-face.neon > * { grid-area: 1 / 1; }
+.timer-face .tf-neon-outer { fill: none; stroke: #ff3df0; stroke-width: 2; opacity: .75; filter: drop-shadow(0 0 6px #ff3df0); }
+.timer-face .tf-neon-track { fill: none; stroke: color-mix(in srgb, #22e6ff 22%, transparent); stroke-width: 10; }
+.timer-face .tf-neon-arc { fill: none; stroke: #22e6ff; stroke-width: 10; stroke-linecap: round; filter: drop-shadow(0 0 7px #22e6ff); transition: stroke-dashoffset .3s linear; }
+.timer-face .tf-neon-text { color: #fff; text-shadow: 0 0 6px #22e6ff, 0 0 16px #22e6ff, 0 0 28px #ff3df0; }
+.timer-face.neon.running .tf-neon-outer { animation: tf-flicker 3.2s steps(1) infinite; }
+@keyframes tf-flicker { 0%, 92%, 100% { opacity: .75; } 93% { opacity: .25; } 95% { opacity: .75; } 97% { opacity: .35; } }
+.timer-face.neon.break .tf-neon-arc { stroke: #ffd24a; filter: drop-shadow(0 0 7px #ffd24a); }
+
+/* battery */
+.timer-face.battery { gap: .5rem; }
+.timer-face .tf-batt { display: flex; align-items: center; }
+.timer-face .tf-batt-body { width: min(240px, 66vw); height: 74px; border: 5px solid var(--text); border-radius: 16px; padding: 5px; background: var(--glass-inner); }
+.timer-face .tf-batt-fill { height: 100%; border-radius: 8px; transition: width .3s linear; background: linear-gradient(180deg, #7ee787, #2ea043); }
+.timer-face .tf-batt-cap { width: 9px; height: 30px; border-radius: 0 6px 6px 0; background: var(--text); margin-left: 2px; }
+.timer-face.battery.tone-mid .tf-batt-fill { background: linear-gradient(180deg, #ffd479, #e0a100); }
+.timer-face.battery.tone-low .tf-batt-fill { background: linear-gradient(180deg, #ff9b9b, #d63a3a); }
+.timer-face.battery.running.tone-good .tf-batt-fill { animation: tf-charge 1.8s ease-in-out infinite alternate; }
+@keyframes tf-charge { to { filter: brightness(1.18); } }
+
+/* rocket */
+.timer-face.rocket { gap: .6rem; max-width: 480px; margin-inline: auto; }
+.timer-face .tf-track-rocket { position: relative; width: 100%; height: 46px; border-radius: 999px; background: color-mix(in srgb, #1c2750 85%, transparent); overflow: hidden; border: 1px solid color-mix(in srgb, var(--text) 25%, transparent); }
+.timer-face .tf-trail { position: absolute; left: 0; top: 50%; height: 4px; margin-top: -2px; background: linear-gradient(90deg, transparent, #ffb347, #ff6a3d); border-radius: 4px; transition: width .3s linear; }
+.timer-face .tf-rocket { position: absolute; top: 50%; translate: -50% -50%; font-size: 1.6rem; rotate: 45deg; transition: left .3s linear; }
+.timer-face .tf-goal { position: absolute; right: 12px; top: 50%; translate: 0 -50%; font-size: 1.4rem; }
+.timer-face.rocket.running .tf-rocket { animation: tf-bob 1.2s ease-in-out infinite alternate; }
+@keyframes tf-bob { from { margin-top: -2px; } to { margin-top: 3px; } }
+
+/* candle */
+.timer-face .tf-candle-dish { fill: color-mix(in srgb, var(--text) 40%, transparent); }
+.timer-face .tf-wax { fill: #f6ead0; stroke: color-mix(in srgb, #8a6d3b 60%, transparent); stroke-width: 2; transition: y .3s linear, height .3s linear; }
+.timer-face .tf-wax-top { fill: #fffaf0; transition: y .3s linear; }
+.timer-face .tf-wick { fill: #3a2a1a; transition: y .3s linear; }
+.timer-face .tf-flame { transition: transform .3s linear; transform-origin: 0 0; }
+.timer-face .tf-flame-out { fill: #ff9a2e; }
+.timer-face .tf-flame-in { fill: #ffe27a; }
+.timer-face.candle.running .tf-flame path { animation: tf-flame 0.9s ease-in-out infinite alternate; transform-origin: 0 4px; }
+@keyframes tf-flame { from { transform: scale(1, 1) skewX(-3deg); } to { transform: scale(.94, 1.08) skewX(4deg); } }
+.timer-face.candle.break .tf-flame { opacity: .35; }
+
+/* sunrise */
+.timer-face .tf-sky-top { stop-color: #5a6bd8; }
+.timer-face .tf-sky-bot { stop-color: #ffc88a; }
+.timer-face.sunrise.break .tf-sky-top { stop-color: #2b2f66; }
+.timer-face .tf-sun-path { fill: none; stroke: rgba(255, 255, 255, .55); stroke-width: 2; stroke-dasharray: 3 6; }
+.timer-face .tf-sun { fill: #ffe27a; filter: drop-shadow(0 0 8px #ffd24a); transition: cx .3s linear, cy .3s linear; }
+.timer-face .tf-ground { fill: #3c6b4a; }
+
+/* vinyl */
+.timer-face .tf-vinyl-wrap { position: relative; width: min(230px, 62vw); aspect-ratio: 1; }
+.timer-face .tf-record {
+  position: absolute; inset: 0; border-radius: 50%; display: grid; place-items: center;
+  background: repeating-radial-gradient(circle at 50% 50%, #15101f 0 2px, #261b3a 2px 3px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .35), inset 0 0 0 3px #0c0814;
+}
+.timer-face .tf-record::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 25deg, transparent 0 18%, rgba(255, 255, 255, .16) 25%, transparent 32% 68%, rgba(255, 255, 255, .16) 75%, transparent 82%); }
+.timer-face .tf-record-label { width: 34%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #1a1024 0 8%, var(--accent) 9%); box-shadow: 0 0 0 3px rgba(255, 255, 255, .25); }
+.timer-face .tf-arm { position: absolute; right: -4%; top: -6%; width: 46%; height: 6px; border-radius: 6px; background: linear-gradient(90deg, #cfd3da, #8d94a1); transform-origin: 100% 50%; transition: transform .4s linear; }
+.timer-face .tf-arm::before { content: ''; position: absolute; left: -8px; top: -4px; width: 14px; height: 14px; border-radius: 3px; background: #444b57; }
+.timer-face.vinyl.running .tf-record { animation: tf-spin 2.4s linear infinite; }
+@keyframes tf-spin { to { rotate: 360deg; } }
+
+/* shop: the bundle cards */
+.bundle-thumbs { display: flex; gap: .4rem; width: 100%; }
+.bundle-thumbs .timer-thumb { height: 80px; border-radius: 10px; background: var(--glass-inner); }
+.bundle-card .bundle-save { color: var(--accent-ink, var(--accent)); font-weight: 700; }

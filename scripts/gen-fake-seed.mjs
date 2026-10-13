@@ -13,6 +13,7 @@ const tuple = /\(\s*'([^']+)'\s*,\s*'([^']+)'\s*,\s*'((?:[^']|'')*)'\s*,\s*(\d+)
 // achievements: (id, name, description, icon, tier, stat, goal, coins, reward item or null, sort)
 const achTuple = /\(\s*'([^']+)'\s*,\s*'((?:[^']|'')*)'\s*,\s*'((?:[^']|'')*)'\s*,\s*'([^']+)'\s*,\s*'(bronze|silver|gold)'\s*,\s*'([^']+)'\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(null|'[^']+')\s*,\s*(\d+)\s*\)/g
 const achievements = new Map()
+const bundles = new Map()
 
 for (const f of files) {
   const sql = fs.readFileSync(path.join(dir, f), 'utf8')
@@ -45,6 +46,19 @@ for (const f of files) {
   }
 }
 
+for (const f of files) {
+  const sql = fs.readFileSync(path.join(dir, f), 'utf8')
+  const ins = /insert\s+into\s+public\.shop_bundles[^;]*?values([\s\S]*?)on\s+conflict/gi
+  let b
+  while ((b = ins.exec(sql))) {
+    const row = /\(\s*'([^']+)'\s*,\s*'((?:[^']|'')*)'\s*,\s*'((?:[^']|'')*)'\s*,\s*(\d+)\s*,\s*array\[([^\]]*)\]\s*,\s*(\d+)\s*\)/g
+    let r
+    while ((r = row.exec(b[1]))) {
+      bundles.set(r[1], { id: r[1], name: r[2].replace(/''/g, "'"), blurb: r[3].replace(/''/g, "'"), price: Number(r[4]), items: r[5].match(/[\w-]+/g), sort: Number(r[6]) })
+    }
+  }
+}
+
 const upd = /update\s+public\.shop_items\s+set\s+price\s*=\s*(\d+)\s+where\s+id\s+in\s*\(([^)]*)\)/gi
 for (const f of files) {
   const sql = fs.readFileSync(path.join(dir, f), 'utf8')
@@ -53,6 +67,6 @@ for (const f of files) {
 }
 
 // the starter-theme ids (free looks) so the shop knows them
-const out = { cosmetics: [...cosmetics.values()], shop_items: [...shop.values()], achievements: [...achievements.values()] }
+const out = { cosmetics: [...cosmetics.values()], shop_items: [...shop.values()], achievements: [...achievements.values()], bundles: [...bundles.values()] }
 fs.writeFileSync('src/lib/fakeSeed.json', JSON.stringify(out, null, 1))
 console.log(`cosmetics: ${out.cosmetics.length}, shop items: ${out.shop_items.length}`)

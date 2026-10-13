@@ -10,12 +10,12 @@ const CORS = {
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...CORS, 'Content-Type': 'application/json' } })
 
-// Only a Canvas-style calendar feed over https, and never an internal address.
+// Any calendar feed over https (Canvas, Brightspace, or another school calendar), and never an internal address.
 function feedOk(raw: string) {
   try {
     const u = new URL(raw)
     if (u.protocol !== 'https:') return false
-    if (!/\/feeds\/calendars\/.+\.ics$/i.test(u.pathname)) return false
+    if (!/(\.ics$|ical|calendar|feed)/i.test(u.pathname)) return false
     const h = u.hostname.toLowerCase()
     if (h === 'localhost' || h.endsWith('.local') || /^[0-9.]+$/.test(h) || h.includes(':')) return false
     return true
@@ -36,7 +36,7 @@ function parseDate(v: string) {
   return { iso: date.toISOString(), allDay: false }
 }
 
-function parseIcs(text: string) {
+function parseIcs(text: string, provider = 'canvas') {
   const out: Array<Record<string, unknown>> = []
   for (const block of unfold(text).split('BEGIN:VEVENT').slice(1)) {
     const body = block.split('END:VEVENT')[0]
@@ -47,11 +47,21 @@ function parseIcs(text: string) {
     const summary = unescapeText(field('SUMMARY'))
     const start = parseDate(field('DTSTART'))
     if (!summary || !start) continue
-    // Canvas puts the course at the end: "Essay 2 [ENG101-01 Fall 2026]"
-    const course = summary.match(/\[([^\]]+)\]\s*$/)?.[1]?.trim() ?? ''
+    // Canvas puts the course at the end: "Essay 2 [ENG101-01 Fall 2026]".
+    // Brightspace and others vary: try the same brackets, then a CATEGORIES line, then "Title - Course".
+    let course = summary.match(/\[([^\]]+)\]\s*$/)?.[1]?.trim() ?? ''
+    let title = summary.replace(/\s*\[[^\]]+\]\s*$/, '').trim()
+    if (!course && provider !== 'canvas') {
+      const cat = unescapeText(field('CATEGORIES')).split(',')[0]?.trim() ?? ''
+      if (cat) course = cat
+      else {
+        const m = title.match(/^(.*\S)\s+-\s+([^-]{2,60})$/)
+        if (m) { title = m[1].trim(); course = m[2].trim() }
+      }
+    }
     out.push({
-      uid: field('UID'),
-      title: summary.replace(/\s*\[[^\]]+\]\s*$/, '').trim(),
+      uid: field('UID') || `${title}|${start.iso}`,
+      title,
       course,
       due: start.iso,
       allDay: start.allDay,
@@ -74,17 +84,19 @@ Deno.serve(async req => {
   const { data: userData } = await supabase.auth.getUser()
   if (!userData.user) return json({ error: 'Sign in first' }, 401)
 
-  const { data: feed } = await supabase.from('canvas_feeds').select('url').eq('user_id', userData.user.id).maybeSingle()
+  const { data: feed } = await supabase.from('canvas_feeds').select('*').eq('user_id', userData.user.id).maybeSingle()
   if (!feed?.url) return json({ assignments: [], connected: false })
-  if (!feedOk(feed.url)) return json({ error: 'That does not look like a Canvas calendar feed link.' }, 400)
+  const provider = ['canvas', 'brightspace', 'other'].includes(feed.provider) ? feed.provider : 'canvas'
+  const name = provider === 'brightspace' ? 'Brightspace' : provider === 'canvas' ? 'Canvas' : 'Your calendar'
+  if (!feedOk(feed.url)) return json({ error: 'That does not look like a calendar feed link.' }, 400)
 
   try {
     const res = await fetch(feed.url, { signal: AbortSignal.timeout(12000), headers: { 'User-Agent': 'LOCK-IN' } })
-    if (!res.ok) return json({ error: `Canvas answered ${res.status}. The link may have changed.` }, 502)
-    const assignments = parseIcs(await res.text())
+    if (!res.ok) return json({ error: `${name} answered ${res.status}. The link may have changed.` }, 502)
+    const assignments = parseIcs(await res.text(), provider)
       .sort((a, b) => String(a.due).localeCompare(String(b.due)))
-    return json({ assignments, connected: true })
+    return json({ assignments, connected: true, provider })
   } catch {
-    return json({ error: 'Could not reach Canvas right now. Try again in a bit.' }, 502)
+    return json({ error: `Could not reach ${name} right now. Try again in a bit.` }, 502)
   }
 })

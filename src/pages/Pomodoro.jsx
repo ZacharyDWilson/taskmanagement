@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
-import { usePomodoro, mmss } from '../lib/pomodoro.jsx'
+import { usePomodoro, mmss, hms } from '../lib/pomodoro.jsx'
 import { fmtMinutes, startOfWeek } from '../lib/dates.js'
 import Leaderboard from '../components/Leaderboard.jsx'
 import TimerFace from '../components/TimerFace.jsx'
@@ -52,6 +52,26 @@ export default function Study() {
       <div className="col">
       <section className="card pomodoro center">
         <h1>Study</h1>
+        <div className="tabs kind-tabs" role="tablist" aria-label="Timer type">
+          <button type="button" role="tab" aria-selected={p.kind === 'pomodoro'} className={p.kind === 'pomodoro' ? 'active' : ''} onClick={() => p.setKind('pomodoro')}>Pomodoro</button>
+          <button type="button" role="tab" aria-selected={p.kind === 'countup'} className={p.kind === 'countup' ? 'active' : ''} onClick={() => p.setKind('countup')}>Count up</button>
+        </div>
+        {p.kind === 'countup' ? (
+          <div className="countup stack center">
+            <p className="muted small">Counts up through the day. Pause and resume as you like. At midnight the day's total is saved as study time (that is where the XP comes from) and the clock starts again at zero.</p>
+            {timerStyle.current.id === 'plain'
+              ? <div className={'countup-clock' + (p.cuRunning ? ' running' : '')} aria-live="off">{hms(p.cuElapsedMs)}</div>
+              : <TimerFace styleId={timerStyle.current.id} countUp elapsedMs={p.cuElapsedMs} mode="focus" running={p.cuRunning} />}
+            <small className="muted">{p.cuMinutes} min counted today{p.cuMinutes >= p.maxDayMin ? ' (the daily limit)' : ''}</small>
+            <div className="row">
+              <button onClick={p.cuStartPause}>{p.cuRunning ? 'Pause' : p.cuElapsedMs > 0 ? 'Resume' : 'Start'}</button>
+              <button className="secondary" onClick={p.cuReset} disabled={p.cuElapsedMs === 0}>Reset</button>
+              {p.cuMinutes >= 1 && <button className="secondary" onClick={p.cuLogNow}>Save {p.cuMinutes}m now</button>}
+            </div>
+            {p.msg && <p className="muted">{p.msg}</p>}
+            <small className="muted">Up to {Math.round(p.maxDayMin / 60)} hours count for one day.</small>
+          </div>
+        ) : (<>
         <div className="tabs">
           <button className={p.mode === 'focus' ? 'active' : ''} onClick={() => p.switchMode('focus')}>Focus</button>
           <button className={p.mode === 'break' ? 'active' : ''} onClick={() => p.switchMode('break')}>Break</button>
@@ -78,6 +98,7 @@ export default function Study() {
             onChange={e => p.setBreakMin(clamp(e.target.value, 1, 60))} /> min</label>
         </div>
         {p.msg && <p className="muted">{p.msg}</p>}
+        </>)}
         <button type="button" className="secondary timer-style-btn" onClick={() => setPickStyle(true)}>
           Timer style: <strong>{timerStyle.current.name}</strong> ›
         </button>

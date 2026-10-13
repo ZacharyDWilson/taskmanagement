@@ -11,18 +11,14 @@ import FancyName from '../components/FancyName.jsx'
 import PickerModal from '../components/PickerModal.jsx'
 import ThemePreview from '../components/ThemePreview.jsx'
 import BadgeStrip from '../components/BadgeStrip.jsx'
-import { replayTour } from '../components/Tour.jsx'
-import { useMusic } from '../lib/music.jsx'
 import { usernameProblem } from '../lib/username.js'
 import { COLLEGES } from '../lib/colleges.js'
-import { useSound, PACK_LABELS, SOUND_PACKS, SIGNATURE } from '../lib/sfx.jsx'
 import ColorPicker from '../components/ColorPicker.jsx'
 import LevelCard from '../components/LevelCard.jsx'
 import DayBars from '../components/DayBars.jsx'
 import { THEMES, useTheme } from '../lib/theme.jsx'
 import { useShop } from '../lib/shop.jsx'
 import { useToast } from '../lib/toast.jsx'
-import { useReducedMotion } from '../lib/motion.js'
 import { IS_ADMIN } from '../lib/env.js'
 
 // One row per customization: shows what you have now; click to open the choices.
@@ -89,12 +85,9 @@ export default function Profile() {
   const level = levelFromXp(xp ?? 0)
   const shopIds = new Set(shop.items.map(i => i.id))
   const exclusiveIds = new Set(shop.items.filter(i => i.exclusive).map(i => i.id))
-  const sound = useSound()
-  const music = useMusic()
-  const [calm, setCalm] = useReducedMotion()
   const [lockedAtLoad, setLockedAtLoad] = useState(false)     // had a username when the page loaded
   const lockedUsername = lockedAtLoad && mine
-  const [tab, setTab] = useState('details')   // edit form tab: details | style | sound
+  const [tab, setTab] = useState('details')   // edit form tab: details | style
   const [picker, setPicker] = useState(null) // which customization pop-up is open: 'theme' | 'frame' | 'banner'
   const currentTheme = THEMES.find(t => t.id === theme) ?? THEMES[0]
 
@@ -245,7 +238,7 @@ export default function Profile() {
         <form className="card stack" onSubmit={save}>
           <h2>Edit your profile</h2>
           <div className="tabs" role="tablist">
-            {[['details', 'You'], ['style', 'Style'], ['sound', 'Sound']].map(([id, label]) => (
+            {[['details', 'You'], ['style', 'Style']].map(([id, label]) => (
               <button key={id} type="button" role="tab" aria-selected={tab === id}
                 className={tab === id ? 'active' : ''} onClick={() => setTab(id)}>{label}</button>
             ))}
@@ -322,42 +315,11 @@ export default function Profile() {
                 items={cosmetics.filter(c => c.kind === 'banner')} onChange={banner => { edit({ banner }); setPicker(null) }} />
             </PickerModal>
           )}
-          {tab === 'sound' && (
-          <div className="stack sound-settings">
-            <div className="muted small">Sound</div>
-            <label className="row">
-              <input type="checkbox" checked={sound.enabled} onChange={e => sound.setEnabled(e.target.checked)} />
-              Interface sounds
-            </label>
-            <label className="row">
-              <input type="checkbox" checked={music.musicOn} disabled={!sound.enabled} onChange={e => music.setMusicOn(e.target.checked)} />
-              Quiet background music <span className="muted small">(pauses while the timer runs)</span>
-            </label>
-            <label>Volume
-              <input type="range" min="0" max="1" step="0.05" value={sound.volume} disabled={!sound.enabled}
-                onChange={e => sound.setVolume(Number(e.target.value))}
-                onPointerUp={() => sound.play('press')} />
-            </label>
-            <label>Sound style
-              <select value={sound.override} disabled={!sound.enabled} onChange={e => sound.setOverride(e.target.value)}>
-                <option value="">{SIGNATURE ? 'LOCK IN sounds (default)' : `Match my theme (${PACK_LABELS[SOUND_PACKS[theme]] ?? 'Minimal'})`}</option>
-                {SIGNATURE && <option value="theme">Match my theme ({PACK_LABELS[SOUND_PACKS[theme]] ?? 'Minimal'})</option>}
-                {Object.entries(PACK_LABELS).map(([id, name]) => <option key={id} value={id}>{name}</option>)}
-              </select>
-            </label>
-            <div className="muted small">Motion</div>
-            <label className="row">
-              <input type="checkbox" checked={calm} onChange={e => setCalm(e.target.checked)} />
-              Calm mode: turn off animations and moving backgrounds
-            </label>
-          </div>
-          )}
-          {tab === 'sound' && <button type="button" className="secondary" onClick={replayTour}>Replay the welcome tour</button>}
           <button type="submit">Save profile</button>
           {msg && <p className="muted">{msg}</p>}
-          {tab === 'sound' && <small className="muted">
-            Earn XP: 1 per focus minute, 10 per finished task, 25 per post, 2 per reaction you receive.
-          </small>}
+          <small className="muted">
+            Earn XP: 1 per focus minute, 10 per finished task, 25 per post, 2 per reaction you receive. Sounds, motion and notifications are in Settings (top left).
+          </small>
         </form>
       )}
     </div>

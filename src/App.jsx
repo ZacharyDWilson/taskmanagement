@@ -15,6 +15,7 @@ import Achievements from './pages/Achievements.jsx'
 import Login, { AuthSplash } from './pages/Login.jsx'
 import Logo from './components/Logo.jsx'
 import SettingsMenu from './components/SettingsMenu.jsx'
+import PageHelp from './components/PageHelp.jsx'
 import InstallButton from './components/InstallButton.jsx'
 import Icon from './components/Icon.jsx'
 import Avatar from './components/Avatar.jsx'
@@ -101,6 +102,7 @@ export default function App() {
       <div className="content">
         <nav className="nav">
           <SettingsMenu />
+          <PageHelp />
           <Link to="/" className="brand" aria-label="LOCK IN"><Logo size={24} /><span className="brand-text">LOCK IN</span></Link>
           <span className="spacer" />
           {user && timer.running && (

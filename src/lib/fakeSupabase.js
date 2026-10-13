@@ -30,6 +30,7 @@ function freshDb() {
     shop_items: seed.shop_items,
     purchases: [],
     achievements: seed.achievements ?? [],
+    shop_bundles: seed.bundles ?? [],
     user_achievements: [],
     tasks: [
       t('Review lecture notes', plus(0), { course: 'BIO 101', category: 'Study' }),
@@ -38,7 +39,14 @@ function freshDb() {
       t('Read chapter 5', plus(2), { course: 'HIS 210', category: 'Reading', color: 'amber' }),
       t('Plan group project', null, { course: 'COM 150', category: 'Project' }),
     ],
-    study_sessions: [], posts: [], comments: [], reactions: [], study_queue: [], canvas_feeds: [],
+    // three weeks of focus sessions so the charts, streak and leaderboard look lived in
+    study_sessions: Array.from({ length: 21 }, (_, i) => i).flatMap(back => {
+      const mins = [50, 25, 75, 0, 45, 90, 30, 60, 0, 40, 25, 70, 35, 55, 0, 80, 45, 30, 65, 25, 50][back]
+      if (!mins) return []
+      const d = new Date(today); d.setDate(d.getDate() - back); d.setHours(16, 30, 0, 0)
+      return [{ id: uid(), user_id: ME, minutes: mins, created_at: d.toISOString() }]
+    }),
+    posts: [], comments: [], reactions: [], study_queue: [], canvas_feeds: [],
   }
 }
 
@@ -54,6 +62,7 @@ const db = load()
 db.cosmetics = seed.cosmetics
 db.shop_items = seed.shop_items
 db.achievements = seed.achievements ?? []
+db.shop_bundles = seed.bundles ?? []
 db.user_achievements ??= []
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)) } catch { /* ignore */ } }
 

@@ -829,6 +829,54 @@
    "price": 0,
    "sort": 74,
    "exclusive": true
+  },
+  {
+   "id": "timer-neon",
+   "kind": "timer",
+   "name": "Neon",
+   "price": 160,
+   "sort": 37,
+   "exclusive": false
+  },
+  {
+   "id": "timer-battery",
+   "kind": "timer",
+   "name": "Battery",
+   "price": 160,
+   "sort": 38,
+   "exclusive": false
+  },
+  {
+   "id": "timer-candle",
+   "kind": "timer",
+   "name": "Candle",
+   "price": 200,
+   "sort": 39,
+   "exclusive": false
+  },
+  {
+   "id": "timer-rocket",
+   "kind": "timer",
+   "name": "Rocket",
+   "price": 200,
+   "sort": 40,
+   "exclusive": false
+  },
+  {
+   "id": "timer-sunrise",
+   "kind": "timer",
+   "name": "Sunrise",
+   "price": 240,
+   "sort": 41,
+   "exclusive": false
+  },
+  {
+   "id": "timer-vinyl",
+   "kind": "timer",
+   "name": "Vinyl",
+   "price": 240,
+   "sort": 42,
+   "exclusive": false
   }
  ],
  "achievements": [
@@ -1083,6 +1131,47 @@
    "reward_coins": 100,
    "reward_item": null,
    "sort": 61
+  }
+ ],
+ "bundles": [
+  {
+   "id": "bundle-desk",
+   "name": "Desk Set",
+   "blurb": "A warm desk: a candle that burns down, a record that plays, a sunrise.",
+   "price": 480,
+   "items": [
+    "timer-candle",
+    "timer-vinyl",
+    "timer-sunrise"
+   ],
+   "sort": 1
+  },
+  {
+   "id": "bundle-tech",
+   "name": "Tech Set",
+   "blurb": "Glowing neon, a rocket on its way, a battery that drains and charges.",
+   "price": 380,
+   "items": [
+    "timer-neon",
+    "timer-rocket",
+    "timer-battery"
+   ],
+   "sort": 2
+  },
+  {
+   "id": "bundle-full",
+   "name": "Full Set",
+   "blurb": "All six of the new timer styles together.",
+   "price": 800,
+   "items": [
+    "timer-candle",
+    "timer-vinyl",
+    "timer-sunrise",
+    "timer-neon",
+    "timer-rocket",
+    "timer-battery"
+   ],
+   "sort": 3
   }
  ]
 }

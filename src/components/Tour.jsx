@@ -13,7 +13,9 @@ import Icon from './Icon.jsx'
 const STEPS = [
   { emoji: '🔒', title: 'Welcome to LOCK IN',
     text: 'A calm place to plan your work, focus, and keep up with friends. Let me show you around. It takes about a minute.' },
-  { route: '/', target: ['.overview .card'], title: 'Overview',
+  { target: ['.dock', '.tabbar'], title: 'Your toolbar',
+    text: 'This is how you move around. On a computer it runs down the left side of the screen; on a phone it sits along the bottom. Home, To Do, Feed, Study, and Me (your profile).' },
+  { route: '/', target: ['.overview .card'], title: 'Home',
     text: 'Your week at a glance: hours studied, what is due today, and the friends leaderboard. It always fits on one screen.' },
   { route: '/todo', target: ['.todo .planner', '.todo'], title: 'To Do',
     text: 'Add a task, then drag it onto a day to plan your week. Click a task to add its class, due date and notes. Finishing one earns XP.',
@@ -21,14 +23,16 @@ const STEPS = [
   { route: '/feed', target: ['form.card'], title: 'Feed',
     text: 'Share a photo of your progress with a short caption. Friends can react with an emoji or leave a comment.' },
   { route: '/study', target: ['.pomodoro'], title: 'The focus timer',
-    text: 'Start a focus round and your time is logged automatically. Change how the timer looks with "Timer style". More styles unlock as you level up.',
+    text: 'Start a focus round and your time is logged automatically. Prefer a stopwatch? Switch to Count up: it runs all day and saves your total as study time at midnight.',
     tryIt: 'Try it: press Start.' },
   { route: '/study', target: ['.buddy-panel'], title: 'Study with a friend',
     text: 'Open yourself up to study together. When someone matches with you, a pop-up appears and you get a notification.' },
   { route: '/profile', target: ['.customize'], title: 'Make it yours',
     text: 'Pick a page theme, a picture frame and a banner. XP raises your level and earns coins to spend in the Shop. Choose your free starter theme there first.' },
-  { target: ['.sound-chip'], title: 'Quiet by design',
-    text: 'Interface sounds are soft and can be muted any time with this speaker. That is the tour. Welcome in.' },
+  { target: ['.settings-btn'], title: 'Settings',
+    text: 'Sounds, calm mode (less motion, better for older phones), notifications and installing the app are all here, top left.' },
+  { target: ['.help-btn'], title: 'Help on every page',
+    text: 'Stuck? This ? button explains the page you are on, step by step, and can replay this tour. That is it. Welcome in.' },
 ]
 
 const keyFor = id => `lock-in-tour-${id}`
@@ -38,6 +42,8 @@ const markSeen = id => { try { localStorage.setItem(keyFor(id), '1') } catch { /
 export const replayTour = () => window.dispatchEvent(new Event('lock-in:tour'))
 
 const PAD = 8
+// the first matching element that is actually on screen (the left toolbar and the phone tab bar are never both shown)
+const pickVisible = sels => sels.map(s => document.querySelector(s)).find(el => el && el.getBoundingClientRect().width > 0)
 
 export default function Tour({ preview = false }) {
   const auth = useAuth()
@@ -78,7 +84,7 @@ export default function Tour({ preview = false }) {
   // (Swapping between "no box" and "a box", or setting a new object every tick, made the whole screen flicker.)
   const measure = useCallback(() => {
     if (!step.target) { setRect(null); return }
-    const el = step.target.map(s => document.querySelector(s)).find(Boolean)
+    const el = pickVisible(step.target)
     if (!el) return
     const r = el.getBoundingClientRect()
     if (r.width === 0 && r.height === 0) return
@@ -92,7 +98,7 @@ export default function Tour({ preview = false }) {
     const tick = () => {
       measure()
       if (!scrolled) {
-        const el = step.target?.map(s => document.querySelector(s)).find(Boolean)
+        const el = step.target ? pickVisible(step.target) : null
         if (el) {
           const b = el.getBoundingClientRect()
           const visible = b.top >= 56 && b.bottom <= window.innerHeight - 90

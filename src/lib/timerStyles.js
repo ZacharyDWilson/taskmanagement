@@ -10,6 +10,13 @@ export const TIMER_STYLES = [
   { id: 'flip',      name: 'Flip clock',   blurb: 'Cards that flip each second.' },
   { id: 'hourglass', name: 'Hourglass',    blurb: 'Sand falling grain by grain.' },
   { id: 'garden',    name: 'Garden',       blurb: 'A seed that grows while you focus.' },
+  // the Tech Set and the Desk Set (also sold as bundles)
+  { id: 'neon',      name: 'Neon',         blurb: 'A glowing sign that closes its loop.' },
+  { id: 'battery',   name: 'Battery',      blurb: 'Drains as you go, or charges while you count up.' },
+  { id: 'rocket',    name: 'Rocket',       blurb: 'A rocket flying to the moon.' },
+  { id: 'candle',    name: 'Candle',       blurb: 'Burns down while you focus.' },
+  { id: 'vinyl',     name: 'Vinyl',        blurb: 'A record that plays while you work.' },
+  { id: 'sunrise',   name: 'Sunrise',      blurb: 'The sun climbs over the hills.' },
 ]
 export const timerItemId = id => `timer-${id}`
 

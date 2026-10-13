@@ -13,12 +13,31 @@ const demoAssignments = () => [ // DEMO: filler so the card can be seen without 
   { uid: 'demo-canvas-4', title: 'Discussion post', course: 'HIS 110', due: day(6), allDay: true, url: '', description: '' },
 ]
 
-export const looksLikeFeed = v => /^https:\/\/[^\s]+\/feeds\/calendars\/[^\s]+\.ics$/i.test((v ?? '').trim())
+// Calendar links come in a few shapes (Canvas, Brightspace, others), so the check is deliberately relaxed: an https
+// address (webcal:// is turned into https://) that looks like a calendar. Returns the cleaned link, or '' if it isn't one.
+export function cleanFeed(v) {
+  let s = (v ?? '').trim().replace(/^webcal:\/\//i, 'https://').replace(/^http:\/\//i, 'https://')
+  if (/\s/.test(s) || s.length > 1000) return ''
+  try {
+    const u = new URL(s)
+    if (u.protocol !== 'https:' || !u.hostname.includes('.')) return ''
+    if (!/(\.ics$|ical|calendar|feed)/i.test(u.pathname)) return ''
+    return s
+  } catch { return '' }
+}
+export const looksLikeFeed = v => cleanFeed(v) !== ''
+
+export const PROVIDERS = {
+  canvas: { name: 'Canvas' },
+  brightspace: { name: 'Brightspace' },
+  other: { name: 'Calendar' },
+}
 
 export function useCanvas() {
   const { user } = useAuth()
   const [connected, setConnected] = useState(null)       // null = still checking
   const [assignments, setAssignments] = useState([])
+  const [provider, setProvider] = useState('canvas')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -36,16 +55,23 @@ export function useCanvas() {
     }
     if (data?.error) setError(data.error)
     setConnected(!!data?.connected)
+    if (data?.provider) setProvider(data.provider)
     setAssignments(data?.assignments ?? [])
   }, [user?.id]) // eslint-disable-line
 
   useEffect(() => { refresh() }, [refresh])
 
-  const save = useCallback(async url => {
-    const clean = url.trim()
-    if (!looksLikeFeed(clean)) return 'That does not look like a Canvas calendar feed link. It should start with https:// and end in .ics.'
-    const { error } = await supabase.from('canvas_feeds').upsert({ user_id: user.id, url: clean, updated_at: new Date().toISOString() })
+  const save = useCallback(async (url, which = 'canvas') => {
+    const clean = cleanFeed(url)
+    if (!clean) return 'That does not look like a calendar link. It should start with https:// (or webcal://) and be the calendar subscription link from your school.'
+    const row = { user_id: user.id, url: clean, provider: which, updated_at: new Date().toISOString() }
+    let { error } = await supabase.from('canvas_feeds').upsert(row)
+    if (error && /provider/i.test(error.message)) {            // the database has not been updated yet: save it the old way
+      const { provider: _unused, ...plain } = row
+      ;({ error } = await supabase.from('canvas_feeds').upsert(plain))
+    }
     if (error) return error.message
+    setProvider(which)
     await refresh()
     return ''
   }, [user?.id, refresh])
@@ -55,5 +81,5 @@ export function useCanvas() {
     setConnected(false); setAssignments([])
   }, [user?.id])
 
-  return { connected, assignments, error, loading, refresh, save, disconnect }
+  return { connected, assignments, provider, providerName: PROVIDERS[provider]?.name ?? 'Calendar', error, loading, refresh, save, disconnect }
 }

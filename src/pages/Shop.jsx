@@ -20,6 +20,7 @@ export default function Shop() {
   const { items, owned, balance, starterChosen, buy, chooseStarter } = useShop()
   const { theme, setTheme } = useTheme()
   const { xp, level } = useMyXp()
+  const { bundles = [], buyBundle } = useShop()
   const toast = useToast()
   const [busy, setBusy] = useState('')
 
@@ -125,6 +126,46 @@ export default function Shop() {
         </div>
         {themes.length === 0 && <p className="muted">The shop is empty right now.</p>}
       </section>
+
+      {bundles.length > 0 && (
+        <section className="card">
+          <h2>Timer bundles <small>buy styles together for less. Every style works for Pomodoro and Count up.</small></h2>
+          <div className="themes">
+            {bundles.map(b => {
+              const parts = b.items.map(id => items.find(i => i.id === id)).filter(Boolean)
+              const missing = parts.filter(i => !owned.has(i.id))
+              const separately = parts.reduce((n, i) => n + i.price, 0)
+              const cost = missing.length === 0 ? 0 : Math.ceil(b.price * missing.length / Math.max(1, b.items.length))
+              const short = cost - balance
+              return (
+                <div key={b.id} className="theme-opt shop-card bundle-card">
+                  <span className="bundle-thumbs" aria-hidden="true">
+                    {parts.map(i => (
+                      <span key={i.id} className="timer-thumb"><TimerFace styleId={i.id.replace('timer-', '')} left={600000} total={1500000} mode="focus" running={false} small /></span>
+                    ))}
+                  </span>
+                  <strong>{b.name}</strong>
+                  <small>{b.blurb}</small>
+                  <small className="muted">{parts.map(i => i.name).join(', ')}</small>
+                  {missing.length === 0
+                    ? <span className="owned">✓ You own all of these</span>
+                    : (
+                      <>
+                        <small className="bundle-save">Separately 🪙 {missing.reduce((n, i) => n + i.price, 0)}, together 🪙 {cost}</small>
+                        <button onClick={() => run(b.id, buyBundle, `You bought the ${b.name}!`)} disabled={short > 0 || !!busy}
+                          title={short > 0 ? `You need ${short} more coins` : ''}>
+                          {busy === b.id ? 'Buying…' : `Buy bundle · 🪙 ${cost}`}
+                          {short > 0 && <small className="need"> need {short} more</small>}
+                        </button>
+                      </>
+                    )}
+                </div>
+              )
+            })}
+          </div>
+          <p className="muted small">Own some of a bundle already? You only pay for the rest.</p>
+        </section>
+      )}
 
       {[['Banners', banners, 'banner'], ['Frames', frames, 'frame'], ['Timer styles', timers, 'timer'], ['Profile perks', perks, 'perk']].map(([title, list, kind]) => list.length > 0 && (
         <section className="card" key={kind}>
