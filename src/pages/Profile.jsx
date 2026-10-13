@@ -140,6 +140,7 @@ export default function Profile() {
         : error.code === '23505' ? 'That username is already taken. Add a number or a middle initial.' : error.message)
       : 'Saved!')
     if (!error && username) setLockedAtLoad(true)
+    if (!error) window.dispatchEvent(new Event('lock-in:profile-saved'))   // the top bar card and the Me button re-read your picture and banner
     if (!error && baseline.current) {
       const was = baseline.current
       const nameOf = id => cosmetics.find(c => c.id === id)?.name
@@ -284,7 +285,7 @@ export default function Profile() {
             <CustomizeRow label="Picture frame" name={cosmetics.find(c => c.id === profile.frame)?.name ?? 'No frame'}
               onClick={() => setPicker('frame')}
               preview={<FramePreview id={profile.frame} size={42} />} />
-            <CustomizeRow label="Banner" name={cosmetics.find(c => c.id === profile.banner)?.name ?? 'Solid'}
+            <CustomizeRow label="Banner" name={cosmetics.find(c => c.id === profile.banner)?.name ?? 'Checker'}
               onClick={() => setPicker('banner')}
               preview={<span className={'swatch-preview ' + profile.banner} aria-hidden="true" />} />
           </div>

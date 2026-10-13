@@ -3,6 +3,14 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.14', date: '2026-10-13', title: 'Top bar card follows your saved profile, and a calmer default background',
+    points: [
+      'The small profile card at the top now updates as soon as you save your picture, colour or banner.',
+      'The default banner is now called Checker: a very light grey and white checkerboard, turned on its side in large squares.',
+      'The edit-profile form is one field per row on narrow screens, so names and the file picker are no longer cut off.',
+    ],
+  },
+  {
     version: '2.13', date: '2026-10-13', title: 'Inbox for announcements and version history',
     points: [
       'A new mail button at the top, next to Settings. It holds announcements from the admin and the version history, and shows a small dot when something is new.',

@@ -66,6 +66,14 @@ for (const f of files) {
   while ((u = upd.exec(sql))) for (const id of u[2].match(/[\w-]+/g)) if (shop.has(id)) shop.get(id).price = Number(u[1])
 }
 
+// renames: update public.cosmetics set name = 'X' where id = 'y'
+for (const f of files) {
+  const sql = fs.readFileSync(path.join(dir, f), 'utf8')
+  const ren = /update\s+public\.cosmetics\s+set\s+name\s*=\s*'([^']*)'\s+where\s+id\s*=\s*'([^']+)'/gi
+  let r
+  while ((r = ren.exec(sql))) if (cosmetics.has(r[2])) cosmetics.get(r[2]).name = r[1]
+}
+
 // the starter-theme ids (free looks) so the shop knows them
 const out = { cosmetics: [...cosmetics.values()], shop_items: [...shop.values()], achievements: [...achievements.values()], bundles: [...bundles.values()] }
 fs.writeFileSync('src/lib/fakeSeed.json', JSON.stringify(out, null, 1))

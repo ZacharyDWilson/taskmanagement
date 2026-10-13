@@ -166,8 +166,9 @@ button.link:active { transform: none; }
 .frame-glow { background: #22d3ee; box-shadow: 0 0 8px #22d3ee, 0 0 18px #22d3ee88; }
 .frame-royal { background: conic-gradient(#a855f7, #f59e0b, #a855f7, #f59e0b, #a855f7); box-shadow: 0 0 10px #a855f788; }
 
-.banner { height: 120px; background: #64748b; }
-.banner-solid { background: #64748b; }
+/* the default banner ("Checker"): a very light grey and white checkerboard turned 45 degrees, in large squares */
+.banner { height: 120px; background: conic-gradient(from 45deg, #eef0f3 25%, #fafbfc 0 50%, #eef0f3 0 75%, #fafbfc 0) 0 0 / 84px 84px; }
+.banner-solid { background: conic-gradient(from 45deg, #eef0f3 25%, #fafbfc 0 50%, #eef0f3 0 75%, #fafbfc 0) 0 0 / 84px 84px; }
 .banner-sunset { background: linear-gradient(120deg, #f59e0b, #ef4444 55%, #a855f7); }
 .banner-ocean { background: linear-gradient(120deg, #0ea5e9, #2563eb 55%, #1e1b4b); }
 .banner-aurora { background: linear-gradient(120deg, #10b981, #06b6d4 40%, #8b5cf6 75%, #ec4899); }
@@ -3483,3 +3484,13 @@ html, body { max-width: 100%; overflow-x: clip; }
 .me-chip .avatar { box-shadow: 0 0 0 2px rgba(255, 255, 255, .9), 0 1px 4px rgba(0, 0, 0, .3); }
 .me-chip .me-xp { height: 4px; left: 8px; right: auto; bottom: 2px; border-radius: 4px; background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, .25); }
 @media (max-width: 520px) { .me-chip .me-plate { padding: .18rem .45rem; font-size: .74rem; } }
+
+
+/* ---- Edit profile: one field per row unless the form is wide enough for two (it is a narrow column on most screens) ------ */
+.profile-fit form.card { container-type: inline-size; }
+.profile-fit form.card .details-grid { grid-template-columns: minmax(0, 1fr); gap: .8rem; }
+@container (min-width: 520px) {
+  .profile-fit form.card .details-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .8rem 1rem; }
+}
+.profile-fit form.card .details-grid input { width: 100%; }
+.profile-fit form.card input[type='file'] { width: 100%; padding: .5rem; font-size: .85rem; }

@@ -63,11 +63,17 @@ export default function App() {
   const pageClass = 'page' + (pathname === '/' || pathname === '/study' || pathname.startsWith('/profile') ? ' wide fit' : pathname === '/todo' ? ' wide stretch' : '')
 
   // Your own photo/frame for the "Me" button. Re-check on page change so it updates after you edit it.
+  const [profileTick, setProfileTick] = useState(0)
+  useEffect(() => {
+    const bump = () => setProfileTick(n => n + 1)
+    window.addEventListener('lock-in:profile-saved', bump)
+    return () => window.removeEventListener('lock-in:profile-saved', bump)
+  }, [])
   useEffect(() => {
     if (!user || !supabase) { setMe(null); return }
     supabase.from('profiles').select('display_name, avatar_path, color, frame, banner').eq('id', user.id).maybeSingle()
       .then(({ data }) => setMe(data))
-  }, [user?.id, pathname]) // eslint-disable-line
+  }, [user?.id, pathname, profileTick]) // eslint-disable-line
 
   useEffect(() => { setPressed(null) }, [pathname])
   useEffect(() => { document.title = APP_TITLE }, [])   // tells the dev builds apart in the tab strip
