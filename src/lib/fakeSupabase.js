@@ -204,7 +204,7 @@ const FAKE_PEOPLE = () => [
 ]
 const rpcs = {
   is_admin: () => true,
-  accept_terms: () => { if (db.profiles[0]) db.profiles[0].tos_version = 1; save(); return null },
+  accept_terms: args => { if (db.profiles[0]) db.profiles[0].tos_version = args?.v ?? 1; save(); return null },
   admin_overview: () => ({ users: 3, new_7d: 2, active_7d: 3, focus_hours_7d: 31.5, posts: 6, posts_7d: 4, comments: 15, reports_open: 1, muted: 1, banned: 0, tasks_done_7d: 22 }),
   admin_list_users: () => FAKE_PEOPLE(),
   admin_recent_posts: () => [{ id: 'demo-p1', user_id: 'demo-u1', author: 'Priya S.', body: 'Finished the whole problem set!', image_path: 'x', created_at: new Date().toISOString(), comments: 3, reports: 0 }],

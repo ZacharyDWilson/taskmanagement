@@ -1,6 +1,6 @@
 // The community rules. Bump TERMS_VERSION when the rules change in a way people should re-accept: everyone is asked
 // to accept the new version the next time they open the app.
-export const TERMS_VERSION = 1
+export const TERMS_VERSION = 2
 
 export const TERMS_UPDATED = 'October 2026'
 
