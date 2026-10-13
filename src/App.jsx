@@ -9,7 +9,6 @@ import Overview from './pages/Overview.jsx'
 import Feed from './pages/Feed.jsx'
 import Todo from './pages/Todo.jsx'
 import Pomodoro from './pages/Pomodoro.jsx'
-import StudyBuddy from './pages/StudyBuddy.jsx'
 import Profile from './pages/Profile.jsx'
 import Shop from './pages/Shop.jsx'
 import Login from './pages/Login.jsx'
@@ -17,6 +16,8 @@ import InstallButton from './components/InstallButton.jsx'
 import Icon from './components/Icon.jsx'
 import Avatar from './components/Avatar.jsx'
 import Scene from './components/Scene.jsx'
+import Tour from './components/Tour.jsx'
+import { useSound } from './lib/sfx.jsx'
 import DevPanel from './components/DevPanel.jsx'
 import { APP_TITLE, IS_ADMIN, IS_DEV_BUILD } from './lib/env.js'
 import { DEMO } from './lib/demo.js' // DEMO
@@ -27,8 +28,7 @@ const TABS = [
   { to: '/', label: 'Overview', short: 'Home', icon: 'overview', end: true },
   { to: '/todo', label: 'To Do', short: 'To Do', icon: 'todo' },
   { to: '/feed', label: 'Feed', short: 'Feed', icon: 'feed' },
-  { to: '/pomodoro', label: 'Pomodoro', short: 'Timer', icon: 'timer' },
-  { to: '/buddy', label: 'Study Buddy', short: 'Buddy', icon: 'book' },
+  { to: '/study', label: 'Study', short: 'Study', icon: 'timer' },
   { to: '/profile', label: 'My Profile', short: 'Me', profile: true, end: true },
 ]
 
@@ -43,12 +43,13 @@ export default function App() {
   const timer = usePomodoro()
   const { xp, level } = useMyXp()
   const { balance } = useShop()
+  const sound = useSound()
   const { pathname } = useLocation()
   const [me, setMe] = useState(null)
   const [pressed, setPressed] = useState(null) // tab being pressed right now (moves the liquid blob at once)
 
   // Overview fits the window with no page scrolling; To Do gets extra width for its day columns.
-  const pageClass = 'page' + (pathname === '/' ? ' wide fit' : pathname === '/todo' ? ' wide stretch' : '')
+  const pageClass = 'page' + (pathname === '/' || pathname === '/study' ? ' wide fit' : pathname === '/todo' ? ' wide stretch' : '')
 
   // Your own photo/frame for the "Me" button. Re-check on page change so it updates after you edit it.
   useEffect(() => {
@@ -74,6 +75,7 @@ export default function App() {
   return (
     <div className="shell">
       <Scene />
+      {user && <Tour />}
       {IS_ADMIN && user && <DevPanel />}
       {/* PC: icon dock down the side. Icons are dim until you hover them. */}
       {user && (
@@ -91,10 +93,10 @@ export default function App() {
 
       <div className="content">
         <nav className="nav">
-          <Link to="/" className="brand">Friends Site</Link>
+          <Link to="/" className="brand">LOCK IN</Link>
           <span className="spacer" />
           {user && timer.running && (
-            <Link to="/pomodoro" className="timer-chip">
+            <Link to="/study" className="timer-chip">
               {timer.mode === 'focus' ? '🎯' : '☕'} {mmss(timer.left)}
             </Link>
           )}
@@ -112,6 +114,10 @@ export default function App() {
             <span className={'mode-chip ' + (IS_ADMIN ? 'admin' : 'basic')}>{IS_ADMIN ? 'Admin dev' : 'Basic'}</span>
           )}
           {DEMO && <span className="demo-chip" title="Filler data is switched on (VITE_DEMO_DATA)">Demo data</span>} {/* DEMO */}
+          <button type="button" className="sound-chip" onClick={() => sound.setEnabled(!sound.enabled)}
+            aria-pressed={sound.enabled} title={sound.enabled ? 'Sounds on. Click to mute.' : 'Sounds off. Click to turn on.'}>
+            {sound.enabled ? '🔈' : '🔇'}<span className="sr-only">{sound.enabled ? 'Mute sounds' : 'Turn sounds on'}</span>
+          </button>
           <InstallButton />
           {user ? (
             <button className="secondary" onClick={() => supabase.auth.signOut()}>Log out</button>
@@ -130,12 +136,14 @@ export default function App() {
             <Route path="/" element={<RequireAuth><Overview /></RequireAuth>} />
             <Route path="/todo" element={<RequireAuth><Todo /></RequireAuth>} />
             <Route path="/feed" element={<RequireAuth><Feed /></RequireAuth>} />
-            <Route path="/pomodoro" element={<RequireAuth><Pomodoro /></RequireAuth>} />
-            <Route path="/buddy" element={<RequireAuth><StudyBuddy /></RequireAuth>} />
+            <Route path="/study" element={<RequireAuth><Pomodoro /></RequireAuth>} />
+            <Route path="/pomodoro" element={<Navigate to="/study" replace />} />
+            <Route path="/buddy" element={<Navigate to="/study" replace />} />
             <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
             <Route path="/profile/:id" element={<RequireAuth><Profile /></RequireAuth>} />
             <Route path="/shop" element={<RequireAuth><Shop /></RequireAuth>} />
             <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
+            {IS_DEV_BUILD && <Route path="/preview/login" element={<Login preview />} />}
             <Route path="*" element={<p>Page not found.</p>} />
           </Routes>
         </main>

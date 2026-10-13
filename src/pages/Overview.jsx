@@ -31,7 +31,7 @@ export default function Overview() {
                 : 'Ready when you are.'}
             </p>
           </div>
-          <Link to="/pomodoro"><button>{timer.running ? 'Open timer' : 'Start a focus session'}</button></Link>
+          <Link to="/study"><button>{timer.running ? 'Open timer' : 'Start a focus session'}</button></Link>
         </section>
       </div>
 

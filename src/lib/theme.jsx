@@ -21,6 +21,8 @@ export const THEMES = [
     preview: ['#880d1e', '#dd2d4a', '#f26a8d', '#f49cbb', '#cbeef3'] },
   { id: 'arcade', name: 'Starlit Arcade', blurb: 'Deep lavender night with twinkling stars and drifting aurora.',
     preview: ['#22223b', '#4a4e69', '#9a8c98', '#c9ada7', '#f2e9e4'] },
+  { id: 'lofi', name: 'Lofi Nights', blurb: 'Purple, coral and pink over a rainy dusk skyline, with notes drifting up.',
+    preview: ['#a83aa0', '#ff7078', '#fdb1d2', '#cd98d3', '#8d88d8'] },
 ]
 
 const KEY = 'friends-site-theme'

@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState } f
 import { supabase } from './supabase.js'
 import { useAuth } from './auth.jsx'
 import { useToast } from './toast.jsx'
+import { useSound } from './sfx.jsx'
 
 const KEY = 'friends-site-notify'
 const supported = () => typeof window !== 'undefined' && 'Notification' in window
@@ -33,6 +34,7 @@ export const useNotify = () => useContext(NotifyContext)
 export function NotifyProvider({ children }) {
   const { user } = useAuth()
   const toast = useToast()
+  const { play } = useSound()
   const [permission, setPermission] = useState(supported() ? Notification.permission : 'unsupported')
   const [enabled, setEnabled] = useState(() => {
     try { return localStorage.getItem(KEY) === '1' } catch { return false }
@@ -55,9 +57,10 @@ export function NotifyProvider({ children }) {
   const disable = useCallback(() => { setEnabled(false); remember(false) }, [])
 
   const alert = useCallback((title, body) => {
+    play('notification')
     if (document.visibilityState === 'visible') toast(`${title}. ${body}`.trim())
     if (enabledRef.current) systemNotify(title, body)
-  }, [toast])
+  }, [toast, play])
 
   const test = useCallback(() => alert('Notifications are on', 'You\'ll hear about friends who are open to study.'), [alert])
 
@@ -84,7 +87,7 @@ export function NotifyProvider({ children }) {
         if (row.matched_with === user.id) {
           if (announced.current.has(row.user_id)) return
           announced.current.add(row.user_id)
-          alert(`${await nameOf(row.user_id)} wants to study with you`, 'Open Study Buddy to see the details.')
+          alert(`${await nameOf(row.user_id)} wants to study with you`, 'Open Study to see the details.')
         } else {
           announced.current.delete(row.user_id)
         }

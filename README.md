@@ -1,4 +1,4 @@
-# Friends Site
+# LOCK IN
 
 React + Vite frontend hosted on GitHub Pages, with Supabase as the backend (login, database, file storage).
 

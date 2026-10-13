@@ -8,3 +8,6 @@ dist
 
 # Local-only files (throwaway test accounts and the like)
 *.local.*
+
+# Sound library workspace (the package is installed in the project itself)
+SFX/

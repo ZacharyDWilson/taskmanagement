@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from './supabase.js'
 import { useAuth } from './auth.jsx'
 import { APP_TITLE } from './env.js'
+import { useSound } from './sfx.jsx'
 
 const PomodoroContext = createContext(null)
 export const usePomodoro = () => useContext(PomodoroContext)
@@ -14,6 +15,7 @@ export const mmss = ms => {
 // Lives above the router so the timer keeps running while you move between pages.
 export function PomodoroProvider({ children }) {
   const { user } = useAuth()
+  const { play } = useSound()
   const [focusMin, setFocusMin] = useState(25)
   const [breakMin, setBreakMin] = useState(5)
   const [mode, setMode] = useState('focus')
@@ -49,6 +51,7 @@ export function PomodoroProvider({ children }) {
       const l = endAt - Date.now()
       if (l > 0) return setLeft(l)
       if (mode === 'focus') log(focusMin)
+      play('complete')
       switchMode(mode === 'focus' ? 'break' : 'focus')
     }, 250)
     return () => clearInterval(id)
@@ -59,7 +62,8 @@ export function PomodoroProvider({ children }) {
   }, [running, left, mode])
 
   function startPause() {
-    if (running) return setRunning(false)
+    if (running) { play('stop'); return setRunning(false) }
+    play('start')
     setMsg('')
     setEndAt(Date.now() + left)
     setRunning(true)

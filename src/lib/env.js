@@ -8,6 +8,6 @@ export const IS_ADMIN = APP_MODE === 'admin'
 export const IS_DEV_BUILD = import.meta.env.DEV
 
 export const APP_TITLE =
-  APP_MODE === 'admin' ? 'Friends Site · ADMIN'
-  : APP_MODE === 'basic' ? 'Friends Site · BASIC'
-  : 'Friends Site'
+  APP_MODE === 'admin' ? 'LOCK IN · ADMIN'
+  : APP_MODE === 'basic' ? 'LOCK IN · BASIC'
+  : 'LOCK IN'

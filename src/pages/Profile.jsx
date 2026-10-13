@@ -7,6 +7,9 @@ import { levelFromXp, useCosmetics, useXp } from '../lib/levels.js'
 import { publicUrl, uploadImage } from '../lib/storage.js'
 import { DEMO, demoProfile, isDemoId } from '../lib/demo.js' // DEMO
 import Avatar from '../components/Avatar.jsx'
+import PickerModal from '../components/PickerModal.jsx'
+import { replayTour } from '../components/Tour.jsx'
+import { useSound, PACK_LABELS, SOUND_PACKS, SIGNATURE } from '../lib/sfx.jsx'
 import ColorPicker from '../components/ColorPicker.jsx'
 import LevelCard from '../components/LevelCard.jsx'
 import DayBars from '../components/DayBars.jsx'
@@ -14,13 +17,29 @@ import { THEMES, useTheme } from '../lib/theme.jsx'
 import { useShop } from '../lib/shop.jsx'
 import { IS_ADMIN } from '../lib/env.js'
 
-function StylePicker({ title, items, value, level, onChange }) {
+// One row per customization: shows what you have now; click to open the choices.
+function CustomizeRow({ label, name, preview, onClick }) {
+  return (
+    <button type="button" className="customize-row" onClick={onClick}>
+      <span className="customize-preview">{preview}</span>
+      <span className="customize-text">
+        <small>{label}</small>
+        <strong>{name}</strong>
+      </span>
+      <span className="customize-go">Change ›</span>
+    </button>
+  )
+}
+
+function StylePicker({ title, items, value, level, shopIds, owned, onChange }) {
+  // Shop styles show up here only once you own them, and aren't gated by level.
+  const visible = items.filter(c => !shopIds.has(c.id) || owned.has(c.id))
   return (
     <div>
-      <div className="muted small">{title}</div>
+      {title && <div className="muted small">{title}</div>}
       <div className="styles">
-        {items.map(c => {
-          const locked = c.min_level > level
+        {visible.map(c => {
+          const locked = !shopIds.has(c.id) && c.min_level > level
           return (
             <button
               key={c.id}
@@ -32,7 +51,7 @@ function StylePicker({ title, items, value, level, onChange }) {
             >
               <span className={'swatch-preview ' + c.id} />
               <span>{c.name}</span>
-              <small>{locked ? `🔒 Lv ${c.min_level}` : `Lv ${c.min_level}`}</small>
+              <small>{shopIds.has(c.id) ? 'From the Shop' : locked ? `🔒 Lv ${c.min_level}` : `Lv ${c.min_level}`}</small>
             </button>
           )
         })}
@@ -58,6 +77,10 @@ export default function Profile() {
   const xp = demo ? demo.xp : realXp // DEMO
   const cosmetics = useCosmetics()
   const level = levelFromXp(xp ?? 0)
+  const shopIds = new Set(shop.items.map(i => i.id))
+  const sound = useSound()
+  const [picker, setPicker] = useState(null) // which customization pop-up is open: 'theme' | 'frame' | 'banner'
+  const currentTheme = THEMES.find(t => t.id === theme) ?? THEMES[0]
 
   useEffect(() => {
     if (demo) { // DEMO
@@ -181,28 +204,68 @@ export default function Profile() {
           <label>Your color
             <ColorPicker value={profile.color} onChange={color => edit({ color })} />
           </label>
-          <div>
+          <div className="stack customize">
             <div className="muted small">
-              Page theme <span>(changes how the site looks for you)</span>
+              Customize <span>(tap one to see all the choices)</span>
               {' · '}<Link to="/shop">Get more in the Shop</Link>
             </div>
-            <div className="themes">
-              {THEMES.filter(t => t.id === 'default' || shop.owned.has(t.id)).map(t => (
-                <button key={t.id} type="button" data-t={t.id} className={'theme-opt' + (theme === t.id ? ' on' : '')}
-                  onClick={() => setTheme(t.id)} aria-pressed={theme === t.id}>
-                  <span className="theme-swatch" aria-hidden="true">
-                    {t.preview.map((c, i) => <i key={i} style={{ background: c }} />)}
-                  </span>
-                  <strong>{t.name}</strong>
-                  <small>{t.blurb}</small>
-                </button>
-              ))}
-            </div>
+            <CustomizeRow label="Page theme" name={currentTheme.name} onClick={() => setPicker('theme')}
+              preview={<span className="theme-swatch mini" aria-hidden="true">{currentTheme.preview.map((c, i) => <i key={i} style={{ background: c }} />)}</span>} />
+            <CustomizeRow label="Picture frame" name={cosmetics.find(c => c.id === profile.frame)?.name ?? 'No frame'}
+              onClick={() => setPicker('frame')}
+              preview={<span className={'swatch-preview ' + profile.frame} aria-hidden="true" />} />
+            <CustomizeRow label="Banner" name={cosmetics.find(c => c.id === profile.banner)?.name ?? 'Solid'}
+              onClick={() => setPicker('banner')}
+              preview={<span className={'swatch-preview ' + profile.banner} aria-hidden="true" />} />
           </div>
-          <StylePicker title="Picture frame" level={IS_ADMIN ? 999 : level} value={profile.frame}
-            items={cosmetics.filter(c => c.kind === 'frame')} onChange={frame => edit({ frame })} />
-          <StylePicker title="Banner" level={IS_ADMIN ? 999 : level} value={profile.banner}
-            items={cosmetics.filter(c => c.kind === 'banner')} onChange={banner => edit({ banner })} />
+          {picker === 'theme' && (
+            <PickerModal title="Page theme" hint="Changes how the whole site looks for you." onClose={() => setPicker(null)}>
+              <div className="themes">
+                {THEMES.filter(t => t.id === 'default' || shop.owned.has(t.id)).map(t => (
+                  <button key={t.id} type="button" data-t={t.id} className={'theme-opt' + (theme === t.id ? ' on' : '')}
+                    onClick={() => { setTheme(t.id); setPicker(null) }} aria-pressed={theme === t.id}>
+                    <span className="theme-swatch" aria-hidden="true">
+                      {t.preview.map((c, i) => <i key={i} style={{ background: c }} />)}
+                    </span>
+                    <strong>{t.name}</strong>
+                    <small>{t.blurb}</small>
+                  </button>
+                ))}
+              </div>
+            </PickerModal>
+          )}
+          {picker === 'frame' && (
+            <PickerModal title="Picture frame" hint="Press Save profile afterwards to keep it." onClose={() => setPicker(null)}>
+              <StylePicker level={IS_ADMIN ? 999 : level} shopIds={shopIds} owned={shop.owned} value={profile.frame}
+                items={cosmetics.filter(c => c.kind === 'frame')} onChange={frame => { edit({ frame }); setPicker(null) }} />
+            </PickerModal>
+          )}
+          {picker === 'banner' && (
+            <PickerModal title="Banner" hint="Press Save profile afterwards to keep it." onClose={() => setPicker(null)}>
+              <StylePicker level={IS_ADMIN ? 999 : level} shopIds={shopIds} owned={shop.owned} value={profile.banner}
+                items={cosmetics.filter(c => c.kind === 'banner')} onChange={banner => { edit({ banner }); setPicker(null) }} />
+            </PickerModal>
+          )}
+          <div className="stack sound-settings">
+            <div className="muted small">Sound</div>
+            <label className="row">
+              <input type="checkbox" checked={sound.enabled} onChange={e => sound.setEnabled(e.target.checked)} />
+              Interface sounds
+            </label>
+            <label>Volume
+              <input type="range" min="0" max="1" step="0.05" value={sound.volume} disabled={!sound.enabled}
+                onChange={e => sound.setVolume(Number(e.target.value))}
+                onPointerUp={() => sound.play('press')} />
+            </label>
+            <label>Sound style
+              <select value={sound.override} disabled={!sound.enabled} onChange={e => sound.setOverride(e.target.value)}>
+                <option value="">{SIGNATURE ? 'LOCK IN sounds (default)' : `Match my theme (${PACK_LABELS[SOUND_PACKS[theme]] ?? 'Minimal'})`}</option>
+                {SIGNATURE && <option value="theme">Match my theme ({PACK_LABELS[SOUND_PACKS[theme]] ?? 'Minimal'})</option>}
+                {Object.entries(PACK_LABELS).map(([id, name]) => <option key={id} value={id}>{name}</option>)}
+              </select>
+            </label>
+          </div>
+          <button type="button" className="secondary" onClick={replayTour}>Replay the welcome tour</button>
           <button type="submit">Save profile</button>
           {msg && <p className="muted">{msg}</p>}
           <small className="muted">
