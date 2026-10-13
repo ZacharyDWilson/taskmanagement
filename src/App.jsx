@@ -15,12 +15,12 @@ import Achievements from './pages/Achievements.jsx'
 import Terms from './pages/Terms.jsx'
 import Admin from './pages/Admin.jsx'
 import TermsGate from './components/TermsGate.jsx'
-import Announcements from './components/Announcements.jsx'
+import MailButton from './components/MailButton.jsx'
 import Login, { AuthSplash } from './pages/Login.jsx'
 import Logo from './components/Logo.jsx'
 import SettingsMenu from './components/SettingsMenu.jsx'
 import PageHelp from './components/PageHelp.jsx'
-import { VERSION_LABEL } from './lib/version.js'
+import { xpForLevel } from './lib/levels.js'
 import InstallButton from './components/InstallButton.jsx'
 import Icon from './components/Icon.jsx'
 import Avatar from './components/Avatar.jsx'
@@ -65,7 +65,7 @@ export default function App() {
   // Your own photo/frame for the "Me" button. Re-check on page change so it updates after you edit it.
   useEffect(() => {
     if (!user || !supabase) { setMe(null); return }
-    supabase.from('profiles').select('display_name, avatar_path, color, frame').eq('id', user.id).maybeSingle()
+    supabase.from('profiles').select('display_name, avatar_path, color, frame, banner').eq('id', user.id).maybeSingle()
       .then(({ data }) => setMe(data))
   }, [user?.id, pathname]) // eslint-disable-line
 
@@ -108,24 +108,28 @@ export default function App() {
       <div className="content">
         <nav className="nav">
           <SettingsMenu />
+          <MailButton />
           <PageHelp />
           <Link to="/" className="brand" aria-label="LOCK IN"><Logo size={24} /><span className="brand-text">LOCK IN</span></Link>
-          <span className="version-chip" title="This is an early version. Things will change.">{VERSION_LABEL}</span>
           <span className="spacer" />
           {user && timer.running && (
             <Link to="/study" className="timer-chip">
               {timer.mode === 'focus' ? '🎯' : '☕'} {mmss(timer.left)}
             </Link>
           )}
-          {user && xp !== null && (
-            <Link to="/profile" className="xp-chip" title="Your level. Finish tasks and focus sessions to earn XP.">
-              Lv {level}<span className="xp-more"> · {xp.toLocaleString()} XP</span>
-            </Link>
-          )}
           {user && (
-            <Link to="/shop" className="coin-chip" title="Your coins. Spend them in the Shop.">
-              🪙 {balance.toLocaleString()}
-            </Link>
+            // one small "you" card instead of separate level and coin chips: your banner behind your picture, level and coins
+            <div className={'me-chip ' + (me?.banner || 'banner-solid')} aria-label="You">
+              <Link to="/profile" title="Your profile. Finish tasks and focus sessions to earn XP.">
+                <Avatar name={me?.display_name ?? 'Me'} path={me?.avatar_path} color={me?.color} frame={me?.frame} size={26} />
+                <span className="me-plate">Lv {xp !== null ? level : '–'}</span>
+              </Link>
+              <Link to="/shop" title="Your coins. Spend them in the Shop."><span className="me-plate">🪙 {balance.toLocaleString()}</span></Link>
+              {xp !== null && (
+                <span className="me-xp" aria-hidden="true"
+                  style={{ width: `${Math.round(Math.min(1, Math.max(0, (xp - xpForLevel(level)) / Math.max(1, xpForLevel(level + 1) - xpForLevel(level)))) * 100)}%` }} />
+              )}
+            </div>
           )}
           {IS_DEV_BUILD && (
             <span className={'mode-chip ' + (IS_ADMIN ? 'admin' : 'basic')}>{IS_ADMIN ? 'Admin dev' : 'Basic'}</span>
@@ -149,7 +153,6 @@ export default function App() {
               Supabase isn't configured yet. Copy <code>.env.example</code> to <code>.env</code> and fill it in.
             </p>
           )}
-          {user && <Announcements />}
           <Routes>
             <Route path="/" element={<RequireAuth><Overview /></RequireAuth>} />
             <Route path="/todo" element={<RequireAuth><Todo /></RequireAuth>} />

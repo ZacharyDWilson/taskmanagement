@@ -1,0 +1,110 @@
+// The version history people see in the mail (inbox) pop-up, newest first. A plain-language version of what went out.
+// Add a new entry at the TOP with every release: the first entry's version is the one shown top left (src/lib/version.js).
+// { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
+export const CHANGELOG = [
+  {
+    version: '2.13', date: '2026-10-13', title: 'Inbox for announcements and version history',
+    points: [
+      'A new mail button at the top, next to Settings. It holds announcements from the admin and the version history, and shows a small dot when something is new.',
+      'Big updates now pop up once when you open the app. Close it and the dot stays until you open the inbox.',
+      'The Settings button is just the gear now.',
+      'A calmer top bar: your level and coins are together in one small card with your banner and picture, and the version number moved into Settings and Mail.',
+    ],
+  },
+  {
+    version: '2.12', date: '2026-10-13', title: 'Version label and a fully still side bar',
+    points: [
+      'The version number is shown at the top and in Settings.',
+      'Turning off "Animate the side bar" now means it really is still, even when you hover.',
+      'A clearer gear icon for Settings.',
+    ],
+  },
+  {
+    version: '2.11', date: '2026-10-13', title: 'Profile fits short screens',
+    points: [
+      'Fixed the profile being cut off on small laptops and Chromebooks.',
+      'Posts are a short strip you scroll sideways, with your numbers and study bars under it.',
+      'New setting: turn off the side bar animations on their own.',
+    ],
+  },
+  {
+    version: '2.8 to 2.10', date: '2026-10-13', title: 'Community rules, one at a time',
+    points: [
+      'The rules are read and agreed to one by one, each with a short pause, then confirmed together.',
+      'Everyone re-accepts the new version the next time they open the app.',
+    ],
+  },
+  {
+    version: '2.7', date: '2026-10-13', title: 'Rules, reporting and moderation',
+    points: [
+      'A community rules page, and a Report link on other people\'s posts and comments.',
+      'Mutes and bans from posting and commenting, applied by the database itself.',
+      'An admin dashboard for people, reports, posts and announcements.',
+    ],
+  },
+  {
+    version: '2.6', date: '2026-10-13', title: 'Count-up timer, timer bundles and Brightspace',
+    points: [
+      'Study now has a Count up stopwatch for the whole day, saved as study time at midnight.',
+      'Six new timer styles, sold in bundles. Every style works for both timers.',
+      'Brightspace calendars can be connected as well as Canvas.',
+      'A small ? button on every page explains how to use it.',
+    ],
+  },
+  {
+    version: '2.4 to 2.5', date: '2026-10-13', title: 'Achievements',
+    points: [
+      '21 achievements with badges on your profile, coin rewards, and a few styles you can only earn.',
+      'Everyone\'s badges are visible on their profile, the leaderboard and the feed.',
+    ],
+  },
+  {
+    version: '2.3', date: '2026-10-13', title: 'More banners and lighter on old phones',
+    points: [
+      'Ten new banners: chalkboard, terminal, circuit board, science lab, stadium, hardwood, campus, skyline, library and paint.',
+      'Theme cards now show a picture of the page and its colours.',
+      'Small pop-ups for posting, commenting, choosing a photo and planning tasks.',
+      'Calm mode also drops the frosted blur, which helps older phones.',
+    ],
+  },
+  {
+    version: '2.1 to 2.2', date: '2026-10-13', title: 'Handheld Glow, Coral Shore shells and fair prices',
+    points: [
+      'New Handheld Glow theme with glossy console-style buttons.',
+      'Coral Shore\'s side buttons are seashells.',
+      'One clear price scale for themes, banners and frames.',
+    ],
+  },
+  {
+    version: '2.0', date: '2026-10-13', title: 'Smoother theme changes',
+    points: [
+      'A short loading page when you switch themes, and a pop-up when your picture, frame or banner updates.',
+      'Study-time bars fill in their own way in each theme.',
+    ],
+  },
+  {
+    version: '1.5 to 1.9', date: '2026-10-13', title: 'A calmer To Do and more themes',
+    points: [
+      'Tasks are added in one place (To plan) and dragged onto days.',
+      'The planner has Day, Week and Month views and a class filter.',
+      'Canvas assignments are shown a week at a time, and finished tasks tidy themselves away after a week.',
+      'Dusty Rose and Glazed Tile themes, a liquid tab bar on phones, and an install-the-app section.',
+    ],
+  },
+  {
+    version: '1.0 to 1.4', date: '2026-10-13', title: 'Settings, a logo and more ways to look',
+    points: [
+      'A Settings menu for sounds, motion and notifications, and a new LOCK IN logo.',
+      'Calm mode, many new frames, animated GIF profile pictures, themed side buttons and Frutiger Aero.',
+      'Canvas assignments and an install prompt.',
+    ],
+  },
+  {
+    version: '0.1 to 0.95', date: '2026-10-12', title: 'The first versions',
+    points: [
+      'To Do and a weekly planner, a focus timer, a progress feed, a leaderboard and Study Buddy.',
+      'XP, levels, coins and the Shop, with themes, banners, frames and timer styles.',
+      'A welcome tour and a login splash.',
+    ],
+  },
+]

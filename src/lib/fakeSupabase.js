@@ -63,6 +63,7 @@ db.cosmetics = seed.cosmetics
 db.shop_items = seed.shop_items
 db.achievements = seed.achievements ?? []
 db.shop_bundles = seed.bundles ?? []
+db.announcements ??= [{ id: 'demo-a1', title: 'Welcome to the LOCK IN alpha', body: 'Thanks for testing! The mail button at the top holds announcements and the version history.', major: true, created_at: new Date().toISOString(), expires_at: null }]
 db.user_achievements ??= []
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)) } catch { /* ignore */ } }
 
@@ -204,6 +205,7 @@ const FAKE_PEOPLE = () => [
 ]
 const rpcs = {
   is_admin: () => true,
+  admin_post_announcement: args => { db.announcements.unshift({ id: 'a-' + Date.now(), title: args?.head, body: args?.msg ?? '', major: !!args?.is_major, created_at: new Date().toISOString(), expires_at: null }); save(); return null },
   accept_terms: args => { if (db.profiles[0]) db.profiles[0].tos_version = args?.v ?? 1; save(); return null },
   admin_overview: () => ({ users: 3, new_7d: 2, active_7d: 3, focus_hours_7d: 31.5, posts: 6, posts_7d: 4, comments: 15, reports_open: 1, muted: 1, banned: 0, tasks_done_7d: 22 }),
   admin_list_users: () => FAKE_PEOPLE(),

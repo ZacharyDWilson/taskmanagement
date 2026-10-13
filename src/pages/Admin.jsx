@@ -177,11 +177,11 @@ export default function Admin() {
 
       {tab === 'announce' && (
         <section className="stack">
-          <AnnounceForm onSend={(head, msg, days) => act('admin_post_announcement', { head, msg, days }, 'Announcement posted')} />
+          <AnnounceForm onSend={(head, msg, days, major) => act('admin_post_announcement', { head, msg, days, is_major: major }, major ? 'Big update sent' : 'Announcement posted')} />
           {data.announcements.map(a => (
             <article key={a.id} className="card">
               <div className="row between">
-                <strong>{a.title}</strong>
+                <strong>{a.title}{a.major ? ' · big update' : ''}</strong>
                 <button type="button" className="link" onClick={() => act('admin_delete_announcement', { aid: a.id }, 'Removed')}>remove</button>
               </div>
               {a.body && <p className="small">{a.body}</p>}
@@ -222,14 +222,16 @@ export default function Admin() {
 function AnnounceForm({ onSend }) {
   const [head, setHead] = useState('')
   const [msg, setMsg] = useState('')
-  const [days, setDays] = useState(7)
+  const [days, setDays] = useState(30)
+  const [major, setMajor] = useState(false)
   return (
-    <form className="card stack" onSubmit={async e => { e.preventDefault(); if (!head.trim()) return; await onSend(head.trim(), msg.trim(), Number(days)); setHead(''); setMsg('') }}>
+    <form className="card stack" onSubmit={async e => { e.preventDefault(); if (!head.trim()) return; await onSend(head.trim(), msg.trim(), Number(days), major); setHead(''); setMsg(''); setMajor(false) }}>
       <h2>Send an announcement</h2>
-      <p className="muted small">It shows as a banner at the top of the app for everyone until they dismiss it or it expires.</p>
+      <p className="muted small">It goes to everyone's mail (the envelope at the top). A small dot appears on it until they open it.</p>
       <input value={head} maxLength={100} onChange={e => setHead(e.target.value)} placeholder="Headline" required />
       <textarea value={msg} maxLength={600} rows={3} onChange={e => setMsg(e.target.value)} placeholder="Details (optional)" />
-      <label className="row">Show for <input type="number" min="1" max="60" value={days} onChange={e => setDays(e.target.value)} style={{ width: '4.5rem' }} /> days</label>
+      <label className="row"><input type="checkbox" checked={major} onChange={e => setMajor(e.target.checked)} /> Big update: also show it as a pop-up when people open the app</label>
+      <label className="row">Keep it in the mail for <input type="number" min="1" max="365" value={days} onChange={e => setDays(e.target.value)} style={{ width: '5rem' }} /> days</label>
       <button type="submit">Post announcement</button>
     </form>
   )
