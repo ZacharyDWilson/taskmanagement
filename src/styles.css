@@ -3805,3 +3805,18 @@ button.danger { color: #c0392b; border-color: color-mix(in srgb, #c0392b 45%, tr
 /* the "Study" word art, bigger (it has to beat the generic page heading size) */
 .study .pomodoro h1.st-title, .overview h1.st-title { font-size: clamp(2.6rem, 5.2vw, 4rem); margin: 0 0 .1rem; line-height: 1; }
 .study h1.st-title .fancy-name, .study h1.st-title span { font-size: inherit; line-height: 1.05; }
+
+
+/* ---- Study timer: use the room (bigger face, time and buttons), and Focus/Break in their own shade (2.19) ---------------- */
+.study .st-label { font-size: .7rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: .35rem 0 -.3rem .2rem; }
+.study .st-label:first-of-type { margin-top: .1rem; }
+.study .st-round button { filter: hue-rotate(38deg) saturate(.92) brightness(1.04); }   /* a neighbouring shade of the Pomodoro / Count up buttons */
+.study .st-round { padding: .25rem; }
+.study .st-round button { padding: .45rem .8rem; font-size: .92rem; }
+.study .st-main { gap: clamp(.7rem, 2.4vh, 1.4rem); }
+.study .st-main .timer-face svg, .study .st-main .timer-face.hourglass svg, .study .st-main .timer-face.ring svg { height: clamp(150px, 36vh, 360px); max-height: none; width: auto; max-width: 100%; }
+.study .st-main .tf-time, .study .st-main .clock.big, .study .st-main .countup-clock { font-size: clamp(2.8rem, 10vh, 6rem); }
+.study .st-main .tf-card { height: clamp(90px, 22vh, 170px); }
+.study .st-main > .row > button { padding: clamp(.7rem, 1.8vh, 1.05rem) 1.8rem; font-size: 1.05rem; min-width: 8rem; }
+.study .st-main .row.small label { font-size: 1rem; }
+.study .st-main .row.small input { width: 4.6rem; padding: .55rem .7rem; font-size: 1.05rem; }

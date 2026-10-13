@@ -55,16 +55,18 @@ export default function Study() {
       <section className="card pomodoro study-timer">
         <aside className="st-rail">
           <h1 className="st-title"><FancyName name="Study" /></h1>
-        <div className="tabs kind-tabs st-tabs" role="tablist" aria-label="Timer type">
+        <span className="st-label">Timer</span>
+          <div className="tabs kind-tabs st-tabs" role="tablist" aria-label="Timer type">
           <button type="button" role="tab" aria-selected={p.kind === 'pomodoro'} className={p.kind === 'pomodoro' ? 'active' : ''} onClick={() => p.setKind('pomodoro')}>Pomodoro</button>
           <button type="button" role="tab" aria-selected={p.kind === 'countup'} className={p.kind === 'countup' ? 'active' : ''} onClick={() => p.setKind('countup')}>Count up</button>
         </div>
-          {p.kind === 'pomodoro' && (
-          <div className="tabs st-tabs" role="tablist" aria-label="Focus or break">
+          {p.kind === 'pomodoro' && (<>
+          <span className="st-label">Round</span>
+          <div className="tabs st-tabs st-round" role="tablist" aria-label="Focus or break">
             <button className={p.mode === 'focus' ? 'active' : ''} onClick={() => p.switchMode('focus')}>Focus</button>
             <button className={p.mode === 'break' ? 'active' : ''} onClick={() => p.switchMode('break')}>Break</button>
           </div>
-          )}
+          </>)}
         <button type="button" className="secondary timer-style-btn" onClick={() => setPickStyle(true)}>
           Timer style: <strong>{timerStyle.current.name}</strong> ›
         </button>
