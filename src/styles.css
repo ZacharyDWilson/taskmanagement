@@ -2571,11 +2571,32 @@ html, body { max-width: 100%; overflow-x: clip; }
     background: linear-gradient(145deg, var(--g1), var(--g2)); border: 1.5px solid rgba(0, 0, 0, .25);
     box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .45), 0 3px 0 rgba(60, 45, 20, .3);
   }
-  :root[data-theme='tile'] .tabbar a:nth-child(1) { --g1: #a9c98a; --g2: #587d3e; }
-  :root[data-theme='tile'] .tabbar a:nth-child(2) { --g1: #f0c566; --g2: #c0831f; }
-  :root[data-theme='tile'] .tabbar a:nth-child(3) { --g1: #88beb3; --g2: #2b6862; }
-  :root[data-theme='tile'] .tabbar a:nth-child(4) { --g1: #e6a174; --g2: #ad522a; }
-  :root[data-theme='tile'] .tabbar a:nth-child(5) { --g1: #d3cd74; --g2: #878534; }
+  :root[data-theme='tile'] .tabbar a:nth-of-type(1) { --g1: #a9c98a; --g2: #587d3e; }
+  :root[data-theme='tile'] .tabbar a:nth-of-type(2) { --g1: #f0c566; --g2: #c0831f; }
+  :root[data-theme='tile'] .tabbar a:nth-of-type(3) { --g1: #88beb3; --g2: #2b6862; }
+  :root[data-theme='tile'] .tabbar a:nth-of-type(4) { --g1: #e6a174; --g2: #ad522a; }
+  :root[data-theme='tile'] .tabbar a:nth-of-type(5) { --g1: #d3cd74; --g2: #878534; }
   :root[data-theme='tile'] .tabbar a.active .icon { box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .5), 0 0 0 2px #f7efd0, 0 0 0 3.5px #3a5a2e; }
   :root[data-theme='tile'] .tabbar a .avatar { box-shadow: 0 0 0 3px #f7efd0, 0 0 0 5px #587d3e; }
 }
+
+/* ---- Phone tab bar: a clearly liquid drop ---------------------------------------------------------------------
+   One drop sits under the page you are on. When you change page it dashes to the new tab and a second, slower drop
+   trails just behind it; the goo filter fuses the two for a moment, so you see a tail of liquid that then
+   catches up. The whole thing is over in about half a second. */
+@media (max-width: 700px) {
+  .liquid::before { display: none; }
+  .blob { padding-bottom: 6px; transition: transform .34s cubic-bezier(.3, 1.45, .5, 1), opacity .2s; }
+  .blob.trail { transition: transform .58s cubic-bezier(.22, .85, .3, 1) .02s, opacity .2s; }
+  .blob::before {
+    width: 66px; height: 56px; border-radius: 52% 48% 46% 54% / 58% 56% 44% 42%;
+    animation: liquid-morph 4.2s ease-in-out infinite alternate;
+  }
+  .blob.trail::before { width: 50px; height: 42px; animation-duration: 5.4s; animation-delay: -1.6s; }
+}
+@keyframes liquid-morph {
+  0%   { border-radius: 52% 48% 46% 54% / 58% 56% 44% 42%; }
+  50%  { border-radius: 46% 54% 52% 48% / 52% 46% 54% 48%; }
+  100% { border-radius: 54% 46% 48% 52% / 46% 58% 42% 54%; }
+}
+@media (prefers-reduced-motion: reduce) { .blob::before { animation: none; } }

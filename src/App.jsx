@@ -161,9 +161,9 @@ export default function App() {
             <svg width="0" height="0" aria-hidden="true" focusable="false" style={{ position: 'absolute' }}>
               <defs>
                 <filter id="goo">
-                  <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur" />
                   <feColorMatrix in="blur" mode="matrix"
-                    values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" result="goo" />
+                    values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -11" result="goo" />
                   <feBlend in="SourceGraphic" in2="goo" />
                 </filter>
               </defs>
