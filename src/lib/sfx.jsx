@@ -22,6 +22,7 @@ export const SOUND_PACKS = {
   sprout: 'organic',    // soft wood and water
   island: 'zen',        // paper, brush strokes and quiet chimes
   meadow: 'zen',
+  rose: 'soft',         // muted, like felt and paper
 }
 // Only the understated packs are offered. The bright, bleepy ones are left out on purpose.
 export const PACK_LABELS = { aero: 'Aero bubbles', minimal: 'Minimal', soft: 'Soft', studio: 'Studio', zen: 'Zen', organic: 'Organic' }

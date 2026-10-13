@@ -5,7 +5,7 @@ import { IS_ADMIN } from './env.js'
 
 // Original fan-inspired looks. They use their own names and palettes, with no logos or characters.
 // `preview` is the theme's five-colour palette, shown as swatches in the picker and the shop.
-// `signature` marks the looks whose dock buttons change shape too (flowers, monitors, stars, records); they cost more.
+// `signature` marks the looks whose dock buttons change shape too (flowers, monitors, stars, records, petals and leaves); they cost more.
 // Each theme also has its own animated background (see "Themes" at the bottom of styles.css).
 export const THEMES = [
   { id: 'default', name: 'Classic', blurb: 'Airy whites and sky blue, with soft light drifting by.',
@@ -34,6 +34,8 @@ export const THEMES = [
     preview: ['#a83aa0', '#ff7078', '#fdb1d2', '#cd98d3', '#8d88d8'] },
   { id: 'shore', name: 'Coral Shore', blurb: 'Coral sunset, warm sand and seafoam waves rolling in.',
     preview: ['#ffaea0', '#ffebd2', '#9bcbc0', '#6ba3c8', '#2f5f7d'] },
+  { id: 'rose', name: 'Dusty Rose', signature: 'petals and leaves', blurb: 'A vintage parlour in rose, blush and cream: lace, climbing roses and a sunlit window.',
+    preview: ['#de929d', '#e4babe', '#f7efd9', '#99976c', '#6f5d4e'] },
   { id: 'twilight', name: 'Twilight Sky', blurb: 'Blush clouds and a crescent moon over indigo mountains and stars.',
     preview: ['#fff1f1', '#a9b4dc', '#7885c6', '#2c3470', '#161b45'] },
 ]

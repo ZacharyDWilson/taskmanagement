@@ -1924,12 +1924,12 @@ textarea { border-radius: calc(var(--r) * .8); }
 :root[data-theme='island'] .dock a {
   --pa: #ffdbe6; --pb: #f78fb0; color: #a3203f; border-radius: 0;
   background-image:
-    radial-gradient(circle 15px at 29px 29px, #fffaf0 0 76%, #ffe2a0 92%, transparent 100%),
-    radial-gradient(circle 13.5px at 29px 10px, var(--pa), var(--pb) 94%, transparent 100%),
-    radial-gradient(circle 13.5px at 47px 23px, var(--pa), var(--pb) 94%, transparent 100%),
-    radial-gradient(circle 13.5px at 40px 44.5px, var(--pa), var(--pb) 94%, transparent 100%),
-    radial-gradient(circle 13.5px at 18px 44.5px, var(--pa), var(--pb) 94%, transparent 100%),
-    radial-gradient(circle 13.5px at 11px 23px, var(--pa), var(--pb) 94%, transparent 100%);
+    radial-gradient(circle 13px at 29px 29px, #fffaf0 0 76%, #ffe2a0 92%, transparent 100%),
+    radial-gradient(circle 11.5px at 29px 12px, var(--pa), var(--pb) 94%, transparent 100%),
+    radial-gradient(circle 11.5px at 45.2px 23.7px, var(--pa), var(--pb) 94%, transparent 100%),
+    radial-gradient(circle 11.5px at 39px 42.8px, var(--pa), var(--pb) 94%, transparent 100%),
+    radial-gradient(circle 11.5px at 19px 42.8px, var(--pa), var(--pb) 94%, transparent 100%),
+    radial-gradient(circle 11.5px at 12.8px 23.7px, var(--pa), var(--pb) 94%, transparent 100%);
   filter: drop-shadow(0 4px 5px rgba(150, 20, 60, .28));
   animation: petal-sway 4.2s ease-in-out infinite alternate;
 }
@@ -2019,12 +2019,12 @@ textarea { border-radius: calc(var(--r) * .8); }
   :root[data-theme='island'] .tabbar a .icon {
     --pa: #ffdbe6; --pb: #f78fb0; color: #a3203f; border-radius: 0;
     background-image:
-      radial-gradient(circle 9.5px at 18px 18px, #fffaf0 0 76%, #ffe2a0 92%, transparent 100%),
-      radial-gradient(circle 8px at 18px 6.5px, var(--pa), var(--pb) 94%, transparent 100%),
-      radial-gradient(circle 8px at 29px 14px, var(--pa), var(--pb) 94%, transparent 100%),
-      radial-gradient(circle 8px at 25px 27.5px, var(--pa), var(--pb) 94%, transparent 100%),
-      radial-gradient(circle 8px at 11px 27.5px, var(--pa), var(--pb) 94%, transparent 100%),
-      radial-gradient(circle 8px at 7px 14px, var(--pa), var(--pb) 94%, transparent 100%);
+      radial-gradient(circle 8.5px at 18px 18px, #fffaf0 0 76%, #ffe2a0 92%, transparent 100%),
+      radial-gradient(circle 6.8px at 18px 7.7px, var(--pa), var(--pb) 94%, transparent 100%),
+      radial-gradient(circle 6.8px at 27.8px 14.8px, var(--pa), var(--pb) 94%, transparent 100%),
+      radial-gradient(circle 6.8px at 24px 26.3px, var(--pa), var(--pb) 94%, transparent 100%),
+      radial-gradient(circle 6.8px at 12px 26.3px, var(--pa), var(--pb) 94%, transparent 100%),
+      radial-gradient(circle 6.8px at 8.2px 14.8px, var(--pa), var(--pb) 94%, transparent 100%);
     filter: drop-shadow(0 3px 3px rgba(150, 20, 60, .28));
     animation: petal-sway 4.2s ease-in-out infinite alternate;
   }
@@ -2305,3 +2305,143 @@ html, body { max-width: 100%; overflow-x: clip; }
 .settings-group label { display: flex; flex-direction: column; gap: .3rem; }
 .settings-group label.row { flex-direction: row; align-items: center; gap: .55rem; }
 .settings-group select, .settings-group input[type='range'] { width: 100%; }
+
+/* ---- Dusty Rose: a vintage parlour. Cream wallpaper with a lace edge, climbing roses, a panelled wainscot and a
+        window's light, in rose, blush, cream, sage and cocoa ------------------------------------------------- */
+:root[data-theme='rose'] {
+  --text: #4b3c32; --muted: #7d6b5c; --accent: #c4687a; --accent-2: #99976c; --on-accent: #ffffff;
+  --glass: rgba(250, 242, 224, .86); --glass-inner: rgba(250, 242, 224, .7); --glass-field: rgba(255, 252, 244, .94);
+  --glass-strong: rgba(251, 245, 228, .97); --glass-line: rgba(255, 255, 255, .85); --glass-shadow: 0 10px 34px rgba(111, 93, 78, .2);
+  --sky-1: #e4babe; --sky-2: #99976c;
+  --font: 'Lora', Georgia, 'Times New Roman', serif;
+  --font-head: 'Lora', Georgia, serif; --head-weight: 600;
+  --r: 22px;
+  --card-shape: 36px 36px 16px 16px; --tile-shape: 26px 26px 12px 12px; --dock-shape: 50%;   /* arched, like picture frames */
+}
+:root[data-theme='rose'] body { font-size: 1.02rem; }
+
+/* wallpaper: lace along the top, a small floral repeat, and a cream-to-blush wash */
+:root[data-theme='rose'] .scene {
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 30'><path d='M0 0H64V10C64 22 48 22 48 10C48 22 32 22 32 10C32 22 16 22 16 10C16 22 0 22 0 10Z' fill='%23fbf5e4'/><path d='M0 11C0 23 16 23 16 11C16 23 32 23 32 11C32 23 48 23 48 11C48 23 64 23 64 11' fill='none' stroke='%23de929d' stroke-width='1.6'/><g fill='%23de929d'><circle cx='8' cy='19' r='1.6'/><circle cx='24' cy='19' r='1.6'/><circle cx='40' cy='19' r='1.6'/><circle cx='56' cy='19' r='1.6'/></g></svg>") 0 0 / 64px 30px repeat-x,
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><g fill='none' stroke='%23de929d' stroke-opacity='.28' stroke-width='1.2'><path d='M60 4L116 60L60 116L4 60Z'/><path d='M60 22L98 60L60 98L22 60Z'/></g><g fill='%23de929d' fill-opacity='.34'><circle cx='60' cy='52' r='6'/><circle cx='68' cy='60' r='6'/><circle cx='60' cy='68' r='6'/><circle cx='52' cy='60' r='6'/></g><circle cx='60' cy='60' r='4' fill='%2399976c' fill-opacity='.55'/><g fill='%2399976c' fill-opacity='.32'><ellipse cx='60' cy='10' rx='3' ry='6'/><ellipse cx='60' cy='110' rx='3' ry='6'/><ellipse cx='10' cy='60' rx='6' ry='3'/><ellipse cx='110' cy='60' rx='6' ry='3'/></g></svg>") 0 0 / 120px 120px,
+    linear-gradient(180deg, #f9f1dc 0%, #f4e4d1 62%, #ecc9c9 100%);
+}
+:root[data-theme='rose'] .scene .g1 {            /* afternoon light from a window, top left */
+  width: 60vmax; height: 90vmax; left: -18vmax; top: -30vmax; transform-origin: 30% 20%; rotate: -26deg;
+  background: linear-gradient(90deg, transparent 4%, rgba(255, 250, 225, .55) 20%, rgba(255, 250, 225, .12) 34%, transparent 46%, rgba(255, 250, 225, .4) 60%, transparent 78%);
+  animation: rose-light 18s ease-in-out infinite alternate;
+}
+:root[data-theme='rose'] .scene .g2 {            /* climbing roses on the right (a mirror of the left vine) */
+  width: 250px; height: 78vh; right: 1vw; left: auto; top: auto; bottom: 17vh; border-radius: 0; background-color: transparent;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 600'><path d='M150 600C190 500 100 430 140 340S110 200 150 110S130 20 140 0' fill='none' stroke='%2399976c' stroke-width='6' stroke-linecap='round'/><g fill='%2399976c'><ellipse cx='122' cy='470' rx='20' ry='8' transform='rotate(25 122 470)'/><ellipse cx='168' cy='390' rx='20' ry='8' transform='rotate(-30 168 390)'/><ellipse cx='110' cy='310' rx='20' ry='8' transform='rotate(30 110 310)'/><ellipse cx='170' cy='215' rx='20' ry='8' transform='rotate(-28 170 215)'/><ellipse cx='120' cy='150' rx='20' ry='8' transform='rotate(28 120 150)'/><ellipse cx='156' cy='60' rx='18' ry='7' transform='rotate(-32 156 60)'/></g><g fill='%237f7d54'><ellipse cx='176' cy='500' rx='16' ry='6' transform='rotate(-35 176 500)'/><ellipse cx='104' cy='260' rx='16' ry='6' transform='rotate(35 104 260)'/><ellipse cx='176' cy='120' rx='16' ry='6' transform='rotate(-35 176 120)'/></g><g><circle cx='140' cy='420' r='22' fill='%23de929d'/><circle cx='140' cy='420' r='15' fill='%23e4babe'/><circle cx='140' cy='420' r='8' fill='%23de929d'/><circle cx='140' cy='420' r='3' fill='%23c4687a'/><circle cx='112' cy='250' r='20' fill='%23de929d'/><circle cx='112' cy='250' r='13' fill='%23e4babe'/><circle cx='112' cy='250' r='7' fill='%23de929d'/><circle cx='112' cy='250' r='3' fill='%23c4687a'/><circle cx='150' cy='90' r='18' fill='%23de929d'/><circle cx='150' cy='90' r='12' fill='%23e4babe'/><circle cx='150' cy='90' r='6' fill='%23de929d'/><circle cx='150' cy='90' r='2.5' fill='%23c4687a'/></g></svg>") center bottom / 100% 100% no-repeat;
+  transform-origin: 50% 100%; animation: rose-sway 9s ease-in-out infinite alternate;
+}
+:root[data-theme='rose'] .scene::before {        /* climbing roses on the left */
+  content: ''; position: absolute; left: 1vw; bottom: 17vh; width: 270px; height: 84vh;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 600'><path d='M60 600C20 500 110 430 70 340S100 200 60 110S80 20 70 0' fill='none' stroke='%2399976c' stroke-width='6' stroke-linecap='round'/><g fill='%2399976c'><ellipse cx='88' cy='500' rx='20' ry='8' transform='rotate(-25 88 500)'/><ellipse cx='42' cy='420' rx='20' ry='8' transform='rotate(30 42 420)'/><ellipse cx='100' cy='330' rx='20' ry='8' transform='rotate(-30 100 330)'/><ellipse cx='42' cy='240' rx='20' ry='8' transform='rotate(28 42 240)'/><ellipse cx='94' cy='170' rx='20' ry='8' transform='rotate(-28 94 170)'/><ellipse cx='50' cy='70' rx='18' ry='7' transform='rotate(32 50 70)'/></g><g fill='%237f7d54'><ellipse cx='38' cy='520' rx='16' ry='6' transform='rotate(35 38 520)'/><ellipse cx='108' cy='280' rx='16' ry='6' transform='rotate(-35 108 280)'/><ellipse cx='38' cy='130' rx='16' ry='6' transform='rotate(35 38 130)'/></g><g><circle cx='72' cy='450' r='24' fill='%23de929d'/><circle cx='72' cy='450' r='17' fill='%23e4babe'/><circle cx='72' cy='450' r='9' fill='%23de929d'/><circle cx='72' cy='450' r='3.5' fill='%23c4687a'/><circle cx='96' cy='300' r='20' fill='%23de929d'/><circle cx='96' cy='300' r='13' fill='%23e4babe'/><circle cx='96' cy='300' r='7' fill='%23de929d'/><circle cx='96' cy='300' r='3' fill='%23c4687a'/><circle cx='62' cy='140' r='22' fill='%23de929d'/><circle cx='62' cy='140' r='15' fill='%23e4babe'/><circle cx='62' cy='140' r='8' fill='%23de929d'/><circle cx='62' cy='140' r='3' fill='%23c4687a'/></g></svg>") center bottom / 100% 100% no-repeat;
+  transform-origin: 50% 100%; animation: rose-sway 11s ease-in-out -3s infinite alternate;
+}
+:root[data-theme='rose'] .scene::after {         /* the wainscot: a chair rail over cocoa panelling */
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 17vh;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, .18) 100%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, .09) 0 150px, transparent 150px 160px),
+    #6f5d4e;
+  box-shadow: 0 -7px 0 #f7efd9, 0 -10px 0 #de929d, 0 -14px 0 #e4babe;
+}
+:root[data-theme='rose'] .scene span {           /* drifting dust in the light, and the odd petal */
+  left: calc(var(--i) * 6.9% + 1.5%); bottom: -4vh; width: calc(5px + var(--i) * 1.1px); aspect-ratio: 1; border-radius: 60% 40% 60% 40%;
+  background: radial-gradient(circle at 35% 30%, #fff, rgba(228, 186, 190, .85) 60%, rgba(222, 146, 157, .5));
+  --drift: calc(var(--i) * .5vw - 3vw); animation: rise calc(26s + var(--i) * 3s) linear infinite; animation-delay: calc(var(--i) * -4.3s);
+  opacity: .8;
+}
+:root[data-theme='rose'] .scene span:nth-of-type(n + 11) { display: none; }
+@keyframes rose-light { to { rotate: -20deg; opacity: .7; } }
+@keyframes rose-sway { from { rotate: -1.4deg; } to { rotate: 1.4deg; } }
+
+/* buttons: soft rose pills with a doily-like inner ring */
+:root[data-theme='rose'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip),
+:root[data-theme='rose'] .tabs button { border-radius: 999px; }
+:root[data-theme='rose'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip):not(.secondary) {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .24), transparent 60%);
+  box-shadow: 0 4px 0 rgba(111, 93, 78, .32), inset 0 0 0 2px rgba(255, 255, 255, .35);
+}
+:root[data-theme='rose'] .brand { color: #7b4a52; }
+:root[data-theme='rose'] h1, :root[data-theme='rose'] h2 { color: #6a3f47; }
+.theme-opt[data-t='rose'] strong { font-family: 'Lora', Georgia, serif; font-style: italic; font-weight: 600; }
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme='rose'] .scene .g1, :root[data-theme='rose'] .scene .g2, :root[data-theme='rose'] .scene::before { animation: none; }
+}
+
+/* ---- Dusty Rose signature dock: flower, leaf, flower, leaf, flower ---------------------------------------------- */
+:root[data-theme='rose'] .dock {
+  background: none; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none;
+  padding: .3rem; gap: .9rem; overflow: visible;
+}
+:root[data-theme='rose'] .dock a {
+  width: 58px; height: 58px; border: 0; box-shadow: none; opacity: .94; color: #6a3f47;
+  background-color: transparent; background-repeat: no-repeat;
+}
+:root[data-theme='rose'] .dock a .icon { stroke-width: 2.1; }
+:root[data-theme='rose'] .dock a.active { opacity: 1; }
+
+/* flowers: five rose petals around a cream middle (1st, 3rd and 5th) */
+:root[data-theme='rose'] .dock a:nth-child(odd) {
+  --pa: #fbdde1; --pb: #d9808f; border-radius: 0;
+  background-image:
+    radial-gradient(circle 13px at 29px 29px, #fff8e6 0 76%, #f2dca8 92%, transparent 100%),
+    radial-gradient(circle 11.5px at 29px 12px, var(--pa), var(--pb) 94%, transparent 100%),
+    radial-gradient(circle 11.5px at 45.2px 23.7px, var(--pa), var(--pb) 94%, transparent 100%),
+    radial-gradient(circle 11.5px at 39px 42.8px, var(--pa), var(--pb) 94%, transparent 100%),
+    radial-gradient(circle 11.5px at 19px 42.8px, var(--pa), var(--pb) 94%, transparent 100%),
+    radial-gradient(circle 11.5px at 12.8px 23.7px, var(--pa), var(--pb) 94%, transparent 100%);
+  filter: drop-shadow(0 3px 4px rgba(111, 93, 78, .28));
+  animation: petal-sway 5s ease-in-out infinite alternate;
+}
+:root[data-theme='rose'] .dock a:nth-child(3) { animation-duration: 4.2s; animation-delay: -1.6s; }
+:root[data-theme='rose'] .dock a:nth-child(5) { animation-duration: 5.6s; animation-delay: -3s; }
+
+/* leaves: sage, with a pale vein, pointed at two corners (2nd and 4th) */
+:root[data-theme='rose'] .dock a:nth-child(even) {
+  border-radius: 4px 100% 4px 100%; color: #fff;
+  background-image:
+    linear-gradient(45deg, transparent 46.5%, rgba(255, 255, 255, .5) 48% 52%, transparent 53.5%),
+    linear-gradient(135deg, #b8b688, #8f8e60 58%, #6f6e45);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .22), 0 3px 6px rgba(111, 93, 78, .32);
+}
+:root[data-theme='rose'] .dock a:nth-child(even) .icon { filter: drop-shadow(0 1px 1px rgba(60, 60, 30, .45)); }
+
+:root[data-theme='rose'] .dock a:hover, :root[data-theme='rose'] .dock a:focus-visible { --pa: #fff0f2; --pb: #cf6478; }
+:root[data-theme='rose'] .dock a:nth-child(even):hover, :root[data-theme='rose'] .dock a:nth-child(even):focus-visible {
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .35), 0 6px 14px rgba(111, 93, 78, .4), 0 0 14px rgba(185, 188, 120, .8);
+}
+:root[data-theme='rose'] .dock a:nth-child(odd).active { --pa: #f7b8c2; --pb: #c4687a; filter: drop-shadow(0 0 6px rgba(222, 146, 157, .85)) drop-shadow(0 3px 4px rgba(111, 93, 78, .3)); }
+:root[data-theme='rose'] .dock a:nth-child(even).active { box-shadow: inset 0 0 0 2px #fff, 0 0 0 3px rgba(222, 146, 157, .8), 0 4px 10px rgba(111, 93, 78, .35); }
+
+@media (max-width: 700px) {
+  :root[data-theme='rose'] .tabbar a .icon {
+    box-sizing: content-box; width: 22px; height: 22px; padding: 7px; stroke-width: 2.1; background-repeat: no-repeat; color: #6a3f47;
+  }
+  :root[data-theme='rose'] .tabbar a:nth-child(odd) .icon {
+    --pa: #fbdde1; --pb: #d9808f; border-radius: 0;
+    background-image:
+      radial-gradient(circle 8.5px at 18px 18px, #fff8e6 0 76%, #f2dca8 92%, transparent 100%),
+      radial-gradient(circle 6.8px at 18px 7.7px, var(--pa), var(--pb) 94%, transparent 100%),
+      radial-gradient(circle 6.8px at 27.8px 14.8px, var(--pa), var(--pb) 94%, transparent 100%),
+      radial-gradient(circle 6.8px at 24px 26.3px, var(--pa), var(--pb) 94%, transparent 100%),
+      radial-gradient(circle 6.8px at 12px 26.3px, var(--pa), var(--pb) 94%, transparent 100%),
+      radial-gradient(circle 6.8px at 8.2px 14.8px, var(--pa), var(--pb) 94%, transparent 100%);
+    filter: drop-shadow(0 2px 2px rgba(111, 93, 78, .3));
+  }
+  :root[data-theme='rose'] .tabbar a:nth-child(even) .icon {
+    border-radius: 3px 100% 3px 100%; color: #fff;
+    background-image:
+      linear-gradient(45deg, transparent 46.5%, rgba(255, 255, 255, .5) 48% 52%, transparent 53.5%),
+      linear-gradient(135deg, #b8b688, #8f8e60 58%, #6f6e45);
+    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .25), 0 2px 5px rgba(111, 93, 78, .3);
+  }
+  :root[data-theme='rose'] .tabbar a:nth-child(odd).active .icon { --pa: #f7b8c2; --pb: #c4687a; filter: drop-shadow(0 0 5px rgba(222, 146, 157, .9)); }
+  :root[data-theme='rose'] .tabbar a:nth-child(even).active .icon { box-shadow: inset 0 0 0 1.5px #fff, 0 0 0 2px rgba(222, 146, 157, .85); }
+  :root[data-theme='rose'] .tabbar a .avatar { box-shadow: 0 0 0 3px #fbdde1, 0 0 0 5px #d9808f; }
+}

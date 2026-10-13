@@ -6,7 +6,7 @@ insert into public.cosmetics (id, kind, name, min_level) values
 on conflict (id) do nothing;
 
 insert into public.shop_items (id, kind, name, price, sort) values
-  ('banner-route',   'banner', 'Capsule Route', 250, 24),
-  ('banner-sunrise', 'banner', 'Sunrise Hill',  250, 25),
-  ('banner-strings', 'banner', 'Strings',       250, 26)
+  ('banner-route',   'banner', 'Capsule Route', 320, 24),
+  ('banner-sunrise', 'banner', 'Sunrise Hill',  240, 25),
+  ('banner-strings', 'banner', 'Strings',       180, 26)
 on conflict (id) do update set price = excluded.price, name = excluded.name, sort = excluded.sort;
