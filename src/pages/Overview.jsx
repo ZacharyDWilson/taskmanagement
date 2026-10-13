@@ -12,7 +12,7 @@ import CanvasCard from '../components/CanvasCard.jsx'
 // Three columns that fit the window, so the page itself never scrolls.
 export default function Overview() {
   const { user } = useAuth()
-  const { tasks, error } = useTasks()
+  const { tasks, error, add } = useTasks()
   const timer = usePomodoro()
   const version = timer.logged
   const name = user.user_metadata?.display_name
@@ -42,7 +42,7 @@ export default function Overview() {
 
       <div className="col">
         <Leaderboard version={version} />
-        <CanvasCard />
+        <CanvasCard tasks={tasks} onAdd={add} />
       </div>
     </div>
   )

@@ -1640,3 +1640,260 @@ textarea { border-radius: calc(var(--r) * .8); }
 .pulse-cta { animation: cta-pulse 1.4s ease-in-out infinite; }
 @keyframes cta-pulse { 50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 30%, transparent); } }
 @media (prefers-reduced-motion: reduce) { .confetti i, .pulse-cta { animation: none; } .confetti { display: none; } }
+
+/* ---- "Keep LOCK IN handy": install or bookmark, after the first sign-in ---------------------------------- */
+.install-card {
+  position: fixed; z-index: 55; right: 18px; bottom: 18px; width: min(340px, calc(100vw - 36px)); display: flex; flex-direction: column; gap: .55rem;
+  padding: 1rem 1.1rem; background: var(--glass-strong); box-shadow: 0 18px 44px rgba(10, 20, 40, .3);
+  animation: pop-in .6s var(--spring) backwards;
+}
+.install-card h2 { margin: 0; font-size: 1.05rem; padding-right: 1.5rem; }
+.install-card p { margin: 0; font-size: .92rem; line-height: 1.45; }
+.install-x { position: absolute; top: .5rem; right: .7rem; font-size: 1.3rem; text-decoration: none; }
+@media (max-width: 700px) { .install-card { bottom: calc(96px + env(safe-area-inset-bottom)); } }
+
+.booking-card { display: flex; flex-direction: column; gap: .5rem; padding: .9rem 1rem; border-radius: var(--tile-shape, 16px); background: var(--glass-inner); border: 1px solid var(--glass-line); }
+.booking-card p { margin: 0; }
+.booking-link { text-decoration: none; align-self: flex-start; }
+.booking-url { font-size: .78rem; color: var(--muted); background: var(--glass-field); padding: .3rem .6rem; border-radius: 999px; user-select: all; overflow-wrap: anywhere; }
+
+/* ---- Canvas assignments -------------------------------------------------------------------------------- */
+.canvas-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .7rem; }
+.canvas-steps li { display: flex; gap: .8rem; align-items: flex-start; }
+.canvas-steps .num { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: var(--accent); color: var(--on-accent); }
+.canvas-steps p { margin: .1rem 0 0; }
+.canvas-list li { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .5rem 0; border-bottom: 1px solid var(--line); }
+.canvas-info { display: flex; flex-direction: column; min-width: 0; }
+.canvas-info strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---- A person's name: their own font, a colour from the theme's palette, and a glow -------------------------- */
+:root { --name-glow: .5; }
+:root[data-theme='dark'], :root[data-theme='arcade'], :root[data-theme='meadow'] { --name-glow: .7; }
+.fancy-name {
+  --c: hsl(var(--name-hue) var(--name-sat, 80%) var(--name-l, 40%));
+  color: var(--c); font-weight: 700; letter-spacing: .01em;
+  text-shadow: 0 0 10px hsl(var(--name-hue) 90% 58% / var(--name-glow)), 0 0 24px hsl(var(--name-hue) 90% 58% / calc(var(--name-glow) * .5));
+  animation: name-glow 3.6s ease-in-out infinite alternate;
+}
+@keyframes name-glow {
+  from { text-shadow: 0 0 8px hsl(var(--name-hue) 90% 58% / calc(var(--name-glow) * .8)), 0 0 18px hsl(var(--name-hue) 90% 58% / calc(var(--name-glow) * .35)); }
+  to   { text-shadow: 0 0 12px hsl(var(--name-hue) 90% 58% / var(--name-glow)), 0 0 30px hsl(var(--name-hue) 90% 58% / calc(var(--name-glow) * .7)); }
+}
+@media (prefers-reduced-motion: reduce) { .fancy-name { animation: none; } }
+
+
+/* ====================================================================================================
+   School looks. Colours come from each school's public brand palette; the shapes and scenes are our own.
+   ==================================================================================================== */
+
+/* ---- Gordon College: Gordon blue, gold and a little tartan; the chapel on the hill -------------------- */
+:root[data-theme='gordon'] {
+  --text: #0b2f52; --muted: #4a6a8a; --accent: #004a87; --accent-2: #fdb913; --on-accent: #ffffff;
+  --glass: rgba(255, 255, 255, .86); --glass-inner: rgba(240, 247, 253, .78); --glass-field: rgba(255, 255, 255, .95);
+  --glass-strong: rgba(255, 255, 255, .98); --glass-line: rgba(0, 74, 135, .16); --glass-shadow: 0 10px 30px rgba(0, 63, 115, .16);
+  --sky-1: #f4f9fd; --sky-2: #cfe6f5;
+  --font: 'Barlow', 'Segoe UI', system-ui, sans-serif;
+  --font-head: 'Montserrat', 'Barlow', system-ui, sans-serif; --head-weight: 700;
+  --r: 16px; --card-shape: 16px; --tile-shape: 12px; --btn-shape: 10px; --field-shape: 10px; --dock-shape: 14px;
+}
+:root[data-theme='gordon'] .scene { background: linear-gradient(180deg, #ffffff 0%, #e4f1fa 45%, #b9dcf1 100%); }
+:root[data-theme='gordon'] .scene::before {            /* the campus: hills with the chapel */
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 44vh;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 380' preserveAspectRatio='xMidYMax slice'><path d='M0 250C180 200 360 270 560 235S940 200 1200 250V380H0Z' fill='%2399c9e6' opacity='.7'/><path d='M0 300C220 262 420 318 640 290S980 262 1200 300V380H0Z' fill='%23004a87' opacity='.9'/><g transform='translate(840 120)'><rect x='0' y='120' width='160' height='90' fill='%23003f73'/><path d='M-10 120L80 60 170 120Z' fill='%23002f59'/><rect x='150' y='20' width='42' height='190' fill='%23003f73'/><path d='M144 22L171 -50 198 22Z' fill='%23002f59'/><rect x='168' y='-70' width='6' height='24' fill='%23fdb913'/><path d='M160 -62h22' stroke='%23fdb913' stroke-width='4'/><path d='M60 210v-50a20 20 0 0 1 40 0v50Z' fill='%23fdb913'/><path d='M20 176v-24a9 9 0 0 1 18 0v24Z M122 176v-24a9 9 0 0 1 18 0v24Z' fill='%23fdb913' opacity='.85'/></g><path d='M0 340C240 318 460 352 700 334S1000 316 1200 340V380H0Z' fill='%23003f73'/></svg>") center bottom / cover no-repeat;
+}
+:root[data-theme='gordon'] .scene::after {             /* a faint tartan, in blue and gold, drifting slowly */
+  content: ''; position: absolute; inset: 0; opacity: .5;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(0, 74, 135, .07) 0 22px, transparent 22px 120px, rgba(253, 185, 19, .1) 120px 128px, transparent 128px 200px),
+    repeating-linear-gradient(0deg, rgba(0, 74, 135, .07) 0 22px, transparent 22px 120px, rgba(253, 185, 19, .1) 120px 128px, transparent 128px 200px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, transparent 70%); mask-image: linear-gradient(to bottom, #000 0, transparent 70%);
+  animation: tartan-drift 80s linear infinite;
+}
+@keyframes tartan-drift { to { background-position: 200px 0, 0 200px; } }
+:root[data-theme='gordon'] .scene .g1 { width: 50vmax; height: 50vmax; right: -12vmax; top: -18vmax; background: radial-gradient(circle, rgba(253, 185, 19, .42), transparent 66%); }
+:root[data-theme='gordon'] .scene .g2 { width: 60vmax; height: 40vmax; left: -20vmax; top: -16vmax; background: radial-gradient(ellipse, rgba(0, 152, 209, .22), transparent 68%); }
+:root[data-theme='gordon'] .scene span {               /* gold sparks drifting up, like sun on the harbour */
+  left: calc(var(--i) * 7.1% + 2%); bottom: -4vh; width: calc(4px + var(--i) * .5px); aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle, #ffe89a, rgba(253, 185, 19, .55) 60%, transparent 74%);
+  --drift: calc(var(--i) * .5vw - 3vw); animation: rise calc(18s + var(--i) * 1.5s) linear infinite; animation-delay: calc(var(--i) * -2.4s);
+}
+:root[data-theme='gordon'] .scene span:nth-of-type(n + 9) { display: none; }
+:root[data-theme='gordon'] .card, :root[data-theme='gordon'] .profile-head { border-top: 3px solid #fdb913; }
+:root[data-theme='gordon'] h1, :root[data-theme='gordon'] h2 { letter-spacing: .01em; }
+:root[data-theme='gordon'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip):not(.secondary) {
+  border-bottom: 3px solid #003f73; letter-spacing: .03em;
+}
+:root[data-theme='gordon'] .brand { color: #004a87; }
+
+/* ---- Stony Brook: Seawolf red and navy, with waves rolling in ----------------------------------------- */
+:root[data-theme='stonybrook'] {
+  --text: #14233a; --muted: #55606f; --accent: #990000; --accent-2: #1791ad; --on-accent: #ffffff;
+  --glass: rgba(255, 255, 255, .88); --glass-inner: rgba(244, 245, 247, .8); --glass-field: rgba(255, 255, 255, .96);
+  --glass-strong: rgba(255, 255, 255, .98); --glass-line: rgba(0, 34, 68, .14); --glass-shadow: 0 10px 30px rgba(0, 34, 68, .18);
+  --sky-1: #f6f7f9; --sky-2: #cdd5e0;
+  --font: 'Barlow', 'Segoe UI', system-ui, sans-serif;
+  --font-head: 'Bitter', Georgia, serif; --head-weight: 700;
+  --r: 14px; --card-shape: 14px; --tile-shape: 10px; --btn-shape: 8px; --field-shape: 8px; --dock-shape: 12px;
+}
+:root[data-theme='stonybrook'] .scene { background: linear-gradient(180deg, #ffffff 0%, #e9edf3 52%, #c9d3e2 100%); }
+:root[data-theme='stonybrook'] .scene::before {        /* two layers of waves, navy behind red */
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 36vh;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 120' preserveAspectRatio='none'><path d='M0 60C75 20 150 20 225 60S375 100 450 60 600 20 600 60V120H0Z' fill='%23002244'/></svg>"), url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 120' preserveAspectRatio='none'><path d='M0 60C75 20 150 20 225 60S375 100 450 60 600 20 600 60V120H0Z' fill='%23990000'/></svg>");
+  background-repeat: repeat-x, repeat-x; background-position: 0 40%, 0 90%; background-size: 800px 55%, 600px 50%;
+  opacity: .92; animation: sb-waves 30s linear infinite;
+}
+@keyframes sb-waves { to { background-position: -800px 40%, 600px 90%; } }
+:root[data-theme='stonybrook'] .scene::after {         /* a faint navy grid, like graph paper */
+  content: ''; position: absolute; inset: 0; opacity: .5;
+  background-image: linear-gradient(rgba(0, 34, 68, .06) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 34, 68, .06) 1px, transparent 1px);
+  background-size: 46px 46px; -webkit-mask-image: linear-gradient(to bottom, #000 0, transparent 70%); mask-image: linear-gradient(to bottom, #000 0, transparent 70%);
+}
+:root[data-theme='stonybrook'] .scene .g1 { width: 60vmax; height: 60vmax; left: -20vmax; top: -30vmax; background: radial-gradient(circle, rgba(153, 0, 0, .14), transparent 66%); }
+:root[data-theme='stonybrook'] .scene .g2 { width: 50vmax; height: 50vmax; right: -14vmax; top: -22vmax; background: radial-gradient(circle, rgba(23, 145, 173, .18), transparent 66%); }
+:root[data-theme='stonybrook'] .scene span {           /* drifting sea-spray */
+  left: var(--x); top: calc(40% + var(--i) * 3%); width: calc(5px + var(--i) * .8px); aspect-ratio: 1; border-radius: 50%;
+  background: rgba(255, 255, 255, .8); box-shadow: 0 0 8px rgba(23, 145, 173, .4);
+  animation: float-soft calc(12s + var(--i) * 1.2s) ease-in-out infinite alternate; animation-delay: calc(var(--i) * -2s);
+}
+:root[data-theme='stonybrook'] .scene span:nth-of-type(n + 9) { display: none; }
+:root[data-theme='stonybrook'] .card, :root[data-theme='stonybrook'] .profile-head { border-left: 4px solid #990000; }
+:root[data-theme='stonybrook'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip):not(.secondary) {
+  border-bottom: 3px solid #5d0000; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; font-size: .86em;
+}
+:root[data-theme='stonybrook'] .brand { color: #990000; }
+@media (prefers-reduced-motion: reduce) { :root[data-theme='gordon'] .scene::after, :root[data-theme='stonybrook'] .scene::before { animation: none; } }
+
+/* ---- Fix: timer dials (ring, analog, hourglass) keep a real size, and the leaf buttons lose the line ----- */
+.timer-face svg { height: min(260px, 32vh); width: auto; max-width: 78vw; max-height: none; }
+.study .timer-face svg { height: min(240px, 30vh); width: auto; max-width: 100%; max-height: none; }
+.timer-face.hourglass svg, .study .timer-face.hourglass svg { height: min(230px, 30vh); width: auto; }
+.timer-face.ring { width: min(260px, 100%); margin-inline: auto; }
+.timer-face.ring svg { height: auto; width: 100%; max-width: 260px; max-height: 32vh; aspect-ratio: 1; }
+.study .timer-face.ring svg { max-height: 30vh; }
+.timer-face.small svg { height: 220px; width: auto; max-width: none; max-height: none; }
+:root[data-theme='sprout'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip)::before { content: none !important; }
+
+/* ---- Frutiger Aero: glossy aqua glass, bubbles, bright sky and fresh green ------------------------------------ */
+:root[data-theme='aero'] {
+  --text: #0c3a63; --muted: #3f6d93; --accent: #1a8fe3; --accent-2: #5fd3e8; --on-accent: #ffffff;
+  --glass: rgba(255, 255, 255, .6); --glass-inner: rgba(255, 255, 255, .5); --glass-field: rgba(255, 255, 255, .85);
+  --glass-strong: rgba(246, 252, 255, .94); --glass-line: rgba(255, 255, 255, .95); --glass-shadow: 0 12px 34px rgba(10, 90, 170, .28);
+  --sky-1: #bfeaff; --sky-2: #5fb8f5;
+  --font: 'Open Sans', 'Segoe UI', system-ui, sans-serif;
+  --font-head: 'Open Sans', 'Segoe UI', system-ui, sans-serif; --head-weight: 700;
+  --blur: 14px; --r: 22px;
+  --card-shape: 22px; --tile-shape: 16px; --btn-shape: 999px; --field-shape: 999px; --dock-shape: 50%;
+}
+:root[data-theme='aero'] .scene { background: linear-gradient(180deg, #4aaef5 0%, #8fd3fb 38%, #cdeefe 66%, #eefbff 100%); }
+:root[data-theme='aero'] .scene::before {            /* rolling green hills and a strip of water */
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 40vh;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 330' preserveAspectRatio='xMidYMax slice'><defs><linearGradient id='a' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%2394e552'/><stop offset='1' stop-color='%2346b82d'/></linearGradient><linearGradient id='b' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%2368d03b'/><stop offset='1' stop-color='%23269a2a'/></linearGradient><linearGradient id='w' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%237fe0ff'/><stop offset='1' stop-color='%231a8fe3'/></linearGradient></defs><path d='M0 150C200 80 380 170 600 120S980 70 1200 130V330H0Z' fill='url(%23a)'/><path d='M0 215C240 160 440 240 680 200S1000 160 1200 210V330H0Z' fill='url(%23b)'/><path d='M0 272C300 246 560 296 840 266S1100 258 1200 272V330H0Z' fill='url(%23w)' opacity='.92'/><path d='M0 290C300 270 560 312 840 290S1100 284 1200 292V330H0Z' fill='%23ffffff' opacity='.28'/></svg>") center bottom / cover no-repeat;
+}
+:root[data-theme='aero'] .scene::after {             /* soft clouds drifting across the sky */
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 46vh;
+  background-image:
+    radial-gradient(ellipse 130px 34px at 150px 80px, rgba(255, 255, 255, .95), transparent 70%),
+    radial-gradient(ellipse 90px 26px at 215px 62px, rgba(255, 255, 255, .9), transparent 70%),
+    radial-gradient(ellipse 150px 38px at 600px 140px, rgba(255, 255, 255, .85), transparent 70%),
+    radial-gradient(ellipse 100px 28px at 668px 120px, rgba(255, 255, 255, .85), transparent 70%),
+    radial-gradient(ellipse 120px 30px at 880px 60px, rgba(255, 255, 255, .9), transparent 70%);
+  background-size: 1000px 240px; background-repeat: repeat-x; animation: cloud-drift 110s linear infinite;
+}
+:root[data-theme='aero'] .scene .g1 {                /* the sun's glow with a lens flare */
+  width: 46vmax; height: 46vmax; left: -10vmax; top: -16vmax;
+  background: radial-gradient(circle, rgba(255, 255, 255, .95) 0 6%, rgba(255, 252, 210, .6) 16%, rgba(255, 255, 255, 0) 62%);
+  animation: drift-a 40s ease-in-out infinite alternate;
+}
+:root[data-theme='aero'] .scene .g2 { width: 70vmax; height: 40vmax; right: -20vmax; top: 2vh; background: radial-gradient(ellipse, rgba(255, 255, 255, .45), transparent 68%); }
+:root[data-theme='aero'] .scene span {               /* glossy bubbles floating up */
+  left: calc(var(--i) * 6.9% + 1%); bottom: -10vh; width: calc(26px + var(--i) * 6px); aspect-ratio: 1; border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, .85);
+  background: radial-gradient(circle at 30% 26%, rgba(255, 255, 255, .95) 0 11%, rgba(255, 255, 255, .28) 30%, rgba(110, 210, 255, .16) 68%, rgba(255, 255, 255, .5) 100%);
+  box-shadow: inset 0 -6px 14px rgba(40, 170, 255, .28), 0 4px 14px rgba(20, 120, 220, .2);
+  --drift: calc(var(--i) * .6vw - 4vw); animation: rise calc(20s + var(--i) * 2s) ease-in infinite; animation-delay: calc(var(--i) * -3.1s);
+}
+:root[data-theme='aero'] .scene span:nth-of-type(n + 11) { display: none; }
+
+/* glass with a glossy highlight across the top half, the signature of the look */
+:root[data-theme='aero'] .card, :root[data-theme='aero'] .tile, :root[data-theme='aero'] .dock {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .7) 0, rgba(255, 255, 255, .25) 48%, rgba(255, 255, 255, 0) 50%, rgba(190, 235, 255, .22) 100%);
+  border: 1px solid rgba(255, 255, 255, .95);
+  box-shadow: inset 0 1px 0 #fff, inset 0 -1px 0 rgba(20, 120, 220, .15), var(--glass-shadow);
+}
+:root[data-theme='aero'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip):not(.secondary),
+:root[data-theme='aero'] .tabs button.active {
+  background: linear-gradient(180deg, #8fe3ff 0%, #3aaaf0 46%, #1a86df 50%, #36a8ee 100%);
+  border: 1px solid #0f6fbf; color: #fff; text-shadow: 0 1px 2px rgba(0, 60, 130, .6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), 0 3px 8px rgba(10, 90, 170, .4);
+}
+:root[data-theme='aero'] button.secondary, :root[data-theme='aero'] .tabs button {
+  background: linear-gradient(180deg, #ffffff 0%, #e7f6ff 48%, #d3ecfb 52%, #eefaff 100%);
+  border: 1px solid rgba(20, 120, 200, .35); color: var(--text); box-shadow: inset 0 1px 0 #fff, 0 2px 6px rgba(10, 90, 170, .18);
+}
+:root[data-theme='aero'] h1, :root[data-theme='aero'] h2 { text-shadow: 0 1px 0 rgba(255, 255, 255, .9); }
+:root[data-theme='aero'] .brand { color: #fff; text-shadow: 0 1px 4px rgba(0, 70, 140, .55); }
+@media (prefers-reduced-motion: reduce) { :root[data-theme='aero'] .scene::after, :root[data-theme='aero'] .scene span { animation: none; } }
+
+/* ---- Frutiger Aero: the side dock becomes a cluster of floating soap bubbles ------------------------------- */
+:root[data-theme='aero'] .dock {
+  background: none; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none;
+  padding: .3rem; gap: .85rem; position: relative; overflow: visible;
+}
+:root[data-theme='aero'] .dock::before, :root[data-theme='aero'] .dock::after {   /* little stray bubbles drifting around the big ones */
+  content: ''; position: absolute; border-radius: 50%; pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, .85);
+  background: radial-gradient(circle at 30% 28%, rgba(255, 255, 255, .95) 0 14%, rgba(255, 255, 255, .15) 40%, rgba(110, 210, 255, .2) 100%);
+}
+:root[data-theme='aero'] .dock::before { width: 16px; height: 16px; left: -10px; top: 18%; animation: bubble-bob 4.6s ease-in-out infinite alternate; }
+:root[data-theme='aero'] .dock::after  { width: 10px; height: 10px; right: -8px; bottom: 22%; animation: bubble-bob 5.4s ease-in-out -2s infinite alternate; }
+:root[data-theme='aero'] .dock a {
+  width: 58px; height: 58px; border-radius: 50%; opacity: .96; color: #0f5fa6;
+  background:
+    radial-gradient(ellipse 46% 30% at 36% 22%, rgba(255, 255, 255, .98) 0 55%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle at 72% 82%, rgba(255, 150, 230, .38) 0, rgba(255, 150, 230, 0) 46%),
+    radial-gradient(circle at 28% 78%, rgba(120, 255, 210, .4) 0, rgba(120, 255, 210, 0) 46%),
+    radial-gradient(circle at 50% 50%, rgba(170, 230, 255, .35) 0 62%, rgba(255, 255, 255, .7) 100%);
+  border: 1.5px solid rgba(255, 255, 255, .95);
+  box-shadow: inset 0 -8px 16px rgba(40, 170, 255, .35), inset 0 3px 8px rgba(255, 255, 255, .9), 0 8px 18px rgba(10, 100, 190, .32);
+  animation: bubble-bob 3.8s ease-in-out infinite alternate;
+}
+:root[data-theme='aero'] .dock a:nth-child(2) { animation-duration: 4.4s; animation-delay: -1s; }
+:root[data-theme='aero'] .dock a:nth-child(3) { animation-duration: 3.6s; animation-delay: -2s; }
+:root[data-theme='aero'] .dock a:nth-child(4) { animation-duration: 4.9s; animation-delay: -.5s; }
+:root[data-theme='aero'] .dock a:nth-child(5) { animation-duration: 4.1s; animation-delay: -3s; }
+:root[data-theme='aero'] .dock a .icon { stroke-width: 2; filter: drop-shadow(0 1px 0 rgba(255, 255, 255, .8)); }
+:root[data-theme='aero'] .dock a:hover, :root[data-theme='aero'] .dock a:focus-visible {
+  box-shadow: inset 0 -8px 16px rgba(40, 190, 255, .5), inset 0 3px 8px #fff, 0 12px 26px rgba(10, 120, 220, .45), 0 0 0 4px rgba(150, 225, 255, .5);
+}
+:root[data-theme='aero'] .dock a.active {
+  color: #0a4f95;
+  box-shadow: inset 0 -8px 16px rgba(30, 160, 255, .55), inset 0 3px 8px #fff, 0 10px 22px rgba(10, 110, 210, .45), 0 0 0 4px rgba(120, 215, 255, .55), 0 0 20px rgba(120, 215, 255, .8);
+}
+:root[data-theme='aero'] .dock a.active::before { left: -14px; width: 7px; height: 7px; margin-top: -3.5px; background: radial-gradient(circle at 35% 30%, #fff, #4fc3ff); box-shadow: 0 0 8px #7fdcff; }
+@keyframes bubble-bob { from { translate: 0 -3px; } to { translate: 0 4px; } }
+/* hovering magnifies (set earlier) and the bubble keeps floating on its own */
+:root[data-theme='aero'] .dock a:hover { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { :root[data-theme='aero'] .dock a, :root[data-theme='aero'] .dock::before, :root[data-theme='aero'] .dock::after { animation: none; } }
+
+/* ---- Frutiger Aero on phones: each tab icon sits in its own soap bubble over the liquid strip ---------------- */
+@media (max-width: 700px) {
+  :root[data-theme='aero'] .tabbar a { color: #0f5fa6; text-shadow: 0 0 6px rgba(255, 255, 255, .9); font-weight: 700; }
+  :root[data-theme='aero'] .tabbar a.active { color: #0a4f95; text-shadow: 0 0 6px rgba(255, 255, 255, .9); }
+  :root[data-theme='aero'] .tabbar a .icon {
+    box-sizing: content-box; width: 22px; height: 22px; padding: 7px; border-radius: 50%; stroke-width: 2; filter: none;
+    background:
+      radial-gradient(ellipse 46% 30% at 36% 22%, rgba(255, 255, 255, .98) 0 55%, rgba(255, 255, 255, 0) 100%),
+      radial-gradient(circle at 72% 82%, rgba(255, 150, 230, .34), rgba(255, 150, 230, 0) 46%),
+      radial-gradient(circle at 28% 78%, rgba(120, 255, 210, .36), rgba(120, 255, 210, 0) 46%),
+      radial-gradient(circle, rgba(170, 230, 255, .35) 0 62%, rgba(255, 255, 255, .7) 100%);
+    border: 1.5px solid rgba(255, 255, 255, .95);
+    box-shadow: inset 0 -5px 10px rgba(40, 170, 255, .3), inset 0 2px 5px rgba(255, 255, 255, .9), 0 4px 10px rgba(10, 100, 190, .3);
+    animation: bubble-bob 3.6s ease-in-out infinite alternate;
+  }
+  :root[data-theme='aero'] .tabbar a:nth-child(odd) .icon { animation-duration: 4.4s; animation-delay: -1.6s; }
+  :root[data-theme='aero'] .tabbar a.active .icon {
+    box-shadow: inset 0 -5px 10px rgba(30, 160, 255, .5), inset 0 2px 5px #fff, 0 0 0 3px rgba(120, 215, 255, .6), 0 0 14px rgba(120, 215, 255, .9);
+  }
+  :root[data-theme='aero'] .tabbar a .avatar { box-shadow: 0 0 0 3px rgba(255, 255, 255, .9), 0 4px 10px rgba(10, 100, 190, .35); }
+}
+@media (prefers-reduced-motion: reduce) { :root[data-theme='aero'] .tabbar a .icon { animation: none; } }

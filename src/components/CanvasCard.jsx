@@ -1,12 +1,124 @@
-export default function CanvasCard() {
+import { useMemo, useState } from 'react'
+import { useCanvas } from '../lib/canvas.js'
+import { addDays, isoDate } from '../lib/dates.js'
+import PickerModal from './PickerModal.jsx'
+
+const fmtDue = a => {
+  const d = new Date(a.allDay ? a.due + 'T00:00:00' : a.due)
+  const date = d.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })
+  return a.allDay ? date : `${date}, ${d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`
+}
+const dayKey = a => (a.allDay ? a.due : isoDate(new Date(a.due)))
+
+const STEPS = [
+  ['Open Canvas', 'Go to your school\'s Canvas in a web browser and log in (for Gordon that is gordon.instructure.com). Use a browser, not the phone app.'],
+  ['Click "Calendar"', 'It is in the menu down the left side.'],
+  ['Find "Calendar Feed"', 'Look at the right-hand side, near the bottom of the calendar page, and click "Calendar Feed".'],
+  ['Copy the link', 'A box appears with a long link that ends in .ics. Select it and copy it.'],
+  ['Paste it here', 'Paste the link into the box below and press Connect.'],
+]
+
+function ConnectDialog({ canvas, onClose }) {
+  const [url, setUrl] = useState('')
+  const [msg, setMsg] = useState('')
+  const [busy, setBusy] = useState(false)
+  async function submit(e) {
+    e.preventDefault()
+    setBusy(true)
+    const problem = await canvas.save(url)
+    setBusy(false)
+    if (problem) setMsg(problem)
+    else onClose()
+  }
   return (
-    <section className="card">
-      <h2>Canvas assignments</h2>
-      <p className="muted">
-        Coming soon: connect your Canvas calendar so upcoming assignments show up here and can be
-        added to your day with one click.
+    <PickerModal title="Connect your Canvas" onClose={onClose}
+      hint="Your assignments will show up here so you can add them to your week with one click.">
+      <ol className="canvas-steps">
+        {STEPS.map(([title, text], i) => (
+          <li key={title}><span className="num">{i + 1}</span><div><strong>{title}</strong><p className="muted small">{text}</p></div></li>
+        ))}
+      </ol>
+      <form className="stack" onSubmit={submit}>
+        <input value={url} onChange={e => { setUrl(e.target.value); setMsg('') }} placeholder="https://…/feeds/calendars/user_….ics"
+          autoComplete="off" spellCheck="false" required />
+        <div className="row">
+          <button type="submit" disabled={busy}>{busy ? 'Connecting…' : 'Connect'}</button>
+          <button type="button" className="secondary" onClick={onClose}>Cancel</button>
+        </div>
+        {msg && <p className="warn">{msg}</p>}
+      </form>
+      <p className="muted small">
+        🔒 This link is private: only you can see it, and LOCK IN only ever reads your due dates. It can't change or
+        submit anything in Canvas. If you ever want to stop, press Disconnect and, in Canvas, a new link replaces the old one.
       </p>
-      <button disabled>Connect Canvas</button>
+    </PickerModal>
+  )
+}
+
+// Upcoming Canvas assignments, each with an "Add to my week" button.
+export default function CanvasCard({ tasks = [], onAdd }) {
+  const canvas = useCanvas()
+  const [connect, setConnect] = useState(false)
+  const added = useMemo(() => new Set(tasks.map(t => t.canvas_uid).filter(Boolean)), [tasks])
+  const today = isoDate(new Date())
+  const upcoming = canvas.assignments.filter(a => dayKey(a) >= today).slice(0, 12)
+
+  function add(a) {
+    const key = dayKey(a)
+    const week = new Date(); // plan it on the due day when that is close, otherwise leave it in "To plan"
+    const near = key <= isoDate(addDays(week, 13))
+    onAdd?.(a.title, near ? key : null, 'blue', {
+      course: a.course, category: 'Homework', due_date: key,
+      due_time: a.allDay ? null : new Date(a.due).toTimeString().slice(0, 5),
+      notes: a.url ? `From Canvas: ${a.url}` : 'From Canvas', canvas_uid: a.uid,
+    })
+  }
+
+  return (
+    <section className="card fill canvas-card">
+      <h2>Canvas assignments</h2>
+
+      {canvas.connected === null && <p className="muted">Checking…</p>}
+
+      {canvas.connected === false && (
+        <div className="stack">
+          <p className="muted">Connect your Canvas calendar so due dates show up here and can be added to your week in one click.</p>
+          <button type="button" onClick={() => setConnect(true)}>Connect Canvas</button>
+          {canvas.error && <p className="warn">{canvas.error}</p>}
+        </div>
+      )}
+
+      {canvas.connected && (
+        <>
+          {upcoming.length === 0 && <p className="muted">Nothing due soon in Canvas. Nice.</p>}
+          <ul className="list scroll canvas-list">
+            {upcoming.map(a => {
+              const isAdded = added.has(a.uid)
+              return (
+                <li key={a.uid}>
+                  <div className="canvas-info">
+                    <strong>{a.title}</strong>
+                    <small className="muted">{[a.course, fmtDue(a)].filter(Boolean).join(' · ')}</small>
+                  </div>
+                  {isAdded
+                    ? <span className="owned small">✓ Added</span>
+                    : <button type="button" className="secondary" onClick={() => add(a)}>Add</button>}
+                </li>
+              )
+            })}
+          </ul>
+          <div className="row between">
+            <button type="button" className="link" onClick={canvas.refresh} disabled={canvas.loading}>{canvas.loading ? 'Refreshing…' : 'Refresh'}</button>
+            <span>
+              <button type="button" className="link" onClick={() => setConnect(true)}>Change link</button>
+              <button type="button" className="link" onClick={() => { if (confirm('Disconnect Canvas?')) canvas.disconnect() }}>Disconnect</button>
+            </span>
+          </div>
+          {canvas.error && <p className="warn">{canvas.error}</p>}
+        </>
+      )}
+
+      {connect && <ConnectDialog canvas={canvas} onClose={() => setConnect(false)} />}
     </section>
   )
 }

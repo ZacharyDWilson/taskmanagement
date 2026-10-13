@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { createUISFX, getCue } from 'uisfx'
 import { useTheme } from './theme.jsx'
 import { CUSTOM_SFX, HAS_CUSTOM_SFX } from './customSfx.js'
+import { playAero } from './aeroSound.js'
 
 // Sound effects, from the open-source "UI SFX" library (MIT code, CC0 audio; https://uisfx.com).
 // Every theme gets its own sound personality (a "pack"). Same actions, different feel.
@@ -9,6 +10,9 @@ export const SOUND_PACKS = {
   // Polished, short menu clicks (think a console's system menu): crisp and dry, never bleepy.
   default: 'minimal',
   dark: 'minimal',
+  aero: 'aero',          // the Frutiger Aero look brings its own bubbly sounds
+  gordon: 'soft',
+  stonybrook: 'studio',
   console: 'minimal',
   capsule: 'minimal',
   arcade: 'studio',     // deliberately NOT the chiptune pack
@@ -20,7 +24,7 @@ export const SOUND_PACKS = {
   meadow: 'zen',
 }
 // Only the understated packs are offered. The bright, bleepy ones are left out on purpose.
-export const PACK_LABELS = { minimal: 'Minimal', soft: 'Soft', studio: 'Studio', zen: 'Zen', organic: 'Organic' }
+export const PACK_LABELS = { aero: 'Aero bubbles', minimal: 'Minimal', soft: 'Soft', studio: 'Studio', zen: 'Zen', organic: 'Organic' }
 export const DEFAULT_VOLUME = .85
 
 // '' = the default (your LOCK IN sounds when they exist, otherwise the theme's pack); 'theme' = the theme's pack
@@ -43,7 +47,8 @@ export function SoundProvider({ children }) {
   const [override, setOverrideState] = useState(readOverride)
   const themePack = SOUND_PACKS[theme] || 'minimal'
   const pack = (override && override !== 'theme') ? override : themePack
-  const useSignature = SIGNATURE && override === ''   // your own files lead; built-in packs fill any gaps
+  // your own files lead, unless the theme brings its own sounds (Aero)
+  const useSignature = SIGNATURE && override === '' && themePack !== 'aero'
 
   // One player for the whole app. The audio engine itself only starts after your first tap or key press.
   if (!player.current && typeof window !== 'undefined') {
@@ -59,17 +64,24 @@ export function SoundProvider({ children }) {
   }, [])
 
   // The theme (or your override) picks the pack.
-  useEffect(() => { try { player.current?.setPack(pack) } catch { /* ignore */ } }, [pack])
+  useEffect(() => { try { if (pack !== 'aero') player.current?.setPack(pack) } catch { /* ignore */ } }, [pack])
 
   const volumeRef = useRef(DEFAULT_VOLUME)
   const enabledRef = useRef(true)
   volumeRef.current = volume
   enabledRef.current = enabled
   const signatureRef = useRef(false)
+  const packRef = useRef('minimal')
+  packRef.current = pack
   signatureRef.current = useSignature
 
   const play = useCallback((cue, options) => {
     try {
+      if (packRef.current === 'aero') {
+        if (!enabledRef.current) return null
+        playAero(cue === 'intro' ? 'intro' : cue, volumeRef.current)
+        return { stop() {} }
+      }
       const file = signatureRef.current ? CUSTOM_SFX[cue] : null
       if (file) {
         if (!enabledRef.current) return null

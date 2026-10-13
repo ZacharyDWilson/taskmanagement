@@ -18,6 +18,7 @@ import Avatar from './components/Avatar.jsx'
 import Scene from './components/Scene.jsx'
 import Tour from './components/Tour.jsx'
 import LookPicker from './components/LookPicker.jsx'
+import InstallPrompt from './components/InstallPrompt.jsx'
 import { useSound } from './lib/sfx.jsx'
 import DevPanel from './components/DevPanel.jsx'
 import { APP_TITLE, IS_ADMIN, IS_DEV_BUILD } from './lib/env.js'
@@ -78,6 +79,7 @@ export default function App() {
       <Scene />
       {user && <LookPicker />}
       {user && <Tour />}
+      {user && <InstallPrompt />}
       {IS_ADMIN && user && <DevPanel />}
       {/* PC: icon dock down the side. Icons are dim until you hover them. */}
       {user && (

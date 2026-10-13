@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import FancyName from './FancyName.jsx'
 import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
 import { addDays, fmtDay, fmtMinutes, isoDate, startOfWeek } from '../lib/dates.js'
@@ -49,7 +50,7 @@ export default function WeekProgress({ name, xp, tasks, version }) {
   return (
     <section className="card">
       <div className="progress-head">
-        <h1>Hey{name ? `, ${name}` : ''} 👋</h1>
+        <h1>Hey{name ? <>, <FancyName name={name} /></> : ''}</h1>
         <LevelCard xp={xp} />
       </div>
 

@@ -83,6 +83,17 @@ export default function Shop() {
               : <button className="secondary" onClick={() => setTheme('dark')}>Equip</button>}
           </div>
 
+          {['gordon', 'stonybrook'].map(id => (
+            <div key={id} className={'theme-opt shop-card' + (theme === id ? ' on' : '')} data-t={id}>
+              <Swatch colors={themeById[id].preview} />
+              <strong>{themeById[id].name}</strong>
+              <small>{themeById[id].blurb}</small>
+              {theme === id
+                ? <span className="owned">✓ Equipped</span>
+                : <button className="secondary" onClick={() => setTheme(id)}>Equip</button>}
+            </div>
+          ))}
+
           {themes.map(item => {
             const t = themeById[item.id]
             const has = owned.has(item.id)

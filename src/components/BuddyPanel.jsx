@@ -29,6 +29,16 @@ function MatchPopup({ buddy, onClose }) {
   const [room, setRoom] = useState('')
   const [until, setUntil] = useState('')
   const bothNeedRoom = me.role === 'need_room' && partner.role === 'need_room'
+  const [copied, setCopied] = useState(false)
+  async function copyLink() {
+    try { await navigator.clipboard.writeText(BOOKING_URL) } catch {
+      // clipboard blocked: select the text instead so Ctrl+C works
+      const el = document.querySelector('.booking-url')
+      if (el) { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r) }
+    }
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2200)
+  }
   const name = partner.profiles?.display_name ?? 'Your buddy'
   return (
     <PickerModal title={`🎉 You're studying with ${name}`} onClose={onClose}>
@@ -47,11 +57,17 @@ function MatchPopup({ buddy, onClose }) {
       )}
       {bothNeedRoom && (
         <>
-          <div className="row between">
-            <strong>Find a Gordon study room</strong>
-            <a href={BOOKING_URL} target="_blank" rel="noreferrer">Open in new tab ↗</a>
+          <div className="booking-card">
+            <strong>Neither of you has a room yet</strong>
+            <p className="muted small">
+              Copy the Gordon booking link and open it in a new tab to book a room, then come back and
+              tell your buddy where it is.
+            </p>
+            <div className="row">
+              <button type="button" onClick={copyLink}>{copied ? '✓ Link copied' : 'Copy booking link'}</button>
+              <code className="booking-url">{BOOKING_URL}</code>
+            </div>
           </div>
-          <iframe className="embed" title="Jenks Library study rooms" src={BOOKING_URL} />
           <form className="stack" onSubmit={e => { e.preventDefault(); buddy.bookedRoom(room, until) }}>
             <input value={room} maxLength={60} placeholder="Booked one? Room name, e.g. Jenks 311"
               onChange={e => setRoom(e.target.value)} required />

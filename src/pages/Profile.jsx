@@ -7,6 +7,7 @@ import { levelFromXp, useCosmetics, useXp } from '../lib/levels.js'
 import { publicUrl, uploadImage } from '../lib/storage.js'
 import { DEMO, demoProfile, isDemoId } from '../lib/demo.js' // DEMO
 import Avatar from '../components/Avatar.jsx'
+import FancyName from '../components/FancyName.jsx'
 import PickerModal from '../components/PickerModal.jsx'
 import { replayTour } from '../components/Tour.jsx'
 import { useMusic } from '../lib/music.jsx'
@@ -153,7 +154,7 @@ export default function Profile() {
             <Avatar name={profile.display_name} path={profile.avatar_path} color={profile.color}
               frame={profile.frame} size={88} />
             <div>
-              <h1>{profile.display_name}</h1>
+              <h1><FancyName name={profile.display_name} /></h1>
               {profile.username && <p className="profile-username">@{profile.username}</p>}
               {profile.college && <p className="profile-username">🎓 {profile.college}</p>}
               <p className="muted">{mine ? 'This is how friends see you' : 'Friend profile'}</p>
@@ -264,7 +265,7 @@ export default function Profile() {
           {picker === 'theme' && (
             <PickerModal title="Page theme" hint="Changes how the whole site looks for you." onClose={() => setPicker(null)}>
               <div className="themes">
-                {THEMES.filter(t => t.id === 'default' || t.id === 'dark' || shop.owned.has(t.id)).map(t => (
+                {THEMES.filter(t => t.id === 'default' || t.free || shop.owned.has(t.id)).map(t => (
                   <button key={t.id} type="button" data-t={t.id} className={'theme-opt' + (theme === t.id ? ' on' : '')}
                     onClick={() => { setTheme(t.id); setPicker(null) }} aria-pressed={theme === t.id}>
                     <span className="theme-swatch" aria-hidden="true">
