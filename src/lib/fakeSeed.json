@@ -299,6 +299,30 @@
    "kind": "banner",
    "name": "Paint Splash",
    "min_level": 9999
+  },
+  {
+   "id": "frame-laurel",
+   "kind": "frame",
+   "name": "Laurel Wreath",
+   "min_level": 9999
+  },
+  {
+   "id": "frame-ember",
+   "kind": "frame",
+   "name": "Ember",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-summit",
+   "kind": "banner",
+   "name": "Summit",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-trophy",
+   "kind": "banner",
+   "name": "Trophy Room",
+   "min_level": 9999
   }
  ],
  "shop_items": [
@@ -307,406 +331,758 @@
    "kind": "theme",
    "name": "Sprout Squad",
    "price": 200,
-   "sort": 1
+   "sort": 1,
+   "exclusive": false
   },
   {
    "id": "console",
    "kind": "theme",
    "name": "Retro Console",
    "price": 400,
-   "sort": 2
+   "sort": 2,
+   "exclusive": false
   },
   {
    "id": "capsule",
    "kind": "theme",
    "name": "Capsule Quest",
    "price": 200,
-   "sort": 3
+   "sort": 3,
+   "exclusive": false
   },
   {
    "id": "island",
    "kind": "theme",
    "name": "Cozy Island",
    "price": 500,
-   "sort": 4
+   "sort": 4,
+   "exclusive": false
   },
   {
    "id": "meadow",
    "kind": "theme",
    "name": "Hero's Meadow",
    "price": 300,
-   "sort": 5
+   "sort": 5,
+   "exclusive": false
   },
   {
    "id": "arcade",
    "kind": "theme",
    "name": "Starlit Arcade",
    "price": 400,
-   "sort": 6
+   "sort": 6,
+   "exclusive": false
   },
   {
    "id": "banner-hive",
    "kind": "banner",
    "name": "Honey Hollow",
    "price": 200,
-   "sort": 20
+   "sort": 20,
+   "exclusive": false
   },
   {
    "id": "banner-grove",
    "kind": "banner",
    "name": "Sky Grove",
    "price": 300,
-   "sort": 21
+   "sort": 21,
+   "exclusive": false
   },
   {
    "id": "banner-cabin",
    "kind": "banner",
    "name": "Rainy Cabin",
    "price": 300,
-   "sort": 22
+   "sort": 22,
+   "exclusive": false
   },
   {
    "id": "banner-orbit",
    "kind": "banner",
    "name": "Orbit",
    "price": 300,
-   "sort": 23
+   "sort": 23,
+   "exclusive": false
   },
   {
    "id": "lofi",
    "kind": "theme",
    "name": "Lofi Nights",
    "price": 400,
-   "sort": 7
+   "sort": 7,
+   "exclusive": false
   },
   {
    "id": "shore",
    "kind": "theme",
    "name": "Coral Shore",
    "price": 400,
-   "sort": 8
+   "sort": 8,
+   "exclusive": false
   },
   {
    "id": "twilight",
    "kind": "theme",
    "name": "Twilight Sky",
    "price": 200,
-   "sort": 9
+   "sort": 9,
+   "exclusive": false
   },
   {
    "id": "timer-bar",
    "kind": "timer",
    "name": "Progress bar",
    "price": 80,
-   "sort": 30
+   "sort": 30,
+   "exclusive": false
   },
   {
    "id": "timer-digital",
    "kind": "timer",
    "name": "Digital",
    "price": 120,
-   "sort": 31
+   "sort": 31,
+   "exclusive": false
   },
   {
    "id": "timer-ring",
    "kind": "timer",
    "name": "Ring",
    "price": 160,
-   "sort": 32
+   "sort": 32,
+   "exclusive": false
   },
   {
    "id": "timer-analog",
    "kind": "timer",
    "name": "Analog",
    "price": 200,
-   "sort": 33
+   "sort": 33,
+   "exclusive": false
   },
   {
    "id": "timer-flip",
    "kind": "timer",
    "name": "Flip clock",
    "price": 240,
-   "sort": 34
+   "sort": 34,
+   "exclusive": false
   },
   {
    "id": "timer-hourglass",
    "kind": "timer",
    "name": "Hourglass",
    "price": 280,
-   "sort": 35
+   "sort": 35,
+   "exclusive": false
   },
   {
    "id": "timer-garden",
    "kind": "timer",
    "name": "Garden",
    "price": 320,
-   "sort": 36
+   "sort": 36,
+   "exclusive": false
   },
   {
    "id": "aero",
    "kind": "theme",
    "name": "Frutiger Aero",
    "price": 500,
-   "sort": 10
+   "sort": 10,
+   "exclusive": false
   },
   {
    "id": "frame-sunset",
    "kind": "frame",
    "name": "Sunset",
    "price": 100,
-   "sort": 40
+   "sort": 40,
+   "exclusive": false
   },
   {
    "id": "frame-forest",
    "kind": "frame",
    "name": "Forest",
    "price": 100,
-   "sort": 41
+   "sort": 41,
+   "exclusive": false
   },
   {
    "id": "frame-ocean",
    "kind": "frame",
    "name": "Ocean",
    "price": 100,
-   "sort": 42
+   "sort": 42,
+   "exclusive": false
   },
   {
    "id": "frame-mono",
    "kind": "frame",
    "name": "Mono",
    "price": 100,
-   "sort": 43
+   "sort": 43,
+   "exclusive": false
   },
   {
    "id": "frame-onyx",
    "kind": "frame",
    "name": "Onyx",
    "price": 100,
-   "sort": 44
+   "sort": 44,
+   "exclusive": false
   },
   {
    "id": "frame-chrome",
    "kind": "frame",
    "name": "Chrome",
    "price": 200,
-   "sort": 45
+   "sort": 45,
+   "exclusive": false
   },
   {
    "id": "frame-cat",
    "kind": "frame",
    "name": "Cat ears",
    "price": 200,
-   "sort": 46
+   "sort": 46,
+   "exclusive": false
   },
   {
    "id": "frame-bunny",
    "kind": "frame",
    "name": "Bunny ears",
    "price": 200,
-   "sort": 47
+   "sort": 47,
+   "exclusive": false
   },
   {
    "id": "frame-hearts",
    "kind": "frame",
    "name": "Hearts",
    "price": 200,
-   "sort": 48
+   "sort": 48,
+   "exclusive": false
   },
   {
    "id": "frame-pixel",
    "kind": "frame",
    "name": "Pixel",
    "price": 200,
-   "sort": 49
+   "sort": 49,
+   "exclusive": false
   },
   {
    "id": "frame-terminal",
    "kind": "frame",
    "name": "Terminal",
    "price": 200,
-   "sort": 50
+   "sort": 50,
+   "exclusive": false
   },
   {
    "id": "frame-circuit",
    "kind": "frame",
    "name": "Circuit board",
    "price": 200,
-   "sort": 51
+   "sort": 51,
+   "exclusive": false
   },
   {
    "id": "frame-d20",
    "kind": "frame",
    "name": "Critical roll",
    "price": 200,
-   "sort": 52
+   "sort": 52,
+   "exclusive": false
   },
   {
    "id": "frame-pulse",
    "kind": "frame",
    "name": "Pulse",
    "price": 300,
-   "sort": 53
+   "sort": 53,
+   "exclusive": false
   },
   {
    "id": "frame-glitch",
    "kind": "frame",
    "name": "Glitch",
    "price": 300,
-   "sort": 54
+   "sort": 54,
+   "exclusive": false
   },
   {
    "id": "frame-aurora",
    "kind": "frame",
    "name": "Aurora",
    "price": 300,
-   "sort": 55
+   "sort": 55,
+   "exclusive": false
   },
   {
    "id": "frame-sparkle",
    "kind": "frame",
    "name": "Sparkle",
    "price": 300,
-   "sort": 56
+   "sort": 56,
+   "exclusive": false
   },
   {
    "id": "perk-gif",
    "kind": "perk",
    "name": "Animated profile picture (GIF)",
    "price": 500,
-   "sort": 60
+   "sort": 60,
+   "exclusive": false
   },
   {
    "id": "banner-route",
    "kind": "banner",
    "name": "Capsule Route",
    "price": 300,
-   "sort": 24
+   "sort": 24,
+   "exclusive": false
   },
   {
    "id": "banner-sunrise",
    "kind": "banner",
    "name": "Sunrise Hill",
    "price": 200,
-   "sort": 25
+   "sort": 25,
+   "exclusive": false
   },
   {
    "id": "banner-strings",
    "kind": "banner",
    "name": "Strings",
    "price": 200,
-   "sort": 26
+   "sort": 26,
+   "exclusive": false
   },
   {
    "id": "rose",
    "kind": "theme",
    "name": "Dusty Rose",
    "price": 500,
-   "sort": 11
+   "sort": 11,
+   "exclusive": false
   },
   {
    "id": "tile",
    "kind": "theme",
    "name": "Glazed Tile",
    "price": 400,
-   "sort": 12
+   "sort": 12,
+   "exclusive": false
   },
   {
    "id": "handheld",
    "kind": "theme",
    "name": "Handheld Glow",
    "price": 400,
-   "sort": 13
+   "sort": 13,
+   "exclusive": false
   },
   {
    "id": "banner-valley",
    "kind": "banner",
    "name": "Valley Run",
    "price": 300,
-   "sort": 27
+   "sort": 27,
+   "exclusive": false
   },
   {
    "id": "banner-pond",
    "kind": "banner",
    "name": "Lily Pond",
    "price": 300,
-   "sort": 28
+   "sort": 28,
+   "exclusive": false
   },
   {
    "id": "banner-glow",
    "kind": "banner",
    "name": "Handheld Glow",
    "price": 300,
-   "sort": 29
+   "sort": 29,
+   "exclusive": false
   },
   {
    "id": "banner-chalk",
    "kind": "banner",
    "name": "Chalkboard",
    "price": 200,
-   "sort": 30
+   "sort": 30,
+   "exclusive": false
   },
   {
    "id": "banner-terminal",
    "kind": "banner",
    "name": "Terminal",
    "price": 200,
-   "sort": 31
+   "sort": 31,
+   "exclusive": false
   },
   {
    "id": "banner-circuit",
    "kind": "banner",
    "name": "Circuit Board",
    "price": 300,
-   "sort": 32
+   "sort": 32,
+   "exclusive": false
   },
   {
    "id": "banner-lab",
    "kind": "banner",
    "name": "Science Lab",
    "price": 300,
-   "sort": 33
+   "sort": 33,
+   "exclusive": false
   },
   {
    "id": "banner-stadium",
    "kind": "banner",
    "name": "Stadium Lights",
    "price": 300,
-   "sort": 34
+   "sort": 34,
+   "exclusive": false
   },
   {
    "id": "banner-court",
    "kind": "banner",
    "name": "Hardwood",
    "price": 300,
-   "sort": 35
+   "sort": 35,
+   "exclusive": false
   },
   {
    "id": "banner-quad",
    "kind": "banner",
    "name": "Campus Quad",
    "price": 300,
-   "sort": 36
+   "sort": 36,
+   "exclusive": false
   },
   {
    "id": "banner-skyline",
    "kind": "banner",
    "name": "City Sunset",
    "price": 200,
-   "sort": 37
+   "sort": 37,
+   "exclusive": false
   },
   {
    "id": "banner-library",
    "kind": "banner",
    "name": "The Stacks",
    "price": 300,
-   "sort": 38
+   "sort": 38,
+   "exclusive": false
   },
   {
    "id": "banner-paint",
    "kind": "banner",
    "name": "Paint Splash",
    "price": 200,
-   "sort": 39
+   "sort": 39,
+   "exclusive": false
+  },
+  {
+   "id": "frame-laurel",
+   "kind": "frame",
+   "name": "Laurel Wreath",
+   "price": 0,
+   "sort": 70,
+   "exclusive": true
+  },
+  {
+   "id": "frame-ember",
+   "kind": "frame",
+   "name": "Ember",
+   "price": 0,
+   "sort": 71,
+   "exclusive": true
+  },
+  {
+   "id": "banner-summit",
+   "kind": "banner",
+   "name": "Summit",
+   "price": 0,
+   "sort": 72,
+   "exclusive": true
+  },
+  {
+   "id": "banner-trophy",
+   "kind": "banner",
+   "name": "Trophy Room",
+   "price": 0,
+   "sort": 73,
+   "exclusive": true
+  },
+  {
+   "id": "golden",
+   "kind": "theme",
+   "name": "Golden Hour",
+   "price": 0,
+   "sort": 74,
+   "exclusive": true
+  }
+ ],
+ "achievements": [
+  {
+   "id": "first-task",
+   "name": "First Check",
+   "description": "Finish your first task.",
+   "icon": "✅",
+   "tier": "bronze",
+   "stat": "tasks_done",
+   "goal": 1,
+   "reward_coins": 10,
+   "reward_item": null,
+   "sort": 1
+  },
+  {
+   "id": "first-focus",
+   "name": "Locked In",
+   "description": "Complete your first focus session.",
+   "icon": "🔒",
+   "tier": "bronze",
+   "stat": "sessions",
+   "goal": 1,
+   "reward_coins": 10,
+   "reward_item": null,
+   "sort": 2
+  },
+  {
+   "id": "first-post",
+   "name": "Show and Tell",
+   "description": "Share your first progress post.",
+   "icon": "📸",
+   "tier": "bronze",
+   "stat": "posts",
+   "goal": 1,
+   "reward_coins": 15,
+   "reward_item": null,
+   "sort": 3
+  },
+  {
+   "id": "all-set",
+   "name": "All Set Up",
+   "description": "Add a profile picture and a bio.",
+   "icon": "🧑‍🎓",
+   "tier": "bronze",
+   "stat": "profile_complete",
+   "goal": 1,
+   "reward_coins": 25,
+   "reward_item": null,
+   "sort": 4
+  },
+  {
+   "id": "streak-3",
+   "name": "On a Roll",
+   "description": "Study three days in a row.",
+   "icon": "🔥",
+   "tier": "bronze",
+   "stat": "streak_days",
+   "goal": 3,
+   "reward_coins": 40,
+   "reward_item": null,
+   "sort": 10
+  },
+  {
+   "id": "streak-7",
+   "name": "Week Warrior",
+   "description": "Study seven days in a row.",
+   "icon": "🏅",
+   "tier": "silver",
+   "stat": "streak_days",
+   "goal": 7,
+   "reward_coins": 100,
+   "reward_item": "frame-laurel",
+   "sort": 11
+  },
+  {
+   "id": "week-5h",
+   "name": "Five Hour Week",
+   "description": "Focus for 5 hours in a single week.",
+   "icon": "⏳",
+   "tier": "bronze",
+   "stat": "weekly_minutes_best",
+   "goal": 300,
+   "reward_coins": 40,
+   "reward_item": null,
+   "sort": 12
+  },
+  {
+   "id": "week-15h",
+   "name": "Full-Time Student",
+   "description": "Focus for 15 hours in a single week.",
+   "icon": "📚",
+   "tier": "silver",
+   "stat": "weekly_minutes_best",
+   "goal": 900,
+   "reward_coins": 100,
+   "reward_item": null,
+   "sort": 13
+  },
+  {
+   "id": "session-60",
+   "name": "Deep Dive",
+   "description": "Finish a 60 minute focus session.",
+   "icon": "🌊",
+   "tier": "bronze",
+   "stat": "longest_session",
+   "goal": 60,
+   "reward_coins": 30,
+   "reward_item": null,
+   "sort": 20
+  },
+  {
+   "id": "session-120",
+   "name": "Marathon",
+   "description": "Finish a 2 hour focus session.",
+   "icon": "🏃",
+   "tier": "silver",
+   "stat": "longest_session",
+   "goal": 120,
+   "reward_coins": 75,
+   "reward_item": null,
+   "sort": 21
+  },
+  {
+   "id": "hours-25",
+   "name": "25 Hours In",
+   "description": "Focus for 25 hours in total.",
+   "icon": "⛰️",
+   "tier": "silver",
+   "stat": "focus_minutes",
+   "goal": 1500,
+   "reward_coins": 100,
+   "reward_item": "banner-summit",
+   "sort": 22
+  },
+  {
+   "id": "hours-100",
+   "name": "Centurion",
+   "description": "Focus for 100 hours in total.",
+   "icon": "👑",
+   "tier": "gold",
+   "stat": "focus_minutes",
+   "goal": 6000,
+   "reward_coins": 300,
+   "reward_item": "golden",
+   "sort": 23
+  },
+  {
+   "id": "tasks-25",
+   "name": "Task Slayer",
+   "description": "Finish 25 tasks.",
+   "icon": "⚔️",
+   "tier": "bronze",
+   "stat": "tasks_done",
+   "goal": 25,
+   "reward_coins": 40,
+   "reward_item": null,
+   "sort": 30
+  },
+  {
+   "id": "tasks-100",
+   "name": "Finisher",
+   "description": "Finish 100 tasks.",
+   "icon": "🌋",
+   "tier": "silver",
+   "stat": "tasks_done",
+   "goal": 100,
+   "reward_coins": 120,
+   "reward_item": "frame-ember",
+   "sort": 31
+  },
+  {
+   "id": "comments-10",
+   "name": "Good Friend",
+   "description": "Write 10 comments on posts.",
+   "icon": "💬",
+   "tier": "bronze",
+   "stat": "comments",
+   "goal": 10,
+   "reward_coins": 30,
+   "reward_item": null,
+   "sort": 40
+  },
+  {
+   "id": "reactions-10",
+   "name": "Fan Favourite",
+   "description": "Get 10 reactions on your posts.",
+   "icon": "❤️",
+   "tier": "bronze",
+   "stat": "reactions_received",
+   "goal": 10,
+   "reward_coins": 30,
+   "reward_item": null,
+   "sort": 41
+  },
+  {
+   "id": "reactions-50",
+   "name": "Crowd Pleaser",
+   "description": "Get 50 reactions on your posts.",
+   "icon": "🎉",
+   "tier": "silver",
+   "stat": "reactions_received",
+   "goal": 50,
+   "reward_coins": 100,
+   "reward_item": null,
+   "sort": 42
+  },
+  {
+   "id": "level-5",
+   "name": "Rising Star",
+   "description": "Reach level 5.",
+   "icon": "⭐",
+   "tier": "silver",
+   "stat": "level",
+   "goal": 5,
+   "reward_coins": 75,
+   "reward_item": null,
+   "sort": 50
+  },
+  {
+   "id": "level-10",
+   "name": "Veteran",
+   "description": "Reach level 10.",
+   "icon": "🏆",
+   "tier": "gold",
+   "stat": "level",
+   "goal": 10,
+   "reward_coins": 250,
+   "reward_item": "banner-trophy",
+   "sort": 51
+  },
+  {
+   "id": "first-buy",
+   "name": "Window Shopper",
+   "description": "Buy something in the Shop.",
+   "icon": "🛍️",
+   "tier": "bronze",
+   "stat": "purchases",
+   "goal": 1,
+   "reward_coins": 20,
+   "reward_item": null,
+   "sort": 60
+  },
+  {
+   "id": "collector",
+   "name": "Collector",
+   "description": "Own 6 things you bought in the Shop.",
+   "icon": "🧺",
+   "tier": "silver",
+   "stat": "purchases",
+   "goal": 6,
+   "reward_coins": 100,
+   "reward_item": null,
+   "sort": 61
   }
  ]
 }

@@ -9,7 +9,10 @@ const files = fs.readdirSync(dir).filter(f => /^\d+.*\.sql$/.test(f)).sort()
 const cosmetics = new Map()
 const shop = new Map()
 
-const tuple = /\(\s*'([^']+)'\s*,\s*'([^']+)'\s*,\s*'((?:[^']|'')*)'\s*,\s*(\d+)\s*(?:,\s*(\d+)\s*)?\)/g
+const tuple = /\(\s*'([^']+)'\s*,\s*'([^']+)'\s*,\s*'((?:[^']|'')*)'\s*,\s*(\d+)\s*(?:,\s*(\d+)\s*)?(?:,\s*(true|false)\s*)?\)/g
+// achievements: (id, name, description, icon, tier, stat, goal, coins, reward item or null, sort)
+const achTuple = /\(\s*'([^']+)'\s*,\s*'((?:[^']|'')*)'\s*,\s*'((?:[^']|'')*)'\s*,\s*'([^']+)'\s*,\s*'(bronze|silver|gold)'\s*,\s*'([^']+)'\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(null|'[^']+')\s*,\s*(\d+)\s*\)/g
+const achievements = new Map()
 
 for (const f of files) {
   const sql = fs.readFileSync(path.join(dir, f), 'utf8')
@@ -20,10 +23,24 @@ for (const f of files) {
     let t
     tuple.lastIndex = 0
     while ((t = tuple.exec(m[2]))) {
-      const [, id, kind, rawName, n1, n2] = t
+      const [, id, kind, rawName, n1, n2, ex] = t
       const name = rawName.replace(/''/g, "'")
       if (table === 'cosmetics') cosmetics.set(id, { id, kind, name, min_level: Number(n1) })
-      else shop.set(id, { id, kind, name, price: Number(n1), sort: Number(n2 ?? 0) })
+      else shop.set(id, { id, kind, name, price: Number(n1), sort: Number(n2 ?? 0), exclusive: ex === 'true' })
+    }
+  }
+}
+
+for (const f of files) {
+  const sql = fs.readFileSync(path.join(dir, f), 'utf8')
+  const ins = /insert\s+into\s+public\.achievements[^;]*?values([\s\S]*?)on\s+conflict/gi
+  let b
+  while ((b = ins.exec(sql))) {
+    achTuple.lastIndex = 0
+    let a
+    while ((a = achTuple.exec(b[1]))) {
+      const [, id, name, desc, icon, tier, stat, goal, coins, item, sort] = a
+      achievements.set(id, { id, name: name.replace(/''/g, "'"), description: desc.replace(/''/g, "'"), icon, tier, stat, goal: Number(goal), reward_coins: Number(coins), reward_item: item === 'null' ? null : item.slice(1, -1), sort: Number(sort) })
     }
   }
 }
@@ -36,6 +53,6 @@ for (const f of files) {
 }
 
 // the starter-theme ids (free looks) so the shop knows them
-const out = { cosmetics: [...cosmetics.values()], shop_items: [...shop.values()] }
+const out = { cosmetics: [...cosmetics.values()], shop_items: [...shop.values()], achievements: [...achievements.values()] }
 fs.writeFileSync('src/lib/fakeSeed.json', JSON.stringify(out, null, 1))
 console.log(`cosmetics: ${out.cosmetics.length}, shop items: ${out.shop_items.length}`)

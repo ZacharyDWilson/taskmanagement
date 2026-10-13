@@ -10,6 +10,7 @@ import Avatar, { FramePreview } from '../components/Avatar.jsx'
 import FancyName from '../components/FancyName.jsx'
 import PickerModal from '../components/PickerModal.jsx'
 import ThemePreview from '../components/ThemePreview.jsx'
+import BadgeStrip from '../components/BadgeStrip.jsx'
 import { replayTour } from '../components/Tour.jsx'
 import { useMusic } from '../lib/music.jsx'
 import { usernameProblem } from '../lib/username.js'
@@ -38,7 +39,7 @@ function CustomizeRow({ label, name, preview, onClick }) {
   )
 }
 
-function StylePicker({ title, items, value, level, shopIds, owned, onChange }) {
+function StylePicker({ title, items, value, level, shopIds, exclusiveIds, owned, onChange }) {
   // Shop styles show up here only once you own them, and aren't gated by level.
   const visible = items.filter(c => !shopIds.has(c.id) || owned.has(c.id))
   return (
@@ -58,7 +59,7 @@ function StylePicker({ title, items, value, level, shopIds, owned, onChange }) {
             >
               {c.kind === 'frame' ? <FramePreview id={c.id} size={44} /> : <span className={'swatch-preview ' + c.id} />}
               <span>{c.name}</span>
-              <small>{shopIds.has(c.id) ? 'From the Shop' : locked ? `🔒 Lv ${c.min_level}` : `Lv ${c.min_level}`}</small>
+              <small>{exclusiveIds?.has(c.id) ? '✦ Earned' : shopIds.has(c.id) ? 'From the Shop' : locked ? `🔒 Lv ${c.min_level}` : `Lv ${c.min_level}`}</small>
             </button>
           )
         })}
@@ -87,6 +88,7 @@ export default function Profile() {
   const cosmetics = useCosmetics()
   const level = levelFromXp(xp ?? 0)
   const shopIds = new Set(shop.items.map(i => i.id))
+  const exclusiveIds = new Set(shop.items.filter(i => i.exclusive).map(i => i.id))
   const sound = useSound()
   const music = useMusic()
   const [calm, setCalm] = useReducedMotion()
@@ -196,6 +198,7 @@ export default function Profile() {
             )}
           </div>
           <LevelCard xp={xp} />
+          <BadgeStrip userId={userId} mine={mine} />
           {profile.bio && <p>{profile.bio}</p>}
           {!profile.bio && !mine && <p className="muted">No bio yet.</p>}
         </section>
@@ -309,13 +312,13 @@ export default function Profile() {
           )}
           {picker === 'frame' && (
             <PickerModal title="Picture frame" hint="Press Save profile afterwards to keep it." onClose={() => setPicker(null)}>
-              <StylePicker level={IS_ADMIN ? 999 : level} shopIds={shopIds} owned={shop.owned} value={profile.frame}
+              <StylePicker level={IS_ADMIN ? 999 : level} shopIds={shopIds} exclusiveIds={exclusiveIds} owned={shop.owned} value={profile.frame}
                 items={cosmetics.filter(c => c.kind === 'frame')} onChange={frame => { edit({ frame }); setPicker(null) }} />
             </PickerModal>
           )}
           {picker === 'banner' && (
             <PickerModal title="Banner" hint="Press Save profile afterwards to keep it." onClose={() => setPicker(null)}>
-              <StylePicker level={IS_ADMIN ? 999 : level} shopIds={shopIds} owned={shop.owned} value={profile.banner}
+              <StylePicker level={IS_ADMIN ? 999 : level} shopIds={shopIds} exclusiveIds={exclusiveIds} owned={shop.owned} value={profile.banner}
                 items={cosmetics.filter(c => c.kind === 'banner')} onChange={banner => { edit({ banner }); setPicker(null) }} />
             </PickerModal>
           )}

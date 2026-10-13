@@ -3097,3 +3097,149 @@ html, body { max-width: 100%; overflow-x: clip; }
 @media (max-width: 700px) {
   .tabbar a .icon, .tabbar a .avatar { flex: none; }
 }
+
+/* ====================================================================================================================
+   ACHIEVEMENTS: badges, the Achievements page, and the earn-only styles (two frames, two banners, the Golden Hour theme)
+   ================================================================================================================== */
+
+/* ---- earn-only frames and banners ---------------------------------------------------------------------------- */
+.frame-laurel {
+  background: conic-gradient(from 20deg, #e0b43a, #6aa84f, #bfd86a, #e0b43a, #5b9a45, #f1d36b, #e0b43a);
+  box-shadow: 0 0 0 1.5px #8a6410, 0 0 10px rgba(224, 180, 58, .55);
+}
+.frame-laurel::before, .frame-laurel::after {
+  content: '❦'; position: absolute; bottom: -10%; z-index: 2; line-height: 1; color: #3f7a2c; pointer-events: none;
+  font-size: calc(var(--s, 40px) * .34); text-shadow: 0 0 3px #fff7d0;
+}
+.frame-laurel::before { left: -6%; transform: rotate(-20deg) scaleX(-1); }
+.frame-laurel::after  { right: -6%; transform: rotate(20deg); }
+.frame-ember {
+  background: radial-gradient(circle at 50% 30%, #fff1a8, #ff9a2e 45%, #d9381e 80%);
+  box-shadow: 0 0 10px rgba(255, 120, 30, .75), 0 0 0 1.5px #7a1d0a;
+  animation: frame-ember 1.6s ease-in-out infinite alternate;
+}
+.frame-ember::after {
+  content: '🔥'; position: absolute; top: -16%; right: -10%; z-index: 2; line-height: 1; pointer-events: none;
+  font-size: calc(var(--s, 40px) * .34); animation: frame-twinkle 1.4s ease-in-out infinite;
+}
+@keyframes frame-ember { from { box-shadow: 0 0 6px rgba(255, 120, 30, .55), 0 0 0 1.5px #7a1d0a; } to { box-shadow: 0 0 15px rgba(255, 150, 40, .95), 0 0 0 1.5px #7a1d0a; } }
+.banner-summit { background: #2b3f6b url('./assets/banners/summit.webp') center 55% / cover no-repeat; }
+.banner-trophy { background: #3b2410 url('./assets/banners/trophy.webp') center 50% / cover no-repeat; }
+
+/* ---- badges on a profile ----------------------------------------------------------------------------------- */
+.badge-strip { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: .1rem 0 .2rem; }
+.badge {
+  display: inline-grid; place-items: center; width: 2.1rem; height: 2.1rem; border-radius: 50%; font-size: 1.1rem; cursor: default;
+  border: 2px solid var(--tier, #c98a4b); box-shadow: inset 0 -3px 6px rgba(0, 0, 0, .14), 0 2px 5px rgba(0, 0, 0, .18);
+  background: radial-gradient(circle at 35% 28%, #fff, var(--tier-soft, #f2d3b2) 70%);
+}
+.tier-bronze { --tier: #b87333; --tier-soft: #f2d3b2; }
+.tier-silver { --tier: #8f9bb0; --tier-soft: #e6ebf3; }
+.tier-gold   { --tier: #d4a017; --tier-soft: #fff0b3; }
+.badge-more { margin-left: .2rem; text-decoration: none; color: var(--muted); }
+.badge-empty { margin: 0; }
+
+/* ---- the Achievements page ------------------------------------------------------------------------------- */
+.achievements { display: grid; gap: 1rem; }
+.ach-head { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
+.ach-head h1 { margin: 0; }
+.ach-summary { text-align: right; }
+.ach-summary strong { font-size: 1.9rem; line-height: 1; }
+.ach-summary small { font-size: 1rem; opacity: .6; font-weight: 600; }
+.ach-summary .muted { display: block; }
+.ach-filters { display: flex; flex-wrap: wrap; gap: .6rem; }
+.ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: .8rem; }
+.ach-card { position: relative; display: grid; grid-template-columns: auto 1fr; gap: .8rem; align-items: start; padding: .9rem; border-left: 5px solid var(--tier, var(--glass-line)); }
+.ach-card:not(.earned) .ach-medal { filter: grayscale(1); opacity: .55; }
+.ach-card.earned { background-image: linear-gradient(135deg, color-mix(in srgb, var(--tier-soft, #fff) 45%, transparent), transparent 60%); }
+.ach-medal {
+  display: grid; place-items: center; width: 3.2rem; height: 3.2rem; border-radius: 50%; font-size: 1.7rem;
+  border: 3px solid var(--tier, #c98a4b); background: radial-gradient(circle at 35% 28%, #fff, var(--tier-soft, #f2d3b2) 72%);
+  box-shadow: inset 0 -4px 8px rgba(0, 0, 0, .12), 0 3px 8px rgba(0, 0, 0, .15);
+}
+.ach-body h3 { margin: 0 0 .1rem; font-size: 1.02rem; }
+.ach-body p { margin: 0 0 .4rem; }
+.ach-tier { text-transform: uppercase; letter-spacing: .06em; font-size: .62rem; opacity: .7; margin-left: .3rem; }
+.ach-done { color: #2f7a46; font-weight: 700; }
+.ach-progress { position: relative; height: 1.15rem; border-radius: 999px; background: var(--glass-inner); border: 1px solid var(--glass-line); overflow: hidden; margin-bottom: .4rem; }
+.ach-progress > span { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--accent), var(--accent-2, var(--accent))); border-radius: 999px; min-width: 6px; }
+.ach-progress small { position: relative; display: block; text-align: center; font-size: .68rem; line-height: 1.05rem; font-weight: 700; color: var(--text); text-shadow: 0 0 3px var(--glass-strong, #fff); }
+.ach-rewards { display: flex; flex-wrap: wrap; gap: .35rem; }
+.reward-chip { font-size: .74rem; font-weight: 700; padding: .12rem .5rem; border-radius: 999px; background: var(--glass-inner); border: 1px solid var(--glass-line); }
+.reward-chip.exclusive { background: linear-gradient(135deg, #fff3c4, #ffd9a0); border-color: #e0b04a; color: #5d3a05; }
+.ach-pin { position: absolute; top: .55rem; right: .55rem; padding: .2rem .55rem; font-size: .72rem; }
+.ach-pin.on { border-color: var(--accent); }
+@media (max-width: 520px) { .ach-grid { grid-template-columns: 1fr; } .ach-summary { text-align: left; } }
+
+/* ---- Golden Hour: earn-only theme. Cream and gold glass in low sun, with glossy gold coin buttons ------------------ */
+:root[data-theme='golden'] {
+  --text: #3a2909; --muted: #6b5226; --accent: #a86b05; --accent-2: #e2a62a; --on-accent: #ffffff;
+  --glass: rgba(255, 249, 232, .72); --glass-inner: rgba(255, 244, 214, .6); --glass-field: rgba(255, 252, 242, .92);
+  --glass-strong: rgba(255, 250, 236, .96); --glass-line: rgba(232, 195, 106, .85); --glass-shadow: 0 12px 34px rgba(120, 78, 8, .22);
+  --sky-1: #ffe7a8; --sky-2: #f2a65a;
+  --font: 'Nunito', 'Quicksand', system-ui, sans-serif;
+  --font-head: 'Fredoka', 'Nunito', system-ui, sans-serif; --head-weight: 600;
+  --blur: 8px; --r: 22px;
+  --card-shape: 24px; --tile-shape: 18px; --btn-shape: 999px; --field-shape: 999px; --dock-shape: 50%;
+}
+:root[data-theme='golden'] .scene { background: linear-gradient(180deg, #fff7de 0%, #ffe3a1 42%, #f7b866 78%, #e98f4f 100%); }
+:root[data-theme='golden'] .scene::before {      /* slow sun rays from the top corner */
+  content: ''; position: absolute; right: -20vmax; top: -30vmax; width: 90vmax; height: 90vmax; border-radius: 50%; pointer-events: none;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 255, 255, .34) 0 6deg, rgba(255, 255, 255, 0) 6deg 16deg);
+  -webkit-mask-image: radial-gradient(circle, #000 0, transparent 68%); mask-image: radial-gradient(circle, #000 0, transparent 68%);
+  animation: spin 240s linear infinite;
+}
+:root[data-theme='golden'] .scene::after { content: none; }
+:root[data-theme='golden'] .scene .g1 { width: 56vmax; height: 46vmax; right: -12vmax; top: -16vmax; left: auto; background: radial-gradient(circle, rgba(255, 255, 230, .95), transparent 66%); animation: drift-a 40s ease-in-out infinite alternate; }
+:root[data-theme='golden'] .scene .g2 { width: 60vmax; height: 40vmax; left: -16vmax; bottom: -14vmax; top: auto; background: radial-gradient(circle, rgba(255, 170, 90, .6), transparent 66%); animation: drift-b 46s ease-in-out infinite alternate; }
+:root[data-theme='golden'] .scene span {         /* little gold coins drifting up */
+  left: calc(var(--i) * 7.4% + 1%); bottom: -8vh; width: calc(16px + var(--i) * 2.4px); aspect-ratio: 1; border-radius: 50%; opacity: .85;
+  background: radial-gradient(circle at 34% 28%, #fff7c8 0 14%, #f6c93d 46%, #b97b0a 100%);
+  border: 1.5px solid rgba(255, 244, 190, .9); box-shadow: inset 0 0 0 3px rgba(190, 125, 10, .35), 0 3px 8px rgba(120, 78, 8, .25);
+  --drift: calc(var(--i) * .4vw - 2.5vw); animation: rise calc(28s + var(--i) * 2s) ease-in infinite; animation-delay: calc(var(--i) * -3.6s);
+}
+:root[data-theme='golden'] .scene span:nth-of-type(n + 10) { display: none; }
+:root[data-theme='golden'] .card, :root[data-theme='golden'] .tile {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, .05) 60%);
+  border: 1.5px solid #e8c36a; box-shadow: inset 0 1px 0 #fff, var(--glass-shadow);
+}
+:root[data-theme='golden'] h1, :root[data-theme='golden'] h2 { color: #5a3a05; }
+:root[data-theme='golden'] .brand { color: #5a3a05; text-shadow: 0 1px 0 rgba(255, 255, 255, .8); }
+:root[data-theme='golden'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip):not(.secondary):not(.seg-btn),
+:root[data-theme='golden'] .tabs button.active {
+  background: linear-gradient(180deg, #ffe58a 0%, #f0b72e 52%, #cf8f12 100%); color: #3a2300; text-shadow: 0 1px 0 rgba(255, 255, 255, .55);
+  border: 1.5px solid #9a6a08; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), 0 4px 10px rgba(120, 78, 8, .3);
+}
+:root[data-theme='golden'] button.secondary, :root[data-theme='golden'] .tabs button {
+  background: linear-gradient(180deg, #fffdf5, #fdeebd); border: 1.5px solid #e0bb62; color: var(--text);
+  box-shadow: inset 0 1px 0 #fff, 0 3px 6px rgba(120, 78, 8, .15);
+}
+:root[data-theme='golden'] .seg-btn.on { background: #a86b05; }
+:root[data-theme='golden'] .dock {
+  background: rgba(255, 249, 232, .86); border: 1.5px solid #e8c36a; -webkit-backdrop-filter: none; backdrop-filter: none;
+  box-shadow: inset 0 1px 0 #fff, 0 12px 30px rgba(120, 78, 8, .25); padding: .55rem .5rem; gap: .75rem; overflow: visible;
+}
+:root[data-theme='golden'] .dock a {                 /* gold coin buttons: a raised rim and an embossed middle */
+  width: 54px; height: 54px; border-radius: 50%; opacity: 1; color: #5a3a05;
+  border: 2px solid #fff2b8;
+  background:
+    radial-gradient(circle at 50% 50%, #fff4c4 0 52%, rgba(255, 244, 196, 0) 54%),
+    radial-gradient(circle at 32% 26%, #fff8d2, #f6c93d 52%, #b97b0a 100%);
+  box-shadow: inset 0 0 0 4px rgba(190, 125, 10, .4), 0 7px 14px rgba(120, 78, 8, .35);
+}
+:root[data-theme='golden'] .dock a .icon { stroke-width: 2.3; filter: none; }
+:root[data-theme='golden'] .dock a:hover, :root[data-theme='golden'] .dock a:focus-visible { filter: brightness(1.06); box-shadow: inset 0 0 0 4px rgba(190, 125, 10, .4), 0 10px 20px rgba(120, 78, 8, .45); }
+:root[data-theme='golden'] .dock a.active { box-shadow: inset 0 0 0 4px rgba(190, 125, 10, .4), 0 0 0 3px #fff, 0 0 0 5px #e2a62a, 0 8px 18px rgba(120, 78, 8, .4); }
+@media (max-width: 700px) {
+  :root[data-theme='golden'] .tabbar a { color: #5a3a05; font-weight: 800; }
+  :root[data-theme='golden'] .tabbar a .icon {
+    box-sizing: content-box; width: 22px; height: 22px; padding: 7px; border-radius: 50%; stroke-width: 2.3; color: #5a3a05;
+    border: 1.5px solid #fff2b8;
+    background: radial-gradient(circle at 50% 50%, #fff4c4 0 52%, rgba(255, 244, 196, 0) 54%), radial-gradient(circle at 32% 26%, #fff8d2, #f6c93d 52%, #b97b0a 100%);
+    box-shadow: inset 0 0 0 3px rgba(190, 125, 10, .4), 0 4px 8px rgba(120, 78, 8, .3);
+  }
+  :root[data-theme='golden'] .tabbar a.active .icon { box-shadow: inset 0 0 0 3px rgba(190, 125, 10, .4), 0 0 0 2px #fff, 0 0 0 3.5px #e2a62a; }
+  :root[data-theme='golden'] .tabbar a .avatar { box-shadow: 0 0 0 3px #fff2b8, 0 0 0 5px #e2a62a; }
+}
+@media (prefers-reduced-motion: reduce) { :root[data-theme='golden'] .scene::before, :root[data-theme='golden'] .scene span { animation: none; } }
+.theme-opt[data-t='golden'] strong { font-family: 'Fredoka', 'Nunito', sans-serif; font-weight: 700; }

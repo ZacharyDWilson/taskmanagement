@@ -23,9 +23,11 @@ export default function Shop() {
   const toast = useToast()
   const [busy, setBusy] = useState('')
 
-  const themes = items.filter(i => i.kind === 'theme')
-  const banners = items.filter(i => i.kind === 'banner')
-  const frames = items.filter(i => i.kind === 'frame')
+  // earn-only styles (achievement rewards) are never for sale
+  const sellable = items.filter(i => !i.exclusive)
+  const themes = sellable.filter(i => i.kind === 'theme')
+  const banners = sellable.filter(i => i.kind === 'banner')
+  const frames = sellable.filter(i => i.kind === 'frame')
   const timers = items.filter(i => i.kind === 'timer')
   const perks = items.filter(i => i.kind === 'perk')
 
@@ -158,6 +160,7 @@ export default function Shop() {
       <section className="card">
         <h2>How to earn coins</h2>
         <ul className="earn">
+          <li><strong>Achievements:</strong> every badge pays coins, and a few unlock styles you can't buy. <Link to="/achievements">See them all</Link>.</li>
           <li><strong>1 coin</strong> for every 5 XP you earn (focus minutes, finished tasks, posts, reactions).</li>
           <li><strong>Level-up bonus:</strong> 25 coins × the level you reach. Level {nextLevel} pays <strong>{25 * nextLevel} coins</strong>, and you're {toNext.toLocaleString()} XP away.</li>
         </ul>

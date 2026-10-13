@@ -11,6 +11,7 @@ import Todo from './pages/Todo.jsx'
 import Pomodoro from './pages/Pomodoro.jsx'
 import Profile from './pages/Profile.jsx'
 import Shop from './pages/Shop.jsx'
+import Achievements from './pages/Achievements.jsx'
 import Login, { AuthSplash } from './pages/Login.jsx'
 import Logo from './components/Logo.jsx'
 import SettingsMenu from './components/SettingsMenu.jsx'
@@ -149,6 +150,7 @@ export default function App() {
             <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
             <Route path="/profile/:id" element={<RequireAuth><Profile /></RequireAuth>} />
             <Route path="/shop" element={<RequireAuth><Shop /></RequireAuth>} />
+            <Route path="/achievements" element={<RequireAuth><Achievements /></RequireAuth>} />
             <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
             {IS_DEV_BUILD && <Route path="/preview/login" element={<Login preview />} />}
             <Route path="*" element={<p>Page not found.</p>} />

@@ -12,6 +12,7 @@ import { MusicProvider } from './lib/music.jsx'
 import { PomodoroProvider } from './lib/pomodoro.jsx'
 import { XpProvider } from './lib/xp.jsx'
 import { ShopProvider } from './lib/shop.jsx'
+import { AchievementsProvider } from './lib/achievements.jsx'
 import { NotifyProvider } from './lib/notify.jsx'
 import { installDragLift } from './lib/dragLift.js'
 import './lib/motion.js'      // applies the saved "calm mode" before anything is drawn
@@ -39,9 +40,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <MusicProvider>
                   <XpProvider>
                     <ShopProvider>
-                      <NotifyProvider>
-                        {IS_INTRO ? <IntroPreview /> : <App />}
-                      </NotifyProvider>
+                      <AchievementsProvider>
+                        <NotifyProvider>
+                          {IS_INTRO ? <IntroPreview /> : <App />}
+                        </NotifyProvider>
+                      </AchievementsProvider>
                     </ShopProvider>
                   </XpProvider>
                 </MusicProvider>

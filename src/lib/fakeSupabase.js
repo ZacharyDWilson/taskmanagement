@@ -29,6 +29,8 @@ function freshDb() {
     cosmetics: seed.cosmetics,
     shop_items: seed.shop_items,
     purchases: [],
+    achievements: seed.achievements ?? [],
+    user_achievements: [],
     tasks: [
       t('Review lecture notes', plus(0), { course: 'BIO 101', category: 'Study' }),
       t('Email professor about the essay', plus(0), { course: 'ENG 101', category: 'Personal' }),
@@ -51,6 +53,8 @@ const db = load()
 // shop rows always come from the seed so new items appear after a rebuild
 db.cosmetics = seed.cosmetics
 db.shop_items = seed.shop_items
+db.achievements = seed.achievements ?? []
+db.user_achievements ??= []
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)) } catch { /* ignore */ } }
 
 // ---- filters --------------------------------------------------------------------------------
@@ -180,9 +184,32 @@ class Query {
 
 // ---- rpc -------------------------------------------------------------------------------------
 const FAKE_XP = 20000   // a high level, so the preview feels fully unlocked
+const FAKE_STATS = {
+  tasks_done: 28, sessions: 9, focus_minutes: 1320, longest_session: 75, streak_days: 5, weekly_minutes_best: 640,
+  posts: 1, comments: 4, reactions_received: 7, level: 6, purchases: 2, profile_complete: 1,
+}
 const rpcs = {
   user_xp: () => FAKE_XP,
   coin_balance: () => 9999,
+  my_achievement_stats: () => FAKE_STATS,
+  check_achievements: () => {
+    const fresh = []
+    for (const a of db.achievements) {
+      if (db.user_achievements.some(r => r.achievement_id === a.id)) continue
+      if ((FAKE_STATS[a.stat] ?? 0) >= a.goal) {
+        db.user_achievements.push({ user_id: ME, achievement_id: a.id, earned_at: new Date().toISOString(), coins_paid: a.reward_coins, pinned: false })
+        fresh.push({ ach_id: a.id, ach_name: a.name, ach_coins: a.reward_coins, ach_item: a.reward_item })
+      }
+    }
+    if (fresh.length) save()
+    return fresh
+  },
+  set_pinned_achievements: args => {
+    const ids = args?.ids ?? []
+    db.user_achievements.forEach(r => { r.pinned = ids.includes(r.achievement_id) })
+    save()
+    return null
+  },
   username_available: () => true,
   weekly_leaderboard: () => [],
 }
@@ -204,7 +231,7 @@ const uploaded = {}
 
 export const fakeSupabase = {
   from: table => new Query(table),
-  rpc: async name => ({ data: rpcs[name] ? rpcs[name]() : null, error: null }),
+  rpc: async (name, args) => ({ data: rpcs[name] ? rpcs[name](args) : null, error: null }),
   auth: {
     getSession: async () => ({ data: { session: readSession() } }),
     onAuthStateChange: fn => {

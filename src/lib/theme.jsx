@@ -41,6 +41,8 @@ export const THEMES = [
     preview: ['#587d3e', '#d29a35', '#2b6862', '#ad522a', '#27382c'] },
   { id: 'handheld', name: 'Handheld Glow', signature: 'glossy game buttons', blurb: 'Soft violet and sky glass over a dotted grid, with glossy console-style buttons in every colour.',
     preview: ['#5a2fd8', '#b9a3ff', '#1f8fd0', '#f0a21c', '#1fa77d'] },
+  { id: 'golden', name: 'Golden Hour', exclusive: true, signature: 'gold coin buttons', blurb: 'Earned, never bought: warm cream and gold glass in low sun, with glossy gold coin buttons.',
+    preview: ['#7a4a0a', '#d9a21b', '#ffe08a', '#fff3d0', '#2b1b05'] },
   { id: 'twilight', name: 'Twilight Sky', blurb: 'Blush clouds and a crescent moon over indigo mountains and stars.',
     preview: ['#fff1f1', '#a9b4dc', '#7885c6', '#2c3470', '#161b45'] },
 ]
