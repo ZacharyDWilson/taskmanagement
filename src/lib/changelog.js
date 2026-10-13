@@ -3,6 +3,14 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.17', date: '2026-10-14', title: 'Notifications and tagging friends',
+    points: [
+      'The mail button has a new "For you" tab: comments on your posts, reactions (grouped, so three people is one line) and when someone tags you.',
+      'Type @ in a post or a comment to tag a friend. Their name becomes a link to their profile and they get a notification.',
+      'Up to 5 people per post or comment. Notifications clear themselves after 30 days.',
+    ],
+  },
+  {
     version: '2.16', date: '2026-10-14', title: 'Share cards and pinned posts',
     points: [
       'Share a badge you earned from the Achievements page: it appears on the feed as a card with the badge and its name.',

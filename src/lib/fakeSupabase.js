@@ -65,6 +65,16 @@ db.achievements = seed.achievements ?? []
 db.shop_bundles = seed.bundles ?? []
 db.announcements ??= [{ id: 'demo-a1', title: 'Welcome to the LOCK IN alpha', body: 'Thanks for testing! The mail button at the top holds announcements and the version history.', major: true, created_at: new Date().toISOString(), expires_at: null }]
 db.user_achievements ??= []
+// two other members so tagging has someone to pick, and a few things that "happened" to the preview account
+for (const [id, name, color] of [['demo-m1', 'Priya Shah', 'pink'], ['demo-m2', 'Alex Rivera', 'green']]) {
+  if (!db.profiles.some(p => p.id === id)) db.profiles.push({ id, display_name: name, username: null, college: null, bio: '', color, avatar_path: null, frame: 'frame-none', banner: 'banner-solid', theme: 'default', created_at: new Date().toISOString() })
+}
+db.notifications ??= [
+  { id: 'demo-n1', user_id: ME, actor_id: 'demo-m1', kind: 'comment', post_id: 'demo-p1', detail: 'Great work, which chapter was it?', read: false, created_at: new Date(Date.now() - 12 * 60000).toISOString() },
+  { id: 'demo-n2', user_id: ME, actor_id: 'demo-m1', kind: 'reaction', post_id: 'demo-p2', detail: 'Chem notes done', read: false, created_at: new Date(Date.now() - 50 * 60000).toISOString() },
+  { id: 'demo-n3', user_id: ME, actor_id: 'demo-m2', kind: 'reaction', post_id: 'demo-p2', detail: 'Chem notes done', read: false, created_at: new Date(Date.now() - 55 * 60000).toISOString() },
+  { id: 'demo-n4', user_id: ME, actor_id: 'demo-m2', kind: 'mention_post', post_id: 'demo-p3', detail: 'Study group at 7, @Preview Admin you in?', read: true, created_at: new Date(Date.now() - 5 * 3600000).toISOString() },
+]
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(db)) } catch { /* ignore */ } }
 
 // ---- filters --------------------------------------------------------------------------------
@@ -254,6 +264,7 @@ const rpcs = {
     if (p) { p.pinned = !!args?.pin; save() }
     return null
   },
+  mark_notifications_read: () => { db.notifications.forEach(n => { n.read = true }); save(); return null },
   username_available: () => true,
   weekly_leaderboard: () => [],
 }

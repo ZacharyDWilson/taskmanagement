@@ -11,6 +11,9 @@ import { useMyModeration, blockedText, useIsAdmin } from '../lib/moderation.js'
 import Avatar from '../components/Avatar.jsx'
 import { POST_KINDS } from '../lib/postKinds.js'
 import ShareButton from '../components/ShareButton.jsx'
+import MentionField from '../components/MentionField.jsx'
+import RichText from '../components/RichText.jsx'
+import { mentionedIds, useMembers } from '../lib/members.js'
 import { DEMO, demoComments, demoPosts } from '../lib/demo.js' // DEMO
 
 const REACTIONS = [
@@ -26,7 +29,7 @@ const MAX_COMMENT = 200
 const PAGE = 20                    // posts shown at a time; "Load more" fetches the next batch
 const EDIT_MINUTES = 10            // how long after posting you can change the words
 const KEEP_DAYS = 14               // posts are removed from the app and storage after this (supabase/031_save_space.sql)
-const POST_COLS = 'id, user_id, body, image_path, kind, edited_at, created_at, pinned, share_kind, share_data, profiles(display_name, avatar_path, color, frame), reactions(kind, user_id), comments(count)'
+const POST_COLS = 'id, user_id, body, image_path, kind, edited_at, created_at, pinned, share_kind, share_data, mentions, profiles(display_name, avatar_path, color, frame), reactions(kind, user_id), comments(count)'
 
 // "just now", "5m ago", "2h ago", "3d ago", then a date
 function timeAgo(iso) {
@@ -53,6 +56,8 @@ function Composer({ onPosted }) {
   const [file, setFile] = useState(null)
   const [caption, setCaption] = useState('')
   const [kind, setKind] = useState(null)
+  const [tagged, setTagged] = useState([])        // ids picked with @
+  const members = useMembers()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const input = useRef()
@@ -71,9 +76,10 @@ function Composer({ onPosted }) {
     let image_path = null
     try {
       if (file) image_path = await uploadImage(file, user.id)
-      const { error } = await supabase.from('posts').insert({ user_id: user.id, body: caption.trim(), image_path, kind })
+      const mentions = mentionedIds(caption, tagged, members)
+      const { error } = await supabase.from('posts').insert({ user_id: user.id, body: caption.trim(), image_path, kind, mentions })
       if (error) { await removeImage(image_path); throw error }
-      setFile(null); setCaption(''); setKind(null); if (input.current) input.current.value = ''
+      setFile(null); setCaption(''); setKind(null); setTagged([]); if (input.current) input.current.value = ''
       setOpen(false)
       toast('✓ Posted to your feed')
       onPosted()
@@ -99,8 +105,9 @@ function Composer({ onPosted }) {
         <button type="button" className="link" onClick={() => setOpen(false)}>Close</button>
       </div>
       {mod.status && <p className="warn">{blockedText(mod)}</p>}
-      <textarea value={caption} maxLength={MAX_CAPTION} rows={3} placeholder="What did you get done? A photo is optional."
-        aria-label="Post text" onChange={e => setCaption(e.target.value)} />
+      <MentionField multiline value={caption} onChange={setCaption} mentions={tagged} onMentions={setTagged}
+        maxLength={MAX_CAPTION} rows={3} ariaLabel="Post text"
+        placeholder="What did you get done? A photo is optional. Type @ to tag a friend." />
       <div className="kind-chips" role="group" aria-label="Tag">
         {POST_KINDS.map(k => (
           <button key={k.id} type="button" className={'kind-chip' + (kind === k.id ? ' on' : '')}
@@ -130,6 +137,8 @@ function Comments({ post, onCount }) {
   const mod = useMyModeration()
   const [items, setItems] = useState(null)
   const [body, setBody] = useState('')
+  const [tagged, setTagged] = useState([])
+  const members = useMembers()
   const [error, setError] = useState('')
   const isPostAuthor = post.user_id === user.id
 
@@ -137,7 +146,7 @@ function Comments({ post, onCount }) {
     if (post.demo) { setItems(prev => prev ?? demoComments(post.id)); return } // DEMO
     const { data, error } = await supabase
       .from('comments')
-      .select('id, user_id, body, created_at, profiles(display_name, avatar_path, color, frame)')
+      .select('id, user_id, body, created_at, mentions, profiles(display_name, avatar_path, color, frame)')
       .eq('post_id', post.id)
       .order('created_at')
     if (error) setError(error.message)
@@ -160,9 +169,10 @@ function Comments({ post, onCount }) {
       toast('💬 Comment sent')
       return setBody('')
     }
-    const { error } = await supabase.from('comments').insert({ post_id: post.id, user_id: user.id, body: text })
+    const mentions = mentionedIds(text, tagged, members)
+    const { error } = await supabase.from('comments').insert({ post_id: post.id, user_id: user.id, body: text, mentions })
     if (error) return setError(error.message)
-    setBody('')
+    setBody(''); setTagged([])
     toast('💬 Comment sent')
     load()
   }
@@ -189,7 +199,7 @@ function Comments({ post, onCount }) {
                 <Link to={`/profile/${c.user_id}`}><strong>{c.profiles?.display_name ?? 'Someone'}</strong></Link>
                 {' '}<span className="muted small" title={new Date(c.created_at).toLocaleString()}>{timeAgo(c.created_at)}</span>
               </div>
-              <span>{c.body}</span>
+              <span><RichText text={c.body} mentions={c.mentions} members={members} /></span>
             </div>
             {(c.user_id === user.id || isPostAuthor) && (
               <button className="link" aria-label="Delete comment" onClick={() => remove(c)}>×</button>
@@ -199,8 +209,8 @@ function Comments({ post, onCount }) {
         ))}
       </ul>
       <form className="row" onSubmit={add}>
-        <input value={body} maxLength={MAX_COMMENT} placeholder="Write a comment…" aria-label="Write a comment"
-          onChange={e => setBody(e.target.value)} />
+        <MentionField value={body} onChange={setBody} mentions={tagged} onMentions={setTagged}
+          maxLength={MAX_COMMENT} placeholder="Write a comment… (@ to tag)" ariaLabel="Write a comment" />
         <button disabled={!body.trim() || !!mod.status}>Comment</button>
       </form>
       {mod.status && <p className="warn small">{blockedText(mod)}</p>}
@@ -227,6 +237,7 @@ function PostCard({ post, onChanged, onEdited, badges, names, isAdmin }) {
   const { user } = useAuth()
   const toast = useToast()
   const author = post.profiles
+  const members = useMembers()
   const [open, setOpen] = useState(false)
   const [commentCount, setCommentCount] = useState(null)
   const baseCount = post.demo ? demoComments(post.id).length : (post.comments?.[0]?.count ?? 0)
@@ -351,7 +362,7 @@ function PostCard({ post, onChanged, onEdited, badges, names, isAdmin }) {
           </div>
         </form>
       ) : (
-        post.body && !post.share_kind && <p>{post.body}{post.edited_at && <small className="muted"> (edited)</small>}</p>
+        post.body && !post.share_kind && <p><RichText text={post.body} mentions={post.mentions} members={members} />{post.edited_at && <small className="muted"> (edited)</small>}</p>
       )}
       <footer className="row reactions" aria-label="Reactions">
         {REACTIONS.map(({ kind: k, icon, word }) => {

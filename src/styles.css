@@ -3550,3 +3550,21 @@ html, body { max-width: 100%; overflow-x: clip; }
 .link.danger { color: #c0392b; font-weight: 700; }
 
 .share-preview { font-size: 1.15rem; font-weight: 700; margin: .2rem 0; }
+
+
+/* ---- @mentions and notifications (2.17) -------------------------------------------------------------------------------- */
+.mention-wrap { position: relative; flex: 1; min-width: 0; }
+.mention-wrap textarea, .mention-wrap input { width: 100%; }
+.mention-list { position: absolute; z-index: 30; left: 0; right: 0; top: 100%; margin: .2rem 0 0; padding: .25rem; list-style: none;
+  background: var(--glass-strong, #fff); border: 1px solid var(--glass-line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, .18); }
+.mention-list li { display: flex; align-items: center; gap: .5rem; padding: .35rem .5rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
+.mention-list li.on, .mention-list li:hover { background: color-mix(in srgb, var(--accent) 16%, transparent); }
+a.mention { font-weight: 700; color: var(--accent); text-decoration: none; }
+a.mention:hover { text-decoration: underline; }
+.notif-item { display: flex; gap: .6rem; align-items: flex-start; padding: .6rem .7rem; border-radius: 12px; text-decoration: none; color: inherit;
+  border: 1px solid var(--glass-line); background: color-mix(in srgb, var(--glass) 70%, transparent); }
+.notif-item.fresh { border-color: color-mix(in srgb, var(--accent) 60%, transparent); background: color-mix(in srgb, var(--accent) 10%, var(--glass)); }
+.notif-item .notif-icon { font-size: 1.25rem; line-height: 1.2; flex: none; }
+.notif-item p { margin: 0; }
+.notif-snippet { color: var(--muted); font-size: .82rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 28ch; }
+.notif-tools { display: flex; justify-content: flex-end; }
