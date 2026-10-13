@@ -8,15 +8,12 @@ import { xpForLevel } from '../lib/levels.js'
 import { TIMER_STYLES } from '../lib/timerStyles.js'
 import TimerFace from '../components/TimerFace.jsx'
 import { FramePreview } from '../components/Avatar.jsx'
+import ThemePreview from '../components/ThemePreview.jsx'
 
 const themeById = Object.fromEntries(THEMES.map(t => [t.id, t]))
 
-function Swatch({ colors }) {
-  return (
-    <span className="theme-swatch" aria-hidden="true">
-      {colors.map((c, i) => <i key={i} style={{ background: c }} />)}
-    </span>
-  )
+function Swatch({ id, colors }) {
+  return <ThemePreview id={id} colors={colors} />
 }
 
 export default function Shop() {
@@ -68,7 +65,7 @@ export default function Shop() {
         <h2>Themes</h2>
         <div className="themes">
           <div className={'theme-opt shop-card' + (theme === 'default' ? ' on' : '')} data-t="default">
-            <Swatch colors={themeById.default.preview} />
+            <Swatch id="default" colors={themeById.default.preview} />
             <strong>Classic</strong>
             <small>{themeById.default.blurb}</small>
             {theme === 'default'
@@ -77,7 +74,7 @@ export default function Shop() {
           </div>
 
           <div className={'theme-opt shop-card' + (theme === 'dark' ? ' on' : '')} data-t="dark">
-            <Swatch colors={themeById.dark.preview} />
+            <Swatch id="dark" colors={themeById.dark.preview} />
             <strong>Classic Dark</strong>
             <small>{themeById.dark.blurb}</small>
             {theme === 'dark'
@@ -87,7 +84,7 @@ export default function Shop() {
 
           {['gordon', 'stonybrook'].map(id => (
             <div key={id} className={'theme-opt shop-card' + (theme === id ? ' on' : '')} data-t={id}>
-              <Swatch colors={themeById[id].preview} />
+              <Swatch id={id} colors={themeById[id].preview} />
               <strong>{themeById[id].name}</strong>
               <small>{themeById[id].blurb}</small>
               {theme === id
@@ -102,7 +99,7 @@ export default function Shop() {
             const short = item.price - balance
             return (
               <div key={item.id} className={'theme-opt shop-card' + (theme === item.id ? ' on' : '')} data-t={item.id}>
-                <Swatch colors={t.preview} />
+                <Swatch id={item.id} colors={t.preview} />
                 <strong>{item.name}</strong>
                 <small>{t.blurb}</small>
                 {t.signature && <span className="sig-chip">✦ Signature dock: {t.signature}</span>}

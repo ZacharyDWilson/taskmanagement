@@ -9,6 +9,7 @@ import { DEMO, demoProfile, isDemoId } from '../lib/demo.js' // DEMO
 import Avatar, { FramePreview } from '../components/Avatar.jsx'
 import FancyName from '../components/FancyName.jsx'
 import PickerModal from '../components/PickerModal.jsx'
+import ThemePreview from '../components/ThemePreview.jsx'
 import { replayTour } from '../components/Tour.jsx'
 import { useMusic } from '../lib/music.jsx'
 import { usernameProblem } from '../lib/username.js'
@@ -167,6 +168,7 @@ export default function Profile() {
     try {
       const gif = file.type === 'image/gif'
       edit({ avatar_path: await uploadImage(file, user.id, { allowGif: canGif }) })
+      toast(`📷 Picture chosen: ${file.name}. Press Save profile to keep it.`, 'info', { silent: true })
       if (gif && !canGif) setMsg('Animated GIFs are a Shop perk, so this one was saved as a still picture.')
     }
     catch (err) { setMsg(err.message) }
@@ -297,9 +299,7 @@ export default function Profile() {
                 {THEMES.filter(t => t.id === 'default' || t.free || shop.owned.has(t.id)).map(t => (
                   <button key={t.id} type="button" data-t={t.id} className={'theme-opt' + (theme === t.id ? ' on' : '')}
                     onClick={() => { setTheme(t.id); setPicker(null) }} aria-pressed={theme === t.id}>
-                    <span className="theme-swatch" aria-hidden="true">
-                      {t.preview.map((c, i) => <i key={i} style={{ background: c }} />)}
-                    </span>
+                    <ThemePreview id={t.id} colors={t.preview} />
                     <strong>{t.name}</strong>
                     <small>{t.blurb}</small>
                   </button>

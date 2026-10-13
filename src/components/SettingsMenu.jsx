@@ -70,7 +70,7 @@ export default function SettingsMenu() {
             <h3>Animations</h3>
             <label className="row">
               <input type="checkbox" checked={calm} onChange={e => setCalm(e.target.checked)} />
-              Calm mode <span className="muted small">(stills the moving backgrounds, glows and bouncing)</span>
+              Calm mode <span className="muted small">(stills the moving backgrounds, glows and bouncing, and drops the frosted blur. Best for older phones.)</span>
             </label>
           </section>
 

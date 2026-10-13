@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
 import { publicUrl, removeImage, uploadImage } from '../lib/storage.js'
+import { useToast } from '../lib/toast.jsx'
 import Avatar from '../components/Avatar.jsx'
 import { DEMO, demoComments, demoPosts } from '../lib/demo.js' // DEMO
 
@@ -16,6 +17,7 @@ const MAX_CAPTION = 140
 
 function Composer({ onPosted }) {
   const { user } = useAuth()
+  const toast = useToast()
   const [file, setFile] = useState(null)
   const [caption, setCaption] = useState('')
   const [busy, setBusy] = useState(false)
@@ -32,6 +34,7 @@ function Composer({ onPosted }) {
       const { error } = await supabase.from('posts').insert({ user_id: user.id, body: caption.trim(), image_path })
       if (error) { await removeImage(image_path); throw error }
       setFile(null); setCaption(''); input.current.value = ''
+      toast('✓ Posted to your feed')
       onPosted()
     } catch (err) {
       setError(err.message)
@@ -43,7 +46,11 @@ function Composer({ onPosted }) {
   return (
     <form className="card stack" onSubmit={submit}>
       <h2>Share your progress</h2>
-      <input ref={input} type="file" accept="image/*" onChange={e => setFile(e.target.files[0] ?? null)} />
+      <input ref={input} type="file" accept="image/*" onChange={e => {
+        const f = e.target.files[0] ?? null
+        setFile(f)
+        if (f) toast(`📷 Photo chosen: ${f.name}`, 'info', { silent: true })
+      }} />
       {preview && <img className="preview" src={preview} alt="Preview" />}
       <div className="row">
         <input value={caption} maxLength={MAX_CAPTION} placeholder="Short caption…"
@@ -60,6 +67,7 @@ const MAX_COMMENT = 200
 
 function Comments({ post, onCount }) {
   const { user } = useAuth()
+  const toast = useToast()
   const [items, setItems] = useState(null)
   const [body, setBody] = useState('')
   const [error, setError] = useState('')
@@ -89,18 +97,21 @@ function Comments({ post, onCount }) {
         id: `demo-c-${Date.now()}`, user_id: user.id, body: text, created_at: new Date().toISOString(),
         profiles: { display_name: user.user_metadata?.display_name ?? 'You', color: 'blue', frame: 'frame-none' },
       }])
+      toast('💬 Comment sent')
       return setBody('')
     }
     const { error } = await supabase.from('comments').insert({ post_id: post.id, user_id: user.id, body: text })
     if (error) return setError(error.message)
     setBody('')
+    toast('💬 Comment sent')
     load()
   }
 
   async function remove(c) {
-    if (post.demo) return setItems(cs => cs.filter(x => x.id !== c.id)) // DEMO
+    if (post.demo) { setItems(cs => cs.filter(x => x.id !== c.id)); toast('Comment deleted', 'info', { silent: true }); return } // DEMO
     const { error } = await supabase.from('comments').delete().eq('id', c.id)
     if (error) return setError(error.message)
+    toast('Comment deleted', 'info', { silent: true })
     load()
   }
 
@@ -138,6 +149,7 @@ function Comments({ post, onCount }) {
 
 function PostCard({ post, onChanged }) {
   const { user } = useAuth()
+  const toast = useToast()
   const author = post.profiles
   const [open, setOpen] = useState(false)
   const [commentCount, setCommentCount] = useState(null)
@@ -148,6 +160,8 @@ function PostCard({ post, onChanged }) {
 
   async function toggle(kind) {
     const mine = reactions.some(r => r.user_id === user.id && r.kind === kind)
+    const icon = REACTIONS.find(r => r.kind === kind)?.icon ?? ''
+    if (!mine) toast(`${icon} Reaction sent`, 'info', { silent: true })
     if (post.demo) { // DEMO: demo posts react locally only
       return setDemoReactions(rs => mine
         ? rs.filter(r => !(r.user_id === user.id && r.kind === kind))
@@ -164,6 +178,7 @@ function PostCard({ post, onChanged }) {
     if (!confirm('Delete this post?')) return
     await supabase.from('posts').delete().eq('id', post.id)
     await removeImage(post.image_path)
+    toast('Post deleted')
     onChanged()
   }
 

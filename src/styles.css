@@ -1468,7 +1468,7 @@ textarea { border-radius: calc(var(--r) * .8); }
 
 /* ---- Coral Shore: salmon sunset, cream sand, seafoam and steel-blue waves ------------------------------ */
 :root[data-theme='shore'] {
-  --text: #1c3f57; --muted: #46687d; --accent: #2f77a0; --accent-2: #ff8f7e; --on-accent: #ffffff;
+  --text: #17384f; --muted: #3b5d72; --accent: #276a91; --accent-2: #ff8f7e; --on-accent: #ffffff;
   --glass: rgba(255, 244, 230, .84); --glass-inner: rgba(255, 244, 230, .68); --glass-field: rgba(255, 250, 242, .92);
   --glass-strong: rgba(255, 246, 235, .97); --glass-line: rgba(255, 255, 255, .85); --glass-shadow: 0 10px 34px rgba(47, 95, 125, .18);
   --sky-1: #ffd7c9; --sky-2: #9bcbc0;
@@ -2437,11 +2437,11 @@ html, body { max-width: 100%; overflow-x: clip; }
   :root[data-theme='rose'] .tabbar a:nth-child(even) .icon {
     border-radius: 3px 100% 3px 100%; color: #fff;
     background-image:
-      linear-gradient(45deg, transparent 46.5%, rgba(255, 255, 255, .5) 48% 52%, transparent 53.5%),
+      linear-gradient(45deg, transparent 47.5%, rgba(255, 255, 255, .22) 49% 51%, transparent 52.5%),
       linear-gradient(135deg, #b8b688, #8f8e60 58%, #6f6e45);
     box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .25), 0 2px 5px rgba(111, 93, 78, .3);
   }
-  :root[data-theme='rose'] .tabbar a:nth-child(odd).active .icon { --pa: #f7b8c2; --pb: #c4687a; filter: drop-shadow(0 0 5px rgba(222, 146, 157, .9)); }
+  :root[data-theme='rose'] .tabbar a:nth-child(odd).active .icon { --pa: #ffffff; --pb: #f6c6cf; filter: drop-shadow(0 1px 3px rgba(111, 40, 60, .45)); }   /* pale petals so the flower stands out on the pink blob */
   :root[data-theme='rose'] .tabbar a:nth-child(even).active .icon { box-shadow: inset 0 0 0 1.5px #fff, 0 0 0 2px rgba(222, 146, 157, .85); }
   :root[data-theme='rose'] .tabbar a .avatar { box-shadow: 0 0 0 3px #fbdde1, 0 0 0 5px #d9808f; }
 }
@@ -2875,7 +2875,7 @@ html, body { max-width: 100%; overflow-x: clip; }
   --sky-1: #d6d0fc; --sky-2: #9fb8f7;
   --font: 'Nunito', 'Quicksand', 'Segoe UI', system-ui, sans-serif;
   --font-head: 'Nunito', 'Quicksand', 'Segoe UI', system-ui, sans-serif; --head-weight: 800;
-  --blur: 16px; --r: 24px;
+  --blur: 8px; --r: 24px;
   --card-shape: 26px; --tile-shape: 20px; --btn-shape: 999px; --field-shape: 999px; --dock-shape: 18px;
 }
 :root[data-theme='handheld'] body { font-size: 1.01rem; }
@@ -2888,7 +2888,7 @@ html, body { max-width: 100%; overflow-x: clip; }
 :root[data-theme='handheld'] .scene .g2 { width: 56vmax; height: 46vmax; right: -16vmax; bottom: -14vmax; top: auto; background: radial-gradient(circle, rgba(110, 200, 255, .65), transparent 66%); animation: drift-b 46s ease-in-out infinite alternate; }
 :root[data-theme='handheld'] .scene span {           /* the same faint ghost shapes as the classic look, tinted violet and sky */
   left: var(--x); top: var(--y); width: calc(8vmax + var(--i) * 1.2vmax); aspect-ratio: 1; opacity: .8;
-  filter: blur(1px); animation: ghost calc(9s + var(--i) * .9s) ease-in-out infinite alternate; animation-delay: calc(var(--i) * -2.3s);
+  animation: ghost calc(9s + var(--i) * .9s) ease-in-out infinite alternate; animation-delay: calc(var(--i) * -2.3s);
 }
 :root[data-theme='handheld'] .scene span:nth-of-type(4n + 1) {      /* ring */
   border-radius: 50%; border: calc(1.1vmax + var(--i) * .08vmax) solid rgba(255, 255, 255, .5);
@@ -2901,7 +2901,7 @@ html, body { max-width: 100%; overflow-x: clip; }
 :root[data-theme='handheld'] .scene span:nth-of-type(4n + 3) {      /* chevron / arrow */
   width: calc(7vmax + var(--i) * .9vmax); aspect-ratio: .8;
   background: linear-gradient(120deg, rgba(255, 255, 255, .95), rgba(120, 190, 255, .5));
-  clip-path: polygon(0 0, 100% 50%, 0 100%, 26% 50%); filter: blur(.6px) drop-shadow(0 6px 10px rgba(80, 60, 190, .22));
+  clip-path: polygon(0 0, 100% 50%, 0 100%, 26% 50%);
 }
 :root[data-theme='handheld'] .scene span:nth-of-type(4n) {          /* disc with a dot */
   border-radius: 50%; border: .7vmax solid rgba(255, 255, 255, .55);
@@ -2910,7 +2910,7 @@ html, body { max-width: 100%; overflow-x: clip; }
 :root[data-theme='handheld'] .scene span:nth-of-type(n + 11) { display: none; }
 /* lots of small glossy bubbles in every console-button colour, rising slowly (one repeating tile that scrolls) */
 :root[data-theme='handheld'] .scene::after {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: calc(100% + var(--hh-tile, 820px)); pointer-events: none; will-change: transform;
   background-image:
     radial-gradient(circle 5.6000000000000005px at 63.6px 83.2px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
     radial-gradient(circle 20px at 70px 90px, rgba(255, 255, 255, .55) 0, rgba(255,90,110, .38) 62%, rgba(255,90,110, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
@@ -2945,8 +2945,8 @@ html, body { max-width: 100%; overflow-x: clip; }
   background-size: 560px 820px; background-repeat: repeat;
   animation: hh-bubbles 70s linear infinite;
 }
-@keyframes hh-bubbles { to { background-position: 0 -820px; } }
-@media (max-width: 700px) { :root[data-theme='handheld'] .scene::after { background-size: 420px 615px; animation-duration: 60s; } }
+@keyframes hh-bubbles { to { transform: translateY(calc(var(--hh-tile, 820px) * -1)); } }
+@media (max-width: 700px) { :root[data-theme='handheld'] .scene::after { --hh-tile: 615px; background-size: 420px 615px; animation-duration: 60s; } }
 
 /* cards: frosted glass with a bright rim and a soft top sheen */
 :root[data-theme='handheld'] .card, :root[data-theme='handheld'] .tile {
@@ -2972,8 +2972,8 @@ html, body { max-width: 100%; overflow-x: clip; }
 
 /* the dock: a frosted pill of glossy squircle buttons, each its own colour like console menu icons */
 :root[data-theme='handheld'] .dock {
-  background: rgba(255, 255, 255, .55); border: 1.5px solid rgba(255, 255, 255, .95);
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  background: rgba(247, 244, 255, .86); border: 1.5px solid rgba(255, 255, 255, .95);
+  -webkit-backdrop-filter: none; backdrop-filter: none;
   box-shadow: inset 0 1px 0 #fff, 0 12px 30px rgba(80, 60, 190, .25);
   padding: .55rem .5rem; gap: .75rem; overflow: visible;
 }
@@ -3048,3 +3048,52 @@ html, body { max-width: 100%; overflow-x: clip; }
 :root[data-theme='handheld'] .board li:nth-child(3) .rank { background: linear-gradient(180deg, #ffc89a, #c9742f); text-shadow: 0 1px 2px rgba(110, 50, 0, .55); }
 :root[data-theme='handheld'] .board li:nth-child(1) { background: linear-gradient(180deg, rgba(255, 245, 200, .9), rgba(255, 255, 255, .45)); }
 :root[data-theme='handheld'] .board li strong { color: #3a2d9a; }
+
+/* ---- Calm mode is also the "light" mode: no animation anywhere and no frosted-glass blur ----------------------
+   Blur has to be recomputed whenever anything behind it changes, so dropping it is the biggest single saving on a
+   slow phone. Glass gets a firmer fill instead, so text stays easy to read over the still scene. */
+:root[data-motion='reduced'] *, :root[data-motion='reduced'] *::before, :root[data-motion='reduced'] *::after {
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+:root[data-motion='reduced'] .card, :root[data-motion='reduced'] .tile, :root[data-motion='reduced'] .tabbar,
+:root[data-motion='reduced'] .modal, :root[data-motion='reduced'] .picker { background-color: var(--glass-strong); }
+:root[data-motion='reduced'] .scene::after, :root[data-motion='reduced'] .scene span { will-change: auto; }
+
+/* ---- More banners for different crowds: nerds (Chalkboard, Terminal, Circuit Board, Science Lab), sporty (Stadium
+        Lights, Hardwood), everyday (Campus Quad, City Sunset, The Stacks, Paint Splash). All drawn from scratch. ---- */
+.banner-chalk { background: #1d3b2f url('./assets/banners/chalk.webp') center 50% / cover no-repeat; }
+.banner-terminal { background: #0a0c18 url('./assets/banners/terminal.webp') center 45% / cover no-repeat; }
+.banner-circuit { background: #06201f url('./assets/banners/circuit.webp') center 50% / cover no-repeat; }
+.banner-lab { background: #bfe2e6 url('./assets/banners/lab.webp') center 55% / cover no-repeat; }
+.banner-stadium { background: #2b2468 url('./assets/banners/stadium.webp') center 50% / cover no-repeat; }
+.banner-court { background: #c4823f url('./assets/banners/court.webp') center 50% / cover no-repeat; }
+.banner-quad { background: #ffe2b8 url('./assets/banners/quad.webp') center 55% / cover no-repeat; }
+.banner-skyline { background: #c1578f url('./assets/banners/skyline.webp') center 60% / cover no-repeat; }
+.banner-library { background: #3a2418 url('./assets/banners/library.webp') center 50% / cover no-repeat; }
+.banner-paint { background: #fbf3e4 url('./assets/banners/paint.webp') center 50% / cover no-repeat; }
+
+/* ---- Theme cards: a small picture of the page above the colour palette ---------------------------------------- */
+.theme-preview { display: grid; gap: .4rem; width: 100%; }
+.theme-shot {
+  display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top left; border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--text) 18%, transparent); background: var(--glass-inner);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
+}
+.theme-preview .theme-swatch { height: 14px; border-radius: 999px; }
+
+/* ---- Coral Shore contrast: the Style / Sound tabs keep their individual pebble buttons, just a clearer colour ----
+   Dark sea-blue label on a slightly deeper sand face, with a warm coral under-edge instead of the grey one. */
+:root[data-theme='shore'] .tabs { background: rgba(255, 244, 230, .55); }
+:root[data-theme='shore'] .tabs button:not(.active) {
+  background-color: rgba(255, 233, 212, .95); color: var(--text); font-weight: 700;
+  box-shadow: 0 4px 0 rgba(176, 98, 78, .38) !important;
+}
+:root[data-theme='shore'] .tabs button.active { background-color: var(--accent); color: #fff; box-shadow: 0 4px 0 rgba(23, 56, 79, .4) !important; }
+:root[data-theme='shore'] .muted, :root[data-theme='shore'] small { color: var(--muted); }
+
+/* ---- Phone tab bar: an icon never shrinks to fit its label ----------------------------------------------------
+   The icon sits in a column with its label; with a taller serif label (Dusty Rose) the column squeezed the icon box
+   from 36px to 29px and clipped the bottom of the flowers. */
+@media (max-width: 700px) {
+  .tabbar a .icon, .tabbar a .avatar { flex: none; }
+}

@@ -51,7 +51,7 @@ export function nameLook(name, themeId) {
   const [hue, sat] = list[(h >>> 8) % list.length]
   const dark = DARK_LOOKS.has(themeId)
   // light cards need a deep shade to read; dark cards need a bright one
-  const light = dark ? 70 : (hue > 35 && hue < 80 ? 36 : 40)
+  const light = dark ? 70 : (hue > 35 && hue < 80 ? 34 : hue >= 150 && hue <= 260 ? 30 : 38)
   return { font: FONTS[h % FONTS.length], hue, sat, light, dark }
 }
 

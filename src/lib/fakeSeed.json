@@ -239,6 +239,66 @@
    "kind": "banner",
    "name": "Handheld Glow",
    "min_level": 9999
+  },
+  {
+   "id": "banner-chalk",
+   "kind": "banner",
+   "name": "Chalkboard",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-terminal",
+   "kind": "banner",
+   "name": "Terminal",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-circuit",
+   "kind": "banner",
+   "name": "Circuit Board",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-lab",
+   "kind": "banner",
+   "name": "Science Lab",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-stadium",
+   "kind": "banner",
+   "name": "Stadium Lights",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-court",
+   "kind": "banner",
+   "name": "Hardwood",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-quad",
+   "kind": "banner",
+   "name": "Campus Quad",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-skyline",
+   "kind": "banner",
+   "name": "City Sunset",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-library",
+   "kind": "banner",
+   "name": "The Stacks",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-paint",
+   "kind": "banner",
+   "name": "Paint Splash",
+   "min_level": 9999
   }
  ],
  "shop_items": [
@@ -577,6 +637,76 @@
    "name": "Handheld Glow",
    "price": 300,
    "sort": 29
+  },
+  {
+   "id": "banner-chalk",
+   "kind": "banner",
+   "name": "Chalkboard",
+   "price": 200,
+   "sort": 30
+  },
+  {
+   "id": "banner-terminal",
+   "kind": "banner",
+   "name": "Terminal",
+   "price": 200,
+   "sort": 31
+  },
+  {
+   "id": "banner-circuit",
+   "kind": "banner",
+   "name": "Circuit Board",
+   "price": 300,
+   "sort": 32
+  },
+  {
+   "id": "banner-lab",
+   "kind": "banner",
+   "name": "Science Lab",
+   "price": 300,
+   "sort": 33
+  },
+  {
+   "id": "banner-stadium",
+   "kind": "banner",
+   "name": "Stadium Lights",
+   "price": 300,
+   "sort": 34
+  },
+  {
+   "id": "banner-court",
+   "kind": "banner",
+   "name": "Hardwood",
+   "price": 300,
+   "sort": 35
+  },
+  {
+   "id": "banner-quad",
+   "kind": "banner",
+   "name": "Campus Quad",
+   "price": 300,
+   "sort": 36
+  },
+  {
+   "id": "banner-skyline",
+   "kind": "banner",
+   "name": "City Sunset",
+   "price": 200,
+   "sort": 37
+  },
+  {
+   "id": "banner-library",
+   "kind": "banner",
+   "name": "The Stacks",
+   "price": 300,
+   "sort": 38
+  },
+  {
+   "id": "banner-paint",
+   "kind": "banner",
+   "name": "Paint Splash",
+   "price": 200,
+   "sort": 39
   }
  ]
 }

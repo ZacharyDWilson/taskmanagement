@@ -4,12 +4,13 @@ import { levelFromXp } from '../lib/levels.js'
 import { useMyXp } from '../lib/xp.jsx'
 import { useToast } from '../lib/toast.jsx'
 import { isDemoId } from '../lib/demo.js' // DEMO
+import { fmtDay } from '../lib/dates.js'
 import Inbox from '../components/Inbox.jsx'
 import WeekPlanner from '../components/WeekPlanner.jsx'
 import TaskModal from '../components/TaskModal.jsx'
 
 export default function Todo() {
-  const { tasks, error, add, update, toggle, move, remove } = useTasks()
+  const { tasks, error, update, toggle, move: moveRaw, remove: removeRaw, add: addRaw } = useTasks()
   const { xp, refresh } = useMyXp()
   const toast = useToast()
   const [openId, setOpenId] = useState(null)
@@ -39,15 +40,31 @@ export default function Todo() {
   }
 
   const toggleTask = task => withXp(task, !task.done, () => toggle(task))
-  const saveTask = (task, patch) =>
-    withXp(task, patch.done !== task.done ? patch.done : null, () => update(task, patch))
+  const saveTask = (task, patch) => {
+    if (patch.done === task.done) toast(`✓ Saved "${task.title}"`, 'info', { silent: true })
+    return withXp(task, patch.done !== task.done ? patch.done : null, () => update(task, patch))
+  }
+
+  // small pop-ups for the everyday things, so it is clear something happened
+  const addTask = (title, day, color, extra) => {
+    toast(day ? `✓ Added "${title}" for ${fmtDay(new Date(day + 'T00:00:00'))}` : `✓ Added "${title}" to To plan`, 'info', { silent: true })
+    return addRaw(title, day, color, extra)
+  }
+  const removeTask = task => {
+    toast(`Removed "${task.title}"`, 'info', { silent: true })
+    return removeRaw(task)
+  }
+  const moveTask = (task, day) => {
+    toast(day ? `📅 "${task.title}" planned for ${fmtDay(new Date(day + 'T00:00:00'))}` : `"${task.title}" moved back to To plan`, 'info', { silent: true })
+    return moveRaw(task, day)
+  }
 
   return (
     <div className="todo">
       {error && <p className="warn todo-error">{error}</p>}
-      <Inbox tasks={tasks} add={add} toggle={toggleTask} remove={remove} move={move}
+      <Inbox tasks={tasks} add={addTask} toggle={toggleTask} remove={removeTask} move={moveTask}
         onOpen={t => setOpenId(t.id)} />
-      <WeekPlanner tasks={tasks} add={add} toggle={toggleTask} remove={remove} move={move}
+      <WeekPlanner tasks={tasks} add={addTask} toggle={toggleTask} remove={removeTask} move={moveTask}
         onOpen={t => setOpenId(t.id)} />
       {openTask && (
         <TaskModal
@@ -55,7 +72,7 @@ export default function Todo() {
           task={openTask}
           courses={classesFrom(tasks)}
           onSave={patch => saveTask(openTask, patch)}
-          onDelete={() => remove(openTask)}
+          onDelete={() => removeTask(openTask)}
           onClose={() => setOpenId(null)}
         />
       )}
