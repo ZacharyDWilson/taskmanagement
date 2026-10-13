@@ -134,7 +134,7 @@ export default function Achievements() {
               </div>
               {mine && row && (
                 <div className="ach-actions">
-                <ShareButton card="achievement" refId={a.id} className="secondary ach-share" title="Post this badge to the feed">📣 Share</ShareButton>
+                <ShareButton card="achievement" refId={a.id} preview={`${a.icon} Badge unlocked: ${a.name}`} className="secondary ach-share" title="Post this badge to the feed">📣 Share</ShareButton>
                 <button type="button" className={'secondary ach-pin' + (row.pinned ? ' on' : '')}
                   onClick={() => togglePin(a.id)} aria-pressed={!!row.pinned}
                   title={row.pinned ? 'Shown first on your profile' : 'Show this first on your profile'}>

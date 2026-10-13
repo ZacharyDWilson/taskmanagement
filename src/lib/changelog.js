@@ -8,6 +8,8 @@ export const CHANGELOG = [
       'Share a badge you earned from the Achievements page: it appears on the feed as a card with the badge and its name.',
       'Share your study time for today or this week from the Study page. The numbers come from your real sessions, so a card cannot be made up.',
       'The admin can pin up to 3 posts to the top of the feed. Pinned posts stay until they are unpinned.',
+      'Share buttons now show what will be posted and wait for "Post to feed", so nothing is posted by accident.',
+      'Deleting a post is two taps in the post itself (no browser pop-up), and shows a message if it could not be deleted.',
     ],
   },
   {

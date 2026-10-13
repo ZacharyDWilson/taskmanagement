@@ -269,10 +269,13 @@ function PostCard({ post, onChanged, onEdited, badges, names, isAdmin }) {
   const upOn = () => clearTimeout(press.current.timer)
   const nameList = k => reactions.filter(r => r.kind === k).map(r => (r.user_id === user.id ? 'You' : names.get(r.user_id) ?? 'Someone'))
 
+  // two taps instead of a browser pop-up (those can be blocked), and any problem is shown instead of swallowed
+  const [asking, setAsking] = useState(false)
   async function remove() {
-    if (!confirm('Delete this post?')) return
-    await supabase.from('posts').delete().eq('id', post.id)
-    await removeImage(post.image_path)
+    setAsking(false)
+    const { error } = await supabase.from('posts').delete().eq('id', post.id)
+    if (error) return toast('Could not delete: ' + error.message, 'info')
+    try { await removeImage(post.image_path) } catch { /* the nightly cleanup removes a leftover file */ }
     toast('Post deleted')
     onChanged()
   }
@@ -311,7 +314,14 @@ function PostCard({ post, onChanged, onEdited, badges, names, isAdmin }) {
         <span className="spacer" />
         {isAdmin && !post.demo && <button className="link" onClick={togglePin}>{post.pinned ? 'unpin' : 'pin'}</button>}
         {canEdit && !editing && !post.share_kind && <button className="link" onClick={() => setEditing(true)}>edit</button>}
-        {mine && <button className="link" onClick={remove}>delete</button>}
+        {mine && !asking && <button className="link" onClick={() => setAsking(true)}>delete</button>}
+        {mine && asking && (
+          <span className="row delete-ask">
+            <small>Delete this post?</small>
+            <button className="link danger" onClick={remove}>Yes, delete</button>
+            <button className="link" onClick={() => setAsking(false)}>Cancel</button>
+          </span>
+        )}
         {!mine && !post.demo && <ReportButton postId={post.id} className="link report-link" />}
       </header>
       {post.share_kind && <ShareCard post={post} />}

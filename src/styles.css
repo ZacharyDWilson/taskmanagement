@@ -3545,3 +3545,8 @@ html, body { max-width: 100%; overflow-x: clip; }
 .pin-flag { align-self: flex-start; font-size: .74rem; font-weight: 800; letter-spacing: .02em; color: var(--accent); }
 .share-row { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; }
 .ach-actions { display: flex; flex-direction: column; gap: .4rem; align-items: stretch; }
+
+.delete-ask { gap: .5rem; align-items: center; }
+.link.danger { color: #c0392b; font-weight: 700; }
+
+.share-preview { font-size: 1.15rem; font-weight: 700; margin: .2rem 0; }

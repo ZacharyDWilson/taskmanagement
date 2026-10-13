@@ -158,8 +158,8 @@ export default function Study() {
           {today.length === 0 && <p className="muted">No sessions yet today. Start your first one!</p>}
           {sessions.length > 0 && (
             <div className="share-row">
-              {today.length > 0 && <ShareButton card="study_day" since={(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d.toISOString() })()}>📣 Share today</ShareButton>}
-              <ShareButton card="study_week" since={startOfWeek().toISOString()}>📣 Share this week</ShareButton>
+              {today.length > 0 && <ShareButton card="study_day" preview={`⏱️ Studied ${fmtMinutes(sum(today))} today (${today.length} session${today.length === 1 ? '' : 's'})`} since={(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d.toISOString() })()}>📣 Share today</ShareButton>}
+              <ShareButton card="study_week" preview={`⏱️ Studied ${fmtMinutes(sum(sessions))} this week`} since={startOfWeek().toISOString()}>📣 Share this week</ShareButton>
             </div>
           )}
           <ul className="list scroll">
