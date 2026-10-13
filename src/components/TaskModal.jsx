@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { CATEGORIES } from '../lib/tasks.js'
 import ColorPicker from './ColorPicker.jsx'
+import { addDays, DAY_NAMES, isoDate, startOfWeek } from '../lib/dates.js'
 
 // Detail pop-up: what it's for, when it's due, the requirements, and any extra info.
 export default function TaskModal({ task, courses, onSave, onDelete, onClose }) {
@@ -52,6 +53,23 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
         <label>Task
           <input value={d.title} maxLength={120} onChange={e => set({ title: e.target.value })} required />
         </label>
+
+        {/* Tap to plan it, no dragging needed (works on phones) */}
+        <div>
+          <div className="muted small">Plan it for</div>
+          <div className="chips">
+            <button type="button" className={'chip' + (!d.day ? ' on' : '')}
+              onClick={() => set({ day: '' })}>Not planned</button>
+            {DAY_NAMES.map((name, i) => {
+              const date = addDays(startOfWeek(), i)
+              const key = isoDate(date)
+              return (
+                <button key={key} type="button" className={'chip' + (d.day === key ? ' on' : '')}
+                  onClick={() => set({ day: key })}>{name} {date.getDate()}</button>
+              )
+            })}
+          </div>
+        </div>
 
         <div className="form-grid">
           <label>Class / subject

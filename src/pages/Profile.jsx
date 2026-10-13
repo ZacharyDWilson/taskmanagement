@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
-import { fmtMinutes, startOfWeek } from '../lib/dates.js'
+import { DAY_NAMES, fmtMinutes, startOfWeek } from '../lib/dates.js'
 import { levelFromXp, useCosmetics, useXp } from '../lib/levels.js'
 import { publicUrl, uploadImage } from '../lib/storage.js'
-import Avatar from '../components/Avatar.jsx'
 import { DEMO, demoProfile, isDemoId } from '../lib/demo.js' // DEMO
+import Avatar from '../components/Avatar.jsx'
 import ColorPicker from '../components/ColorPicker.jsx'
 import LevelCard from '../components/LevelCard.jsx'
+import DayBars from '../components/DayBars.jsx'
+import { THEMES, useTheme } from '../lib/theme.jsx'
+import { useShop } from '../lib/shop.jsx'
+import { IS_ADMIN } from '../lib/env.js'
 
 function StylePicker({ title, items, value, level, onChange }) {
   return (
@@ -42,10 +46,12 @@ export default function Profile() {
   const { id } = useParams()
   const userId = id ?? user.id
   const mine = userId === user.id
+  const { theme, setTheme } = useTheme()
+  const shop = useShop()
 
   const [profile, setProfile] = useState(null)
   const [posts, setPosts] = useState([])
-  const [minutes, setMinutes] = useState(0)
+  const [days, setDays] = useState(Array(7).fill(0)) // study minutes Mon..Sun this week
   const [msg, setMsg] = useState('')
   const demo = DEMO && isDemoId(userId) ? demoProfile(userId) : null // DEMO: filler friend's profile
   const realXp = useXp(demo ? user.id : userId) // DEMO: was `const xp = useXp(userId)`
@@ -55,24 +61,31 @@ export default function Profile() {
 
   useEffect(() => {
     if (demo) { // DEMO
-      setProfile(demo.profile); setPosts(demo.posts); setMinutes(demo.minutes)
+      setProfile(demo.profile); setPosts(demo.posts); setDays(demo.days)
       return
     }
     setProfile(null)
     supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
       .then(({ data }) => setProfile(data ?? false))
-    supabase.from('posts').select('id, image_path, body').eq('user_id', userId)
+    supabase.from('posts').select('id, image_path, body, created_at').eq('user_id', userId)
       .order('created_at', { ascending: false }).limit(30)
       .then(({ data }) => setPosts(data ?? []))
-    supabase.from('study_sessions').select('minutes').eq('user_id', userId)
+    supabase.from('study_sessions').select('minutes, created_at').eq('user_id', userId)
       .gte('created_at', startOfWeek().toISOString())
-      .then(({ data }) => setMinutes((data ?? []).reduce((s, r) => s + r.minutes, 0)))
+      .then(({ data }) => {
+        const week = Array(7).fill(0)
+        for (const s of data ?? []) week[(new Date(s.created_at).getDay() + 6) % 7] += s.minutes
+        setDays(week)
+      })
   }, [userId])
 
   if (profile === null) return <p>Loading…</p>
   if (profile === false) return <p>Profile not found.</p>
 
   const edit = patch => setProfile(p => ({ ...p, ...patch }))
+  const total = days.reduce((a, b) => a + b, 0)
+  const best = Math.max(...days)
+  const todayIdx = (new Date().getDay() + 6) % 7
 
   async function save(e) {
     e.preventDefault()
@@ -80,7 +93,11 @@ export default function Profile() {
     const { error } = await supabase.from('profiles')
       .update({ display_name: display_name.trim() || 'Friend', bio, color, avatar_path, frame, banner })
       .eq('id', user.id)
-    setMsg(error ? error.message : 'Saved!')
+    setMsg(error
+      ? (IS_ADMIN && /reach level/i.test(error.message)
+        ? 'Admin preview only: that style is above your real level, so it was not saved.'
+        : error.message)
+      : 'Saved!')
   }
 
   async function onAvatar(e) {
@@ -91,36 +108,67 @@ export default function Profile() {
   }
 
   return (
-    <div className={mine ? 'two' : 'one'}>
+    <div className={mine ? 'two profile-grid' : 'one'}>
       <div className="col">
-      <section className="card profile-head">
-        <div className={'banner ' + profile.banner} />
-        <div className="profile-id">
-          <Avatar name={profile.display_name} path={profile.avatar_path} color={profile.color}
-            frame={profile.frame} size={88} />
-          <div>
-            <h1>{profile.display_name}</h1>
-            <p className="muted">{fmtMinutes(minutes)} studied this week</p>
+        {/* Who this is */}
+        <section className="card profile-head">
+          <div className={'banner ' + profile.banner} />
+          <div className="profile-id">
+            <Avatar name={profile.display_name} path={profile.avatar_path} color={profile.color}
+              frame={profile.frame} size={88} />
+            <div>
+              <h1>{profile.display_name}</h1>
+              <p className="muted">{mine ? 'This is how friends see you' : 'Friend profile'}</p>
+            </div>
+            {mine && (
+              <Link to="/shop" className="shop-link">
+                <button type="button">Shop <small>🪙 {shop.balance.toLocaleString()}</small></button>
+              </Link>
+            )}
           </div>
-        </div>
-        <LevelCard xp={xp} />
-        {!mine && <p>{profile.bio || 'No bio yet.'}</p>}
-      </section>
+          <LevelCard xp={xp} />
+          {profile.bio && <p>{profile.bio}</p>}
+          {!profile.bio && !mine && <p className="muted">No bio yet.</p>}
+        </section>
 
-      <section className="card fill">
-        <h2>Posts</h2>
-        {posts.length === 0 && <p className="muted">No posts yet.</p>}
-        <div className="gallery scroll">
-          {posts.map(p => (p.image_url || p.image_path) && (
-            <img key={p.id} src={p.image_url ?? publicUrl(p.image_path)} alt={p.body} loading="lazy" />
-          ))}
+        {/* The numbers, each labelled */}
+        <div className="tiles">
+          <div className="tile"><strong>{fmtMinutes(total)}</strong><span>studied this week</span></div>
+          <div className="tile">
+            <strong>{best ? fmtMinutes(best) : '–'}</strong>
+            <span>best day{best ? ` (${DAY_NAMES[days.indexOf(best)]})` : ''}</span>
+          </div>
+          <div className="tile"><strong>{posts.length}</strong><span>posts shared</span></div>
+          <div className="tile"><strong>Lv {level}</strong><span>{(xp ?? 0).toLocaleString()} XP total</span></div>
         </div>
-      </section>
+
+        {/* Hours each day */}
+        <section className="card">
+          <h2>Study time each day <small>this week, Monday to Sunday</small></h2>
+          <DayBars minutes={days} start={startOfWeek()} highlight={todayIdx} />
+        </section>
+
+        {/* Their posts */}
+        <section className="card">
+          <h2>Posts <small>{posts.length} shared</small></h2>
+          {posts.length === 0 && <p className="muted">No posts yet.</p>}
+          <div className="post-list">
+            {posts.map(p => (
+              <article key={p.id} className="post-tile">
+                {(p.image_url || p.image_path) && (
+                  <img src={p.image_url ?? publicUrl(p.image_path)} alt={p.body} loading="lazy" />
+                )}
+                {p.body && <p>{p.body}</p>}
+                {p.created_at && <small className="muted">{new Date(p.created_at).toLocaleDateString()}</small>}
+              </article>
+            ))}
+          </div>
+        </section>
       </div>
 
       {mine && (
-        <form className="card stack scroll-y" onSubmit={save}>
-          <h2>Edit profile</h2>
+        <form className="card stack" onSubmit={save}>
+          <h2>Edit your profile</h2>
           <label>Display name
             <input value={profile.display_name} maxLength={40} onChange={e => edit({ display_name: e.target.value })} />
           </label>
@@ -133,9 +181,27 @@ export default function Profile() {
           <label>Your color
             <ColorPicker value={profile.color} onChange={color => edit({ color })} />
           </label>
-          <StylePicker title="Picture frame" level={level} value={profile.frame}
+          <div>
+            <div className="muted small">
+              Page theme <span>(changes how the site looks for you)</span>
+              {' · '}<Link to="/shop">Get more in the Shop</Link>
+            </div>
+            <div className="themes">
+              {THEMES.filter(t => t.id === 'default' || shop.owned.has(t.id)).map(t => (
+                <button key={t.id} type="button" data-t={t.id} className={'theme-opt' + (theme === t.id ? ' on' : '')}
+                  onClick={() => setTheme(t.id)} aria-pressed={theme === t.id}>
+                  <span className="theme-swatch" aria-hidden="true">
+                    {t.preview.map((c, i) => <i key={i} style={{ background: c }} />)}
+                  </span>
+                  <strong>{t.name}</strong>
+                  <small>{t.blurb}</small>
+                </button>
+              ))}
+            </div>
+          </div>
+          <StylePicker title="Picture frame" level={IS_ADMIN ? 999 : level} value={profile.frame}
             items={cosmetics.filter(c => c.kind === 'frame')} onChange={frame => edit({ frame })} />
-          <StylePicker title="Banner" level={level} value={profile.banner}
+          <StylePicker title="Banner" level={IS_ADMIN ? 999 : level} value={profile.banner}
             items={cosmetics.filter(c => c.kind === 'banner')} onChange={banner => edit({ banner })} />
           <button type="submit">Save profile</button>
           {msg && <p className="muted">{msg}</p>}

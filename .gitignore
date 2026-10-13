@@ -5,3 +5,6 @@ dist
 
 # Local tool settings
 .claude/
+
+# Local-only files (throwaway test accounts and the like)
+*.local.*

@@ -1,6 +1,23 @@
 // Minimal service worker: makes the app installable and lets the shell load offline.
 // It only handles same-origin requests, so Supabase (login, data, uploads) is never cached.
-const CACHE = 'friends-site-v1'
+const CACHE = 'friends-site-v2'
+
+// Tapping a Study Buddy notification brings the app forward (or opens it) on the Study Buddy page.
+self.addEventListener('notificationclick', event => {
+  event.notification.close()
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      const target = new URL('./#/buddy', self.registration.scope).href
+      for (const client of list) {
+        if ('focus' in client) {
+          if ('navigate' in client) client.navigate(target).catch(() => {})
+          return client.focus()
+        }
+      }
+      return self.clients.openWindow(target)
+    })
+  )
+})
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png']
 
 self.addEventListener('install', event => {

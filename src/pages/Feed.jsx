@@ -107,7 +107,7 @@ function Comments({ post, onCount }) {
   return (
     <div className="comments">
       {items === null && !error && <p className="muted small">Loading…</p>}
-      {items?.length === 0 && <p className="muted small">No comments yet. Say something encouraging!</p>}
+      {items?.length === 0 && <p className="muted small">No comments yet. Be the first to write one.</p>}
       <ul>
         {items?.map(c => (
           <li key={c.id}>
@@ -127,9 +127,9 @@ function Comments({ post, onCount }) {
         ))}
       </ul>
       <form className="row" onSubmit={add}>
-        <input value={body} maxLength={MAX_COMMENT} placeholder="Write a comment…"
+        <input value={body} maxLength={MAX_COMMENT} placeholder="Write a comment…" aria-label="Write a comment"
           onChange={e => setBody(e.target.value)} />
-        <button disabled={!body.trim()}>Send</button>
+        <button disabled={!body.trim()}>Comment</button>
       </form>
       {error && <p className="warn">{error}</p>}
     </div>
@@ -181,7 +181,7 @@ function PostCard({ post, onChanged }) {
         <img className="photo" src={post.image_url ?? publicUrl(post.image_path)} alt={post.body} loading="lazy" />
       )}
       {post.body && <p>{post.body}</p>}
-      <footer className="row">
+      <footer className="row reactions" aria-label="Reactions">
         {REACTIONS.map(({ kind, icon }) => {
           const count = reactions.filter(r => r.kind === kind).length
           const mine = reactions.some(r => r.user_id === user.id && r.kind === kind)
@@ -191,10 +191,12 @@ function PostCard({ post, onChanged }) {
             </button>
           )
         })}
-        <button className={'react' + (open ? ' on' : '')} onClick={() => setOpen(o => !o)} aria-expanded={open}>
-          💬 {shownCount > 0 && shownCount}
-        </button>
       </footer>
+      <button type="button" className={'comment-toggle' + (open ? ' open' : '')} onClick={() => setOpen(o => !o)} aria-expanded={open}>
+        <span aria-hidden="true">💬</span>
+        {shownCount === 0 ? 'Add a comment' : `${shownCount} comment${shownCount === 1 ? '' : 's'}`}
+        <span className="chev" aria-hidden="true">{open ? '▴' : '▾'}</span>
+      </button>
       {open && <Comments post={post} onCount={setCommentCount} />}
     </article>
   )

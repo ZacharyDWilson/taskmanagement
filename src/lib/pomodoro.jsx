@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from './supabase.js'
 import { useAuth } from './auth.jsx'
+import { APP_TITLE } from './env.js'
 
 const PomodoroContext = createContext(null)
 export const usePomodoro = () => useContext(PomodoroContext)
@@ -54,7 +55,7 @@ export function PomodoroProvider({ children }) {
   }, [running, endAt, mode, focusMin, breakMin]) // eslint-disable-line
 
   useEffect(() => {
-    document.title = running ? `${mmss(left)} · ${mode === 'focus' ? 'Focus' : 'Break'}` : 'Friends Site'
+    document.title = running ? `${mmss(left)} · ${mode === 'focus' ? 'Focus' : 'Break'}` : APP_TITLE
   }, [running, left, mode])
 
   function startPause() {

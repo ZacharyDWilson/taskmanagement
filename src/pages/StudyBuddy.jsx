@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
+import { useNotify } from '../lib/notify.jsx'
 import Avatar from '../components/Avatar.jsx'
 import { DEMO, demoQueue, isDemoId } from '../lib/demo.js' // DEMO
 
@@ -11,8 +12,28 @@ const STALE_MS = 3 * 60 * 60 * 1000 // hide people who've been waiting 3+ hours
 
 const ROLE_LABEL = { have_room: 'Has a study room', need_room: 'Needs a room' }
 
+const pad = n => String(n).padStart(2, '0')
+const fmtTime = iso => new Date(iso).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+const toTimeValue = iso => (iso ? `${pad(new Date(iso).getHours())}:${pad(new Date(iso).getMinutes())}` : '')
+
+// "15:30" becomes today at 3:30 PM (or tomorrow if that time is already well past).
+function untilFrom(hhmm) {
+  if (!hhmm) return null
+  const [h, m] = hhmm.split(':').map(Number)
+  const d = new Date()
+  d.setHours(h, m, 0, 0)
+  if (d.getTime() < Date.now() - 60 * 60 * 1000) d.setDate(d.getDate() + 1)
+  return d.toISOString()
+}
+
+function roomStatus(row) {
+  if (row.role !== 'have_room' || !row.room_until) return null
+  return new Date(row.room_until) < new Date() ? 'Room time has ended' : `Room until ${fmtTime(row.room_until)}`
+}
+
 function Person({ row, children }) {
   const p = row.profiles
+  const status = roomStatus(row)
   return (
     <li className="buddy">
       <Avatar name={p?.display_name} path={p?.avatar_path} color={p?.color} frame={p?.frame} size={40} />
@@ -21,10 +42,48 @@ function Person({ row, children }) {
         <small className="muted">
           {ROLE_LABEL[row.role]}{row.room ? ` · ${row.room}` : ''}
         </small>
+        {status && <small className="room-until">🕐 {status}</small>}
         {row.note && <small>{row.note}</small>}
       </div>
       {children}
     </li>
+  )
+}
+
+// Turn on alerts for when friends open up to study (PC or phone).
+function Alerts() {
+  const n = useNotify()
+  return (
+    <section className="card">
+      <h2>🔔 Alerts</h2>
+      {!n.supported && (
+        <p className="muted">
+          This browser can't show notifications. On iPhone, add the app to your Home Screen first
+          (Share → Add to Home Screen) and open it from there.
+        </p>
+      )}
+      {n.supported && n.permission === 'denied' && (
+        <p className="muted">
+          Notifications are blocked for this site. Allow them in your browser's site settings, then come back here.
+        </p>
+      )}
+      {n.supported && n.permission !== 'denied' && !n.enabled && (
+        <div className="stack">
+          <p className="muted">Get a notification when a friend opens up to study or picks you to study together.</p>
+          <button onClick={n.enable}>Turn on notifications</button>
+        </div>
+      )}
+      {n.supported && n.enabled && (
+        <div className="stack">
+          <p>Notifications are <strong>on</strong> for this device.</p>
+          <div className="row">
+            <button className="secondary" onClick={n.test}>Send a test</button>
+            <button className="secondary" onClick={n.disable}>Turn off</button>
+          </div>
+        </div>
+      )}
+      <p className="muted small">Alerts arrive while the app is open or running in the background.</p>
+    </section>
   )
 }
 
@@ -34,8 +93,10 @@ export default function StudyBuddy() {
   const [error, setError] = useState('')
   const [role, setRole] = useState('need_room')
   const [room, setRoom] = useState('')
+  const [until, setUntil] = useState('')
   const [note, setNote] = useState('')
   const [bookedRoom, setBookedRoom] = useState('')
+  const [bookedUntil, setBookedUntil] = useState('')
   const [demoPartner, setDemoPartner] = useState(null) // DEMO: pretend-match with a filler person
   const demoRows = useMemo(() => (DEMO ? demoQueue() : []), []) // DEMO
 
@@ -70,10 +131,23 @@ export default function StudyBuddy() {
 
   const join = e => {
     e.preventDefault()
+    const hosting = role === 'have_room'
     act(supabase.from('study_queue').insert({
-      user_id: user.id, role, room: role === 'have_room' ? room.trim() : '', note: note.trim(),
+      user_id: user.id, role,
+      room: hosting ? room.trim() : '',
+      room_until: hosting ? untilFrom(until) : null,
+      note: note.trim(),
     }))
   }
+
+  const saveRoom = e => {
+    e.preventDefault()
+    const f = new FormData(e.currentTarget)
+    act(supabase.from('study_queue')
+      .update({ room: String(f.get('room')).trim(), room_until: untilFrom(String(f.get('until'))) })
+      .eq('user_id', user.id))
+  }
+
   const bothNeedRoom = me && partner && me.role === 'need_room' && partner.role === 'need_room'
   const partnerHasRoom = partner?.role === 'have_room'
   const leave = () => { setDemoPartner(null); act(supabase.rpc('leave_study_queue')) }
@@ -100,8 +174,13 @@ export default function StudyBuddy() {
                 I have a study room and can host others
               </label>
               {role === 'have_room' && (
-                <input value={room} maxLength={60} placeholder="Where? e.g. Jenks 421"
-                  onChange={e => setRoom(e.target.value)} required />
+                <>
+                  <input value={room} maxLength={60} placeholder="Where? e.g. Jenks 421"
+                    onChange={e => setRoom(e.target.value)} required />
+                  <label>Room is yours until
+                    <input type="time" value={until} onChange={e => setUntil(e.target.value)} required />
+                  </label>
+                </>
               )}
               <input value={note} maxLength={80} placeholder="What are you studying? (optional)"
                 onChange={e => setNote(e.target.value)} />
@@ -113,8 +192,21 @@ export default function StudyBuddy() {
             <div className="stack">
               <p>
                 You're in the queue: <strong>{ROLE_LABEL[me.role]}</strong>
-                {me.room ? ` · ${me.room}` : ''}. Pick someone from the list to study with, or wait for a friend to pick you.
+                {me.room ? ` · ${me.room}` : ''}
+                {roomStatus(me) ? ` · ${roomStatus(me).toLowerCase()}` : ''}.
+                {' '}Pick someone from the list to study with, or wait for a friend to pick you.
               </p>
+              {me.role === 'have_room' && (
+                <form className="stack" key={`${me.room}|${me.room_until}`} onSubmit={saveRoom}>
+                  <div className="row">
+                    <input name="room" defaultValue={me.room} maxLength={60} placeholder="Room" required />
+                    <label className="row small">Until
+                      <input name="until" type="time" defaultValue={toTimeValue(me.room_until)} required />
+                    </label>
+                    <button className="secondary" type="submit">Update room</button>
+                  </div>
+                </form>
+              )}
               <button className="secondary" onClick={leave}>Leave queue</button>
             </div>
           )}
@@ -123,10 +215,16 @@ export default function StudyBuddy() {
             <div className="stack grow">
               <ul className="buddies"><Person row={partner} /></ul>
               {partnerHasRoom && (
-                <p className="match-note">Meet <strong>{partner.profiles?.display_name}</strong> at <strong>{partner.room || 'their room'}</strong>.</p>
+                <p className="match-note">
+                  Meet <strong>{partner.profiles?.display_name}</strong> at <strong>{partner.room || 'their room'}</strong>
+                  {partner.room_until ? <> (until <strong>{fmtTime(partner.room_until)}</strong>)</> : null}.
+                </p>
               )}
               {me.role === 'have_room' && (
-                <p className="match-note">Your buddy is coming to <strong>{me.room || 'your room'}</strong>.</p>
+                <p className="match-note">
+                  Your buddy is coming to <strong>{me.room || 'your room'}</strong>
+                  {me.room_until ? <> (until <strong>{fmtTime(me.room_until)}</strong>)</> : null}.
+                </p>
               )}
               {bothNeedRoom && (
                 <>
@@ -135,13 +233,20 @@ export default function StudyBuddy() {
                     <a href={BOOKING_URL} target="_blank" rel="noreferrer">Open in new tab ↗</a>
                   </div>
                   <iframe className="embed" title="Jenks Library study rooms" src={BOOKING_URL} />
-                  <form className="row" onSubmit={e => {
+                  <form className="stack" onSubmit={e => {
                     e.preventDefault()
-                    act(supabase.from('study_queue').update({ role: 'have_room', room: bookedRoom.trim() }).eq('user_id', user.id))
+                    act(supabase.from('study_queue')
+                      .update({ role: 'have_room', room: bookedRoom.trim(), room_until: untilFrom(bookedUntil) })
+                      .eq('user_id', user.id))
                   }}>
                     <input value={bookedRoom} maxLength={60} placeholder="Booked one? Room name, e.g. Jenks 311"
                       onChange={e => setBookedRoom(e.target.value)} required />
-                    <button type="submit">Tell my buddy</button>
+                    <div className="row">
+                      <label className="row small">Booked until
+                        <input type="time" value={bookedUntil} onChange={e => setBookedUntil(e.target.value)} required />
+                      </label>
+                      <button type="submit">Tell my buddy</button>
+                    </div>
                   </form>
                 </>
               )}
@@ -153,6 +258,8 @@ export default function StudyBuddy() {
           )}
           {error && <p className="warn">{error}</p>}
         </section>
+
+        <Alerts />
       </div>
 
       <section className="card fill">

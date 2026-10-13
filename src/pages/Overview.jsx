@@ -1,56 +1,49 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import TaskModal from '../components/TaskModal.jsx'
 import { useAuth } from '../lib/auth.jsx'
 import { useTasks } from '../lib/tasks.js'
-import { useXp } from '../lib/levels.js'
+import { useMyXp } from '../lib/xp.jsx'
 import { usePomodoro, mmss } from '../lib/pomodoro.jsx'
-import LevelCard from '../components/LevelCard.jsx'
-import WeekStats from '../components/WeekStats.jsx'
-import TodayList from '../components/TodayList.jsx'
+import WeekProgress from '../components/WeekProgress.jsx'
+import DueToday from '../components/DueToday.jsx'
 import Leaderboard from '../components/Leaderboard.jsx'
 import CanvasCard from '../components/CanvasCard.jsx'
 
+// A read-only dashboard: how your week is going, what's due today, and where you rank.
+// Three columns that fit the window, so the page itself never scrolls.
 export default function Overview() {
   const { user } = useAuth()
-  const { tasks, error, add, update, toggle, remove } = useTasks()
-  const [openId, setOpenId] = useState(null)
-  const openTask = tasks.find(t => t.id === openId)
-  const courses = [...new Set(tasks.map(t => t.course).filter(Boolean))]
+  const { tasks, error } = useTasks()
   const timer = usePomodoro()
   const version = timer.logged
   const name = user.user_metadata?.display_name
-  const xp = useXp(user.id, version)
+  const { xp } = useMyXp()
 
   return (
-    <div className="dash">
+    <div className="dash overview">
       <div className="col">
-        <section className="card">
-          <h1>Hey{name ? `, ${name}` : ''} 👋</h1>
-          <LevelCard xp={xp} />
-        </section>
-        <WeekStats tasks={tasks} version={version} />
-        {error && <p className="warn">{error}</p>}
-        <TodayList tasks={tasks} add={add} toggle={toggle} remove={remove} onOpen={t => setOpenId(t.id)} />
-      </div>
-      <div className="col">
-        <section className="card">
-          <h2>Focus</h2>
-          <p className="muted">
-            {timer.running
-              ? `${timer.mode === 'focus' ? 'Focusing' : 'On break'}, ${mmss(timer.left)} left.`
-              : 'Ready when you are.'}
-          </p>
+        <WeekProgress name={name} xp={xp} tasks={tasks} version={version} />
+        <section className="card focus-card">
+          <div>
+            <h2>Focus</h2>
+            <p className="muted">
+              {timer.running
+                ? `${timer.mode === 'focus' ? 'Focusing' : 'On break'}, ${mmss(timer.left)} left.`
+                : 'Ready when you are.'}
+            </p>
+          </div>
           <Link to="/pomodoro"><button>{timer.running ? 'Open timer' : 'Start a focus session'}</button></Link>
         </section>
-        <CanvasCard />
-        <Leaderboard version={version} />
       </div>
-      {openTask && (
-        <TaskModal key={openTask.id} task={openTask} courses={courses}
-          onSave={patch => update(openTask, patch)} onDelete={() => remove(openTask)}
-          onClose={() => setOpenId(null)} />
-      )}
+
+      <div className="col">
+        {error && <p className="warn">{error}</p>}
+        <DueToday tasks={tasks} />
+      </div>
+
+      <div className="col">
+        <Leaderboard version={version} />
+        <CanvasCard />
+      </div>
     </div>
   )
 }

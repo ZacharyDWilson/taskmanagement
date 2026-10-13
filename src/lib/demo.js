@@ -72,16 +72,22 @@ export function demoTasks() {
 
 // Past days' focus time for the weekly stats ---------------------------------
 export function demoSessions() {
-  const week = startOfWeek()
+  const thisWeek = startOfWeek()
   const todayIdx = (new Date().getDay() + 6) % 7
-  const minutes = [50, 75, 40, 90, 60, 35, 0]
-  return minutes.flatMap((m, i) => {
-    if (i > todayIdx || !m) return []
-    const at = addDays(week, i)
-    at.setHours(i === todayIdx ? 0 : 14, 5, 0, 0) // today's filler session is just after midnight
-
+  // Minutes per day (Mon..Sun) for this week and the four weeks before it.
+  const weeks = [
+    [50, 75, 40, 90, 60, 35, 20],
+    [60, 45, 80, 30, 70, 90, 25],
+    [35, 55, 65, 85, 40, 0, 50],
+    [90, 70, 55, 60, 45, 30, 0],
+    [25, 40, 30, 55, 65, 80, 45],
+  ]
+  return weeks.flatMap((minutes, w) => minutes.flatMap((m, i) => {
+    if (!m || (w === 0 && i > todayIdx)) return []
+    const at = addDays(thisWeek, i - 7 * w)
+    at.setHours(w === 0 && i === todayIdx ? 0 : 14, 5, 0, 0) // today's filler session is just after midnight
     return [{ minutes: m, created_at: at.toISOString() }]
-  })
+  }))
 }
 
 // Feed posts -----------------------------------------------------------------
@@ -131,6 +137,7 @@ export const demoComments = postId => [...(DEMO_COMMENTS[postId] ?? [])]
 // Study Buddy queue ------------------------------------------------------------
 export const demoQueue = () => [
   { user_id: uid('jordan'), role: 'have_room', room: 'Jenks 421', note: 'Orgo midterm review',
+    room_until: new Date(Date.now() + 2 * 3600 * 1000).toISOString(),
     matched_with: null, joined_at: minsAgo(12), profiles: person('jordan') },
   { user_id: uid('sam'), role: 'need_room', room: '', note: 'Writing a history essay',
     matched_with: null, joined_at: minsAgo(25), profiles: person('sam') },
@@ -160,7 +167,19 @@ export function demoProfile(id) {
     profile: { id, ...person(key), bio, banner },
     xp,
     minutes: WEEK_MINUTES[key],
+    days: spreadMinutes(WEEK_MINUTES[key]),
     posts: GALLERY.slice(0, key === 'priya' ? 6 : 3)
-      .map(([a, b, label], n) => ({ id: `demo-gallery-${key}-${n}`, body: label, image_url: art(a, b, label) })),
+      .map(([a, b, label], n) => ({
+        id: `demo-gallery-${key}-${n}`, body: label, image_url: art(a, b, label),
+        created_at: new Date(Date.now() - (n + 1) * 26 * 3600 * 1000).toISOString(),
+      })),
   }
+}
+
+// Splits a weekly total across Mon..Sun so a filler profile has believable daily bars.
+function spreadMinutes(total) {
+  const weights = [0.15, 0.19, 0.1, 0.23, 0.14, 0.11, 0.08]
+  const days = weights.map(w => Math.round(total * w))
+  days[6] += total - days.reduce((a, b) => a + b, 0)
+  return days
 }

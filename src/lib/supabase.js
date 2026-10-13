@@ -8,3 +8,6 @@ export const isConfigured = Boolean(url && anonKey)
 // The anon key is safe to ship in the browser; row-level security in
 // supabase/schema.sql is what actually protects the data.
 export const supabase = isConfigured ? createClient(url, anonKey) : null
+
+// Dev-only handle for debugging in the browser console. Not included in production builds.
+if (import.meta.env.DEV && supabase) window.__supabase = supabase

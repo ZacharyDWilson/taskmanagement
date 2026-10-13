@@ -6,6 +6,12 @@ import { DEMO, demoTasks, isDemoId } from './demo.js' // DEMO
 
 export const CATEGORIES = ['Homework', 'Exam', 'Project', 'Reading', 'Study', 'Work', 'Personal', 'Other']
 
+// The classes/subjects already used on tasks, most recently used first.
+export function classesFrom(tasks) {
+  const sorted = [...tasks].sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)))
+  return [...new Set(sorted.map(t => t.course).filter(Boolean))]
+}
+
 // Loads every unscheduled task plus a window around the current week,
 // so the planner can page a few weeks either way.
 export function useTasks() {

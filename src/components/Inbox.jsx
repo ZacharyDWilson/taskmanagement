@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { classesFrom } from '../lib/tasks.js'
 import ColorPicker from './ColorPicker.jsx'
+import ClassPicker from './ClassPicker.jsx'
 import { TaskItem } from './TodayList.jsx'
 
 // The "To plan" list: tasks with no day yet. Drag them onto a day in the week planner.
@@ -11,7 +13,6 @@ export default function Inbox({ tasks, add, toggle, remove, move, onOpen }) {
   const [over, setOver] = useState(false)
 
   const items = tasks.filter(t => !t.day)
-  const courses = [...new Set(tasks.map(t => t.course).filter(Boolean))]
 
   function submit(e) {
     e.preventDefault()
@@ -42,11 +43,7 @@ export default function Inbox({ tasks, add, toggle, remove, move, onOpen }) {
             placeholder="Add something you need to do…" />
           <button type="submit">Add</button>
         </div>
-        <input value={course} onChange={e => setCourse(e.target.value)} maxLength={60}
-          placeholder="Class or subject (optional)" list="course-options" />
-        <datalist id="course-options">
-          {courses.map(c => <option key={c} value={c} />)}
-        </datalist>
+        <ClassPicker value={course} onChange={setCourse} options={classesFrom(tasks)} />
         <ColorPicker value={color} onChange={setColor} />
       </form>
       <p className="muted small">Drag tasks onto a day →. Click one for details.</p>
