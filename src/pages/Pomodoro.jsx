@@ -27,6 +27,7 @@ export default function Study() {
   const priceOf = s => shop.items.find(i => i.id === timerItemId(s.id))?.price
   const [pickStyle, setPickStyle] = useState(false)
   const buddy = useStudyBuddy()
+  const [confirmReset, setConfirmReset] = useState(false)   // "Reset the count-up?" confirmation
   const locked = TIMER_STYLES.filter(s => !timerStyle.unlocked(s))
   async function buyStyle(s) {
     const err = await shop.buy(timerItemId(s.id))
@@ -66,11 +67,31 @@ export default function Study() {
             <small className="muted">{p.cuMinutes} min counted today{p.cuMinutes >= p.maxDayMin ? ' (the daily limit)' : ''}</small>
             <div className="row">
               <button onClick={p.cuStartPause}>{p.cuRunning ? 'Pause' : p.cuElapsedMs > 0 ? 'Resume' : 'Start'}</button>
-              <button className="secondary" onClick={p.cuReset} disabled={p.cuElapsedMs === 0}>Reset</button>
+              <button className="secondary" onClick={() => setConfirmReset(true)} disabled={p.cuElapsedMs === 0}>Reset</button>
               {p.cuMinutes >= 1 && <button className="secondary" onClick={p.cuLogNow}>Save {p.cuMinutes}m now</button>}
             </div>
             {p.msg && <p className="muted">{p.msg}</p>}
             <small className="muted">Up to {Math.round(p.maxDayMin / 60)} hours count for one day.</small>
+            {confirmReset && (
+              <div className="modal-backdrop" onClick={() => setConfirmReset(false)}>
+                <div className="modal card stack" role="dialog" aria-modal="true" aria-label="Reset the count-up timer" onClick={e => e.stopPropagation()}>
+                  <h2>Reset the count-up timer?</h2>
+                  <p>
+                    This clears <strong>{hms(p.cuElapsedMs)}</strong> back to zero.
+                    {p.cuMinutes >= 1 ? ' It has not been saved as study time yet, so you would lose it.' : ' It is under a minute, so nothing would be lost.'}
+                  </p>
+                  <div className="row between">
+                    <button type="button" className="secondary" onClick={() => setConfirmReset(false)}>Keep counting</button>
+                    <span className="row">
+                      {p.cuMinutes >= 1 && (
+                        <button type="button" onClick={async () => { await p.cuLogNow(); p.cuReset(); setConfirmReset(false) }}>Save {p.cuMinutes}m, then reset</button>
+                      )}
+                      <button type="button" className="secondary danger" onClick={() => { p.cuReset(); setConfirmReset(false) }}>Reset without saving</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ) : (<>
         <div className="tabs">

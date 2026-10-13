@@ -3712,3 +3712,5 @@ a.mention:hover { text-decoration: underline; }
 .lb-rest li { min-width: 0; scale: 1; }
 .lb-rest li:hover { scale: 1; }
 .lb-rest .rank { flex: none; }
+
+button.danger { color: #c0392b; border-color: color-mix(in srgb, #c0392b 45%, transparent); }
