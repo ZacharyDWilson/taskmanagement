@@ -43,8 +43,10 @@ export default function Inbox({ tasks, add, toggle, remove, move, onOpen }) {
             placeholder="Add something you need to do…" />
           <button type="submit">Add</button>
         </div>
-        <ClassPicker value={course} onChange={setCourse} options={classesFrom(tasks)} />
-        <ColorPicker value={color} onChange={setColor} />
+        <div className="add-meta">
+          <ClassPicker compact value={course} onChange={setCourse} options={classesFrom(tasks)} />
+          <ColorPicker value={color} onChange={setColor} />
+        </div>
       </form>
       <p className="muted small">Drag tasks onto a day →. Click one for details.</p>
       {items.length === 0 && <p className="muted">Everything is planned. Nice!</p>}

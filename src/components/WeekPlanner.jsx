@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { addDays, DAY_NAMES, fmtDay, isoDate, startOfWeek } from '../lib/dates.js'
 import { classesFrom } from '../lib/tasks.js'
 import { colorHex } from '../lib/colors.js'
-import ColorPicker from './ColorPicker.jsx'
-import ClassPicker from './ClassPicker.jsx'
 import { TaskItem } from './TodayList.jsx'
 import DragTray from './DragTray.jsx'
 
@@ -65,8 +63,7 @@ function MonthGrid({ tasks, anchor, onOpenDay, onOpenTask, move }) {
 }
 
 // One column of the planner: a single weekday, or Saturday + Sunday together as "Weekend".
-function Column({ title, dates, tasks, add, toggle, remove, move, onOpen, color, course }) {
-  const [text, setText] = useState('')
+function Column({ title, dates, tasks, toggle, remove, move, onOpen }) {
   const [over, setOver] = useState(false)
   const keys = dates.map(isoDate)
   const isWeekend = dates.length > 1
@@ -74,14 +71,6 @@ function Column({ title, dates, tasks, add, toggle, remove, move, onOpen, color,
   const done = items.filter(t => t.done).length
 
   const dayLabel = t => (isWeekend ? (new Date(t.day + 'T00:00:00').getDay() === 6 ? 'Sat' : 'Sun') : undefined)
-
-  function submit(e) {
-    e.preventDefault()
-    const t = text.trim()
-    if (!t) return
-    add(t, keys[0], color, { course: course.trim() }) // weekend quick-adds go to Saturday; change it in the details
-    setText('')
-  }
 
   function drop(e) {
     e.preventDefault()
@@ -109,25 +98,19 @@ function Column({ title, dates, tasks, add, toggle, remove, move, onOpen, color,
             draggable label={dayLabel(t)} />
         ))}
       </ul>
-      <form onSubmit={submit}>
-        <input value={text} onChange={e => setText(e.target.value)} maxLength={120} placeholder={`+ Add to ${title}`} />
-      </form>
     </div>
   )
 }
 
 // The planner: Day, Week or Month, with a filter to show one class or subject at a time.
-export default function WeekPlanner({ tasks, add, toggle, remove, move, onOpen }) {
+export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
   const [mode, setMode] = useState('week')                 // 'day' | 'week' | 'month'
   const [anchor, setAnchor] = useState(() => new Date())    // the day / week / month being looked at
   const [filter, setFilter] = useState(ALL)                 // class filter
-  const [color, setColor] = useState('purple')
-  const [course, setCourse] = useState('')
 
   const classes = classesFrom(tasks)
   const hasUnclassed = tasks.some(t => !t.course)
   const visible = tasks.filter(t => (filter === ALL ? true : filter === NONE ? !t.course : t.course === filter))
-  const newCourse = course || (filter !== ALL && filter !== NONE ? filter : '')
 
   const start = startOfWeek(anchor)
   const columns = [
@@ -175,37 +158,26 @@ export default function WeekPlanner({ tasks, add, toggle, remove, move, onOpen }
         </div>
       </div>
 
-      {(classes.length > 0 || hasUnclassed) && (
-        <div className="planner-filter" role="group" aria-label="Filter by class or subject">
-          <span className="muted small">Show:</span>
-          <button type="button" className={'chip' + (filter === ALL ? ' on' : '')} onClick={() => setFilter(ALL)}>All classes</button>
-          {classes.map(c => (
-            <button key={c} type="button" className={'chip' + (filter === c ? ' on' : '')}
-              onClick={() => setFilter(f => (f === c ? ALL : c))}>{c}</button>
-          ))}
-          {hasUnclassed && classes.length > 0 && (
-            <button type="button" className={'chip' + (filter === NONE ? ' on' : '')}
-              onClick={() => setFilter(f => (f === NONE ? ALL : NONE))}>No class</button>
-          )}
-        </div>
-      )}
-
-      {mode !== 'month' && (
-      <div className="planner-tools">
-        <span className="muted small">New tasks:</span>
-        <ColorPicker value={color} onChange={setColor} />
-        <ClassPicker compact value={course} onChange={setCourse} options={classes}
-          placeholder={filter !== ALL && filter !== NONE ? 'Class: ' + filter : 'Class or subject (optional)'} />
+      <div className="planner-bar">
+        {(classes.length > 0 || hasUnclassed) && (
+          <label className="planner-select">
+            <span>Class</span>
+            <select value={filter} onChange={e => setFilter(e.target.value)} aria-label="Show tasks for one class or subject">
+              <option value={ALL}>All classes</option>
+              {classes.map(c => <option key={c} value={c}>{c}</option>)}
+              {hasUnclassed && classes.length > 0 && <option value={NONE}>No class</option>}
+            </select>
+          </label>
+        )}
       </div>
-      )}
 
       {mode !== 'month' && <DragTray columns={columns} tasks={tasks} move={move} />}
 
       {mode === 'week' && (
         <div className="week">
           {columns.map(c => (
-            <Column key={c.title} {...c} tasks={visible} add={add} toggle={toggle} remove={remove}
-              move={move} onOpen={onOpen} color={color} course={newCourse} />
+            <Column key={c.title} {...c} tasks={visible} toggle={toggle} remove={remove}
+              move={move} onOpen={onOpen} />
           ))}
         </div>
       )}
@@ -213,7 +185,7 @@ export default function WeekPlanner({ tasks, add, toggle, remove, move, onOpen }
       {mode === 'day' && (
         <div className="week day-view">
           <Column title={anchor.toLocaleDateString(undefined, { weekday: 'long' })} dates={[anchor]} tasks={visible}
-            add={add} toggle={toggle} remove={remove} move={move} onOpen={onOpen} color={color} course={newCourse} />
+            toggle={toggle} remove={remove} move={move} onOpen={onOpen} />
         </div>
       )}
 

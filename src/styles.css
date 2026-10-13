@@ -2602,3 +2602,75 @@ html, body { max-width: 100%; overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) { .blob::before { animation: none; } }
 
 .install-steps { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: .35rem; }
+
+/* ---- Planner header, simplified: one control row, one filter row, and new-task options tucked away ------------ */
+.planner-head { margin-bottom: .6rem; }
+.planner-head h2 small { display: block; margin-top: .15rem; font-weight: 500; }
+.planner-bar { display: flex; flex-wrap: wrap; gap: .6rem .9rem; align-items: center; justify-content: space-between; margin-bottom: .8rem; }
+.planner-select { display: inline-flex !important; flex-direction: row !important; align-items: center; gap: .5rem; font-size: .85rem; font-weight: 600; color: var(--muted); }
+.planner-select select {
+  appearance: none; -webkit-appearance: none; font: inherit; font-weight: 600; color: var(--text); padding: .45rem 2rem .45rem .9rem;
+  border-radius: 999px; border: 1px solid var(--glass-line); background: var(--glass-field)
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23788' stroke-width='2' stroke-linecap='round'/></svg>") no-repeat right .8rem center;
+  max-width: 220px; cursor: pointer;
+}
+.new-opts { display: inline-flex; align-items: center; gap: .5rem; padding: .42rem .85rem; font-size: .85rem; font-weight: 600; }
+.new-opts i { width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255, 255, 255, .8), 0 0 0 3px rgba(0, 0, 0, .12); }
+.new-opts-panel { display: flex; flex-direction: column; gap: .6rem; padding: .8rem .9rem; margin-bottom: .8rem; border-radius: 16px; background: var(--glass-inner); border: 1px solid var(--glass-line); }
+.new-opts-panel p { margin: 0; }
+.planner-tools, .planner-filter { display: none; }
+
+/* ---- To plan: the only place tasks are added, kept to two calm rows ----------------------------------------------
+   Row 1: the task and Add. Row 2: its class (a plain box with suggestions) and its colour. */
+.add-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem .9rem; }
+.add-meta .class-picker { flex: 1 1 11rem; min-width: 0; }
+.add-meta .swatches { flex: none; gap: .4rem; flex-wrap: nowrap; }
+.add-meta .swatch { width: 26px; height: 26px; }
+
+/* ---- Task details: day and category pickers that show their choice clearly ------------------------------------
+   These are radios / checkboxes dressed as pills (not buttons), so no theme's button styling can make every option
+   look chosen. The chosen one fills with colour, lifts and gets a tick; today carries a dot. */
+.pick-set { border: 0; margin: 0; padding: 0; min-width: 0; display: flex; flex-direction: column; gap: .55rem; }
+.pick-set legend { padding: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem .7rem; font-size: .85rem; color: var(--muted); margin-bottom: .45rem; }
+.pick-summary { font-weight: 700; font-size: .92rem; color: var(--muted); transition: color .2s ease; }
+.pick-summary.set { color: var(--accent-ink, var(--accent)); }
+.pick input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.pick { position: relative; display: block; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.pick > span {
+  position: relative; display: flex; align-items: center; justify-content: center; gap: .3rem; text-align: center;
+  border-radius: 14px; border: 2px solid var(--glass-line); background: var(--glass-inner); color: var(--text);
+  transition: transform .22s cubic-bezier(.3, 1.7, .5, 1), background .18s ease, border-color .18s ease, box-shadow .18s ease, color .18s ease;
+}
+.pick:hover > span { transform: translateY(-2px); border-color: var(--accent); }
+.pick input:focus-visible + span { outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 2px; }
+.pick.on > span {
+  background: var(--accent); border-color: var(--accent); color: var(--on-accent); transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 8px 16px color-mix(in srgb, var(--accent) 38%, transparent);
+}
+.pick.on > span::after { content: '✓'; position: absolute; top: -7px; right: -5px; width: 18px; height: 18px; line-height: 18px; text-align: center; font-size: .7rem; font-weight: 800; border-radius: 50%; background: #fff; color: var(--accent); box-shadow: 0 1px 4px rgba(0, 0, 0, .25); }
+
+.pick-days { display: grid; grid-template-columns: 1.15fr repeat(7, minmax(0, 1fr)); gap: .4rem; }
+.pick-days .pick > span { flex-direction: column; gap: 0; padding: .45rem .1rem .4rem; min-height: 58px; }
+.pick-days b { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; opacity: .8; }
+.pick-days i { font-style: normal; font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.15; }
+.pick-days .pick.not i { font-size: .72rem; font-weight: 600; opacity: .85; }
+.pick-days .pick.today > span::before { content: ''; position: absolute; bottom: 5px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent-2, var(--accent)); }
+.pick-days .pick.today.on > span::before { background: #fff; }
+
+.pick-cats { display: flex; flex-wrap: wrap; gap: .45rem; }
+.pick.cat > span { padding: .4rem .8rem .4rem .6rem; border-radius: 999px; font-size: .88rem; font-weight: 600; border-color: color-mix(in srgb, var(--c) 45%, transparent); background: color-mix(in srgb, var(--c) 10%, var(--glass-inner)); }
+.pick.cat em { font-style: normal; font-size: 1rem; }
+.pick.cat.on > span { background: var(--c); border-color: var(--c); color: #fff; box-shadow: 0 8px 16px color-mix(in srgb, var(--c) 40%, transparent); }
+.pick.cat.on > span::after { color: var(--c); }
+
+@media (max-width: 700px) {
+  .pick-days { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .pick-days .pick.not { grid-column: span 4; }
+  .pick-days .pick.not > span { flex-direction: row; min-height: 44px; gap: .4rem; }
+}
+@media (prefers-reduced-motion: reduce) { .pick > span { transition: none; } .pick.on > span, .pick:hover > span { transform: none; } }
+
+.canvas-week { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; margin-bottom: .3rem; }
+.canvas-week .seg-btn { border: 1px solid var(--glass-line); background: var(--glass-inner); }
+.canvas-week .seg-btn.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.canvas-week small { margin-left: auto; }

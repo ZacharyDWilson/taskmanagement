@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useCanvas } from '../lib/canvas.js'
-import { addDays, isoDate } from '../lib/dates.js'
+import { addDays, fmtDay, isoDate, startOfWeek } from '../lib/dates.js'
 import PickerModal from './PickerModal.jsx'
 
 const fmtDue = a => {
@@ -55,19 +55,23 @@ function ConnectDialog({ canvas, onClose }) {
   )
 }
 
-// Upcoming Canvas assignments, each with an "Add to my week" button.
+// Canvas assignments due in one week (this week or next), each with an "Add" button. Nothing from Canvas reaches the
+// To Do list until someone presses Add.
 export default function CanvasCard({ tasks = [], onAdd }) {
   const canvas = useCanvas()
   const [connect, setConnect] = useState(false)
   const added = useMemo(() => new Set(tasks.map(t => t.canvas_uid).filter(Boolean)), [tasks])
-  const today = isoDate(new Date())
-  const upcoming = canvas.assignments.filter(a => dayKey(a) >= today).slice(0, 12)
+  const [weekOffset, setWeekOffset] = useState(0)          // 0 = this week, 1 = next week
+  const weekStart = startOfWeek(addDays(new Date(), weekOffset * 7))
+  const from = isoDate(weekStart)
+  const to = isoDate(addDays(weekStart, 6))
+  const upcoming = canvas.assignments
+    .filter(a => { const k = dayKey(a); return k >= from && k <= to })
+    .sort((a, b) => dayKey(a).localeCompare(dayKey(b)) || String(a.title).localeCompare(String(b.title)))
 
   function add(a) {
     const key = dayKey(a)
-    const week = new Date(); // plan it on the due day when that is close, otherwise leave it in "To plan"
-    const near = key <= isoDate(addDays(week, 13))
-    onAdd?.(a.title, near ? key : null, 'blue', {
+    onAdd?.(a.title, key, 'blue', {                       // planned on the day it is due
       course: a.course, category: 'Homework', due_date: key,
       due_time: a.allDay ? null : new Date(a.due).toTimeString().slice(0, 5),
       notes: a.url ? `From Canvas: ${a.url}` : 'From Canvas', canvas_uid: a.uid,
@@ -90,7 +94,16 @@ export default function CanvasCard({ tasks = [], onAdd }) {
 
       {canvas.connected && (
         <>
-          {upcoming.length === 0 && <p className="muted">Nothing due soon in Canvas. Nice.</p>}
+          <div className="canvas-week" role="tablist" aria-label="Which week">
+            {[['This week', 0], ['Next week', 1]].map(([label, n]) => (
+              <button key={n} type="button" role="tab" aria-selected={weekOffset === n}
+                className={'seg-btn' + (weekOffset === n ? ' on' : '')} onClick={() => setWeekOffset(n)}>{label}</button>
+            ))}
+            <small className="muted">{fmtDay(weekStart)} – {fmtDay(addDays(weekStart, 6))}</small>
+          </div>
+          {upcoming.length === 0 && (
+            <p className="muted">Nothing due {weekOffset === 0 ? 'this week' : 'next week'} in Canvas. Nice.</p>
+          )}
           <ul className="list scroll canvas-list">
             {upcoming.map(a => {
               const isAdded = added.has(a.uid)

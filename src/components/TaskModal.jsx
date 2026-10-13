@@ -3,6 +3,18 @@ import { CATEGORIES } from '../lib/tasks.js'
 import ColorPicker from './ColorPicker.jsx'
 import { addDays, DAY_NAMES, isoDate, startOfWeek } from '../lib/dates.js'
 
+const CAT_ICON = { Homework: '📝', Exam: '🎯', Project: '🛠️', Reading: '📖', Study: '🧠', Work: '💼', Personal: '🌱', Other: '✨' }
+const CAT_COLOR = { Homework: '#3b82f6', Exam: '#ef4444', Project: '#a855f7', Reading: '#14b8a6', Study: '#f59e0b', Work: '#64748b', Personal: '#22c55e', Other: '#ec4899' }
+const todayKey = isoDate(new Date())
+// "Tuesday, Oct 13" (or "Today" / "Tomorrow") for the summary beside the day picker
+function plannedText(day) {
+  if (!day) return 'Not planned yet'
+  const d = new Date(day + 'T00:00:00')
+  const diff = Math.round((d - new Date(todayKey + 'T00:00:00')) / 86400000)
+  const nice = d.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })
+  return diff === 0 ? 'Today · ' + nice : diff === 1 ? 'Tomorrow · ' + nice : nice
+}
+
 // Detail pop-up: what it's for, when it's due, the requirements, and any extra info.
 export default function TaskModal({ task, courses, onSave, onDelete, onClose }) {
   const [d, setD] = useState({
@@ -54,22 +66,29 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
           <input value={d.title} maxLength={120} onChange={e => set({ title: e.target.value })} required />
         </label>
 
-        {/* Tap to plan it, no dragging needed (works on phones) */}
-        <div>
-          <div className="muted small">Plan it for</div>
-          <div className="chips">
-            <button type="button" className={'chip' + (!d.day ? ' on' : '')}
-              onClick={() => set({ day: '' })}>Not planned</button>
+        {/* Tap to plan it, no dragging needed (works on phones). Radios, so the chosen day is always unmistakable. */}
+        <fieldset className="pick-set">
+          <legend>
+            Plan it for
+            <strong className={'pick-summary' + (d.day ? ' set' : '')}>{plannedText(d.day)}</strong>
+          </legend>
+          <div className="pick-days" role="radiogroup">
+            <label className={'pick not' + (!d.day ? ' on' : '')}>
+              <input type="radio" name="plan-day" checked={!d.day} onChange={() => set({ day: '' })} />
+              <span><b>Not</b><i>planned</i></span>
+            </label>
             {DAY_NAMES.map((name, i) => {
               const date = addDays(startOfWeek(), i)
               const key = isoDate(date)
               return (
-                <button key={key} type="button" className={'chip' + (d.day === key ? ' on' : '')}
-                  onClick={() => set({ day: key })}>{name} {date.getDate()}</button>
+                <label key={key} className={'pick' + (d.day === key ? ' on' : '') + (key === todayKey ? ' today' : '')}>
+                  <input type="radio" name="plan-day" checked={d.day === key} onChange={() => set({ day: key })} />
+                  <span><b>{name}</b><i>{date.getDate()}</i></span>
+                </label>
               )
             })}
           </div>
-        </div>
+        </fieldset>
 
         <div className="form-grid">
           <label>Class / subject
@@ -89,15 +108,20 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
           </label>
         </div>
 
-        <div>
-          <div className="muted small">Category</div>
-          <div className="chips">
+        <fieldset className="pick-set">
+          <legend>
+            Category
+            <strong className={'pick-summary' + (d.category ? ' set' : '')}>{d.category || 'None chosen'}</strong>
+          </legend>
+          <div className="pick-cats">
             {CATEGORIES.map(c => (
-              <button key={c} type="button" className={'chip' + (d.category === c ? ' on' : '')}
-                onClick={() => set({ category: d.category === c ? '' : c })}>{c}</button>
+              <label key={c} className={'pick cat' + (d.category === c ? ' on' : '')} style={{ '--c': CAT_COLOR[c] }}>
+                <input type="checkbox" checked={d.category === c} onChange={() => set({ category: d.category === c ? '' : c })} />
+                <span><em aria-hidden="true">{CAT_ICON[c]}</em>{c}</span>
+              </label>
             ))}
           </div>
-        </div>
+        </fieldset>
 
         <label>Criteria / requirements
           <textarea rows={3} maxLength={1000} value={d.criteria}

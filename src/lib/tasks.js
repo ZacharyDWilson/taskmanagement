@@ -21,6 +21,9 @@ export function useTasks() {
   const [demo, setDemo] = useState(() => (DEMO ? demoTasks() : [])) // DEMO: local-only filler tasks
 
   const load = useCallback(async () => {
+    // Finished tasks tidy themselves away a week after they were ticked off (see 020_auto_clean_done_tasks.sql).
+    // Ignored if the database hasn't been given that step yet.
+    try { await supabase.rpc('purge_my_done_tasks') } catch { /* not set up yet: fine */ }
     const week = startOfWeek()
     const from = isoDate(addDays(week, -28))
     const to = isoDate(addDays(week, 90))
