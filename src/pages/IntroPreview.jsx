@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Scene from '../components/Scene.jsx'
 import Login from './Login.jsx'
+import Logo from '../components/Logo.jsx'
 import { useSound } from '../lib/sfx.jsx'
 
 // The intro build (npm run dev:intro, http://localhost:5175).
@@ -15,7 +16,7 @@ export default function IntroPreview() {
       <Scene />
       <div className="content">
         <nav className="nav">
-          <span className="brand">LOCK IN</span>
+          <span className="brand"><Logo size={24} /><span>LOCK IN</span></span>
           <span className="intro-badge">Intro preview</span>
           <span className="spacer" />
           <button type="button" onClick={() => setRun(r => r + 1)}>Replay loading screen</button>

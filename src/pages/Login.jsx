@@ -7,6 +7,7 @@ import { useMusic } from '../lib/music.jsx'
 import { usernameProblem } from '../lib/username.js'
 import { COLLEGES, collegeFromEmail } from '../lib/colleges.js'
 import { IS_FAKE } from '../lib/env.js'
+import Logo from '../components/Logo.jsx'
 import { FAKE_EMAIL, FAKE_PASSWORD } from '../lib/fakeSupabase.js'
 
 // ---- The welcome splash ------------------------------------------------------------------------
@@ -70,7 +71,7 @@ function Splash({ onDone, waiting = false }) {
       {stars.map((s, i) => (
         <span key={i} className="splash-star" style={{ left: s.left, top: s.top, width: s.size, height: s.size, animationDelay: `${s.delay}s`, animationDuration: `${s.dur}s` }} />
       ))}
-      <div className="splash-title">LOCK IN</div>
+      <div className="splash-title"><Logo size={48} /><span>LOCK IN</span></div>
       <div className="globe-wrap">
         <div className="globe" aria-hidden="true">
           <div className="globe-map" />
@@ -152,7 +153,7 @@ export default function Login({ preview = false }) {
     <>
       {splash ? <Splash onDone={finishSplash} /> : busy && <Splash waiting />}
       <form onSubmit={submit} className="card narrow stack login-card">
-        <div className="login-brand">LOCK IN</div>
+        <div className="login-brand"><Logo size={22} /><span>LOCK IN</span></div>
         <h1>{mode === 'login' ? 'Log in' : 'Join the group'}</h1>
         {IS_FAKE && (
           <p className="preview-note">

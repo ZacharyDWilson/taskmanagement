@@ -2216,3 +2216,13 @@ textarea { border-radius: calc(var(--r) * .8); }
 :root[data-motion='reduced'] *, :root[data-motion='reduced'] *::before, :root[data-motion='reduced'] *::after {
   animation: none !important; transition: none !important; scroll-behavior: auto !important;
 }
+
+/* ---- The LOCK IN mark: one colour, taken from the text it sits beside, so it blends into every theme --------- */
+.logo-mark { flex: none; display: block; color: inherit; }
+.logo-mark .logo-accent { opacity: .55; }
+.brand { display: inline-flex; align-items: center; gap: .55rem; }
+.brand .logo-mark { opacity: .92; }
+.login-brand { display: flex; align-items: center; justify-content: center; gap: .55rem; text-indent: 0; }
+.splash-title { display: flex; align-items: center; justify-content: center; gap: .5em; text-indent: 0; }
+.splash-title .logo-mark { height: 1.15em; width: auto; }
+.login-brand .logo-mark { opacity: .9; }

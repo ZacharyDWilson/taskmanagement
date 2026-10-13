@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420" role="img" aria-label="LOCK IN"><rect width="900" height="420" fill="#f4f8fc"/>
+  <g transform="translate(30 20) scale(1.6)"><g transform="translate(-8.5 2)">
+    <path d="M29 18V91H58" fill="none" stroke="#16233a" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="66" y="84" width="20" height="14" rx="7" fill="#2d8fe6"/>
+    <path d="M103 64V91" stroke="#16233a" stroke-width="14" stroke-linecap="round"/>
+    <path d="M97 31V27a6 6 0 0 1 12 0V31" fill="none" stroke="#2d8fe6" stroke-width="5" stroke-linecap="round"/>
+    <rect x="91" y="30" width="24" height="20" rx="6" fill="#2d8fe6"/>
+    <circle cx="103" cy="39" r="2.8" fill="#fff"/>
+  </g></g>
+  <text x="250" y="110" font-family="'Nunito','Quicksand','Segoe UI',system-ui,sans-serif" font-weight="800" font-size="64" letter-spacing="9" fill="#16233a">LOCK<tspan fill="#2d8fe6"> IN</tspan></text>
+  <text x="252" y="150" font-family="'Nunito','Quicksand','Segoe UI',system-ui,sans-serif" font-size="20" fill="#64748b">L whose foot clicks into place, I topped with a padlock</text>
+  <g transform="translate(500 190) scale(1.5)"><rect width="120" height="120" rx="28" fill="#16233a"/>
+  <g transform="translate(60 60) scale(0.78) translate(-60 -60)"><g transform="translate(-8.5 2)">
+    <path d="M29 18V91H58" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="66" y="84" width="20" height="14" rx="7" fill="#4aa9f5"/>
+    <path d="M103 64V91" stroke="#fff" stroke-width="14" stroke-linecap="round"/>
+    <path d="M97 31V27a6 6 0 0 1 12 0V31" fill="none" stroke="#4aa9f5" stroke-width="5" stroke-linecap="round"/>
+    <rect x="91" y="30" width="24" height="20" rx="6" fill="#4aa9f5"/>
+    <circle cx="103" cy="39" r="2.8" fill="#16233a"/>
+  </g></g>
+</g>
+  <g transform="translate(50 250) scale(0.8)"><rect width="120" height="120" rx="28" fill="#2d8fe6"/>
+  <g transform="translate(60 60) scale(0.78) translate(-60 -60)"><g transform="translate(-8.5 2)">
+    <path d="M29 18V91H58" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="66" y="84" width="20" height="14" rx="7" fill="#16233a"/>
+    <path d="M103 64V91" stroke="#fff" stroke-width="14" stroke-linecap="round"/>
+    <path d="M97 31V27a6 6 0 0 1 12 0V31" fill="none" stroke="#16233a" stroke-width="5" stroke-linecap="round"/>
+    <rect x="91" y="30" width="24" height="20" rx="6" fill="#16233a"/>
+    <circle cx="103" cy="39" r="2.8" fill="#fff"/>
+  </g></g>
+</g><g transform="translate(170 250) scale(0.4)"><rect width="120" height="120" rx="28" fill="#2d8fe6"/>
+  <g transform="translate(60 60) scale(0.78) translate(-60 -60)"><g transform="translate(-8.5 2)">
+    <path d="M29 18V91H58" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="66" y="84" width="20" height="14" rx="7" fill="#16233a"/>
+    <path d="M103 64V91" stroke="#fff" stroke-width="14" stroke-linecap="round"/>
+    <path d="M97 31V27a6 6 0 0 1 12 0V31" fill="none" stroke="#16233a" stroke-width="5" stroke-linecap="round"/>
+    <rect x="91" y="30" width="24" height="20" rx="6" fill="#16233a"/>
+    <circle cx="103" cy="39" r="2.8" fill="#fff"/>
+  </g></g>
+</g><g transform="translate(240 250) scale(0.26666666666666666)"><rect width="120" height="120" rx="28" fill="#2d8fe6"/>
+  <g transform="translate(60 60) scale(0.78) translate(-60 -60)"><g transform="translate(-8.5 2)">
+    <path d="M29 18V91H58" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="66" y="84" width="20" height="14" rx="7" fill="#16233a"/>
+    <path d="M103 64V91" stroke="#fff" stroke-width="14" stroke-linecap="round"/>
+    <path d="M97 31V27a6 6 0 0 1 12 0V31" fill="none" stroke="#16233a" stroke-width="5" stroke-linecap="round"/>
+    <rect x="91" y="30" width="24" height="20" rx="6" fill="#16233a"/>
+    <circle cx="103" cy="39" r="2.8" fill="#fff"/>
+  </g></g>
+</g><g transform="translate(295 250) scale(0.16666666666666666)"><rect width="120" height="120" rx="28" fill="#2d8fe6"/>
+  <g transform="translate(60 60) scale(0.78) translate(-60 -60)"><g transform="translate(-8.5 2)">
+    <path d="M29 18V91H58" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="66" y="84" width="20" height="14" rx="7" fill="#16233a"/>
+    <path d="M103 64V91" stroke="#fff" stroke-width="14" stroke-linecap="round"/>
+    <path d="M97 31V27a6 6 0 0 1 12 0V31" fill="none" stroke="#16233a" stroke-width="5" stroke-linecap="round"/>
+    <rect x="91" y="30" width="24" height="20" rx="6" fill="#16233a"/>
+    <circle cx="103" cy="39" r="2.8" fill="#fff"/>
+  </g></g>
+</g></svg>

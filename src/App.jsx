@@ -12,6 +12,7 @@ import Pomodoro from './pages/Pomodoro.jsx'
 import Profile from './pages/Profile.jsx'
 import Shop from './pages/Shop.jsx'
 import Login, { AuthSplash } from './pages/Login.jsx'
+import Logo from './components/Logo.jsx'
 import InstallButton from './components/InstallButton.jsx'
 import Icon from './components/Icon.jsx'
 import Avatar from './components/Avatar.jsx'
@@ -97,7 +98,7 @@ export default function App() {
 
       <div className="content">
         <nav className="nav">
-          <Link to="/" className="brand">LOCK IN</Link>
+          <Link to="/" className="brand" aria-label="LOCK IN"><Logo size={24} /><span>LOCK IN</span></Link>
           <span className="spacer" />
           {user && timer.running && (
             <Link to="/study" className="timer-chip">
