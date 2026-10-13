@@ -3,6 +3,14 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.18', date: '2026-10-14', title: 'A clearer Overview',
+    points: [
+      'A single LOCK IN: Focus button now sits at the top of Due today.',
+      'Canvas / Brightspace assignments moved under your week and show a short summary ("Found 3 assignments") for this week and next. Open shows the full list by day with Add, or Add all.',
+      'The leaderboard has the whole right side: your place and how far the next person is, a podium for the top three, and bars for everyone else.',
+    ],
+  },
+  {
     version: '2.17', date: '2026-10-14', title: 'Notifications and tagging friends',
     points: [
       'The mail button has a new "For you" tab: comments on your posts, reactions (grouped, so three people is one line) and when someone tags you.',

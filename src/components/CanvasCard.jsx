@@ -76,19 +76,65 @@ function ConnectDialog({ canvas, onClose }) {
   )
 }
 
-// Canvas assignments due in one week (this week or next), each with an "Add" button. Nothing from Canvas reaches the
-// To Do list until someone presses Add.
+// A pop-up with every assignment in one week, grouped by day, each with an Add button (and "Add all").
+function AssignmentsDialog({ title, range, list, added, onAdd, onClose }) {
+  const days = []
+  for (const a of list) {
+    const k = dayKey(a)
+    const last = days[days.length - 1]
+    if (last && last.key === k) last.items.push(a)
+    else days.push({ key: k, items: [a] })
+  }
+  const todo = list.filter(a => !added.has(a.uid))
+  return (
+    <PickerModal title={title} hint={range} onClose={onClose}>
+      <div className="row between">
+        <span className="muted small">{list.length} found · {list.length - todo.length} already on your To Do</span>
+        <button type="button" disabled={todo.length === 0} onClick={() => todo.forEach(onAdd)}>
+          {todo.length === 0 ? 'All added' : `Add all (${todo.length})`}
+        </button>
+      </div>
+      <div className="canvas-days">
+        {days.map(d => (
+          <section key={d.key}>
+            <h3>{new Date(d.key + 'T00:00:00').toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' })}</h3>
+            <ul className="list canvas-list">
+              {d.items.map(a => (
+                <li key={a.uid}>
+                  <div className="canvas-info">
+                    <strong>{a.title}</strong>
+                    <small className="muted">{[a.course, a.allDay ? 'all day' : new Date(a.due).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })].filter(Boolean).join(' · ')}</small>
+                  </div>
+                  {added.has(a.uid)
+                    ? <span className="owned small">✓ Added</span>
+                    : <button type="button" className="secondary" onClick={() => onAdd(a)}>Add</button>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </PickerModal>
+  )
+}
+
+// Canvas / Brightspace assignments, shown as a short summary for this week and next week ("Found 4 assignments" and
+// an Open button). Nothing reaches the To Do list until someone presses Add.
 export default function CanvasCard({ tasks = [], onAdd }) {
   const canvas = useCanvas()
   const [connect, setConnect] = useState(false)
+  const [openWeek, setOpenWeek] = useState(null)           // 0 = this week, 1 = next week, null = closed
   const added = useMemo(() => new Set(tasks.map(t => t.canvas_uid).filter(Boolean)), [tasks])
-  const [weekOffset, setWeekOffset] = useState(0)          // 0 = this week, 1 = next week
-  const weekStart = startOfWeek(addDays(new Date(), weekOffset * 7))
-  const from = isoDate(weekStart)
-  const to = isoDate(addDays(weekStart, 6))
-  const upcoming = canvas.assignments
-    .filter(a => { const k = dayKey(a); return k >= from && k <= to })
-    .sort((a, b) => dayKey(a).localeCompare(dayKey(b)) || String(a.title).localeCompare(String(b.title)))
+
+  const weeks = [0, 1].map(offset => {
+    const start = startOfWeek(addDays(new Date(), offset * 7))
+    const from = isoDate(start)
+    const to = isoDate(addDays(start, 6))
+    const list = canvas.assignments
+      .filter(a => { const k = dayKey(a); return k >= from && k <= to })
+      .sort((a, b) => dayKey(a).localeCompare(dayKey(b)) || String(a.title).localeCompare(String(b.title)))
+    return { offset, label: offset === 0 ? 'This week' : 'Next week', range: `${fmtDay(start)} – ${fmtDay(addDays(start, 6))}`, list }
+  })
 
   function add(a) {
     const key = dayKey(a)
@@ -99,8 +145,10 @@ export default function CanvasCard({ tasks = [], onAdd }) {
     })
   }
 
+  const open = openWeek === null ? null : weeks[openWeek]
+
   return (
-    <section className="card fill canvas-card">
+    <section className="card canvas-card">
       <h2>{canvas.connected ? `${canvas.providerName} assignments` : 'Assignments'}</h2>
 
       {canvas.connected === null && <p className="muted">Checking…</p>}
@@ -115,33 +163,29 @@ export default function CanvasCard({ tasks = [], onAdd }) {
 
       {canvas.connected && (
         <>
-          <div className="canvas-week" role="tablist" aria-label="Which week">
-            {[['This week', 0], ['Next week', 1]].map(([label, n]) => (
-              <button key={n} type="button" role="tab" aria-selected={weekOffset === n}
-                className={'seg-btn' + (weekOffset === n ? ' on' : '')} onClick={() => setWeekOffset(n)}>{label}</button>
-            ))}
-            <small className="muted">{fmtDay(weekStart)} – {fmtDay(addDays(weekStart, 6))}</small>
-          </div>
-          {upcoming.length === 0 && (
-            <p className="muted">Nothing due {weekOffset === 0 ? 'this week' : 'next week'} in Canvas. Nice.</p>
-          )}
-          <ul className="list scroll canvas-list">
-            {upcoming.map(a => {
-              const isAdded = added.has(a.uid)
+          <div className="found-list">
+            {weeks.map(w => {
+              const waiting = w.list.filter(a => !added.has(a.uid)).length
               return (
-                <li key={a.uid}>
-                  <div className="canvas-info">
-                    <strong>{a.title}</strong>
-                    <small className="muted">{[a.course, fmtDue(a)].filter(Boolean).join(' · ')}</small>
+                <div key={w.offset} className={'found-row' + (w.list.length === 0 ? ' empty' : '')}>
+                  <span className="found-count" aria-hidden="true">{w.list.length}</span>
+                  <div className="found-text">
+                    <strong>
+                      {w.list.length === 0
+                        ? 'Nothing due'
+                        : `Found ${w.list.length} assignment${w.list.length === 1 ? '' : 's'}`}
+                    </strong>
+                    <small className="muted">
+                      {w.label} · {w.range}
+                      {w.list.length > 0 && (waiting === 0 ? ' · all added' : ` · ${waiting} to add`)}
+                    </small>
                   </div>
-                  {isAdded
-                    ? <span className="owned small">✓ Added</span>
-                    : <button type="button" className="secondary" onClick={() => add(a)}>Add</button>}
-                </li>
+                  {w.list.length > 0 && <button type="button" onClick={() => setOpenWeek(w.offset)}>Open</button>}
+                </div>
               )
             })}
-          </ul>
-          <div className="row between">
+          </div>
+          <div className="row between canvas-foot">
             <button type="button" className="link" onClick={canvas.refresh} disabled={canvas.loading}>{canvas.loading ? 'Refreshing…' : 'Refresh'}</button>
             <span>
               <button type="button" className="link" onClick={() => setConnect(true)}>Change link</button>
@@ -152,6 +196,10 @@ export default function CanvasCard({ tasks = [], onAdd }) {
         </>
       )}
 
+      {open && (
+        <AssignmentsDialog title={`${open.label}: assignments`} range={open.range} list={open.list} added={added}
+          onAdd={add} onClose={() => setOpenWeek(null)} />
+      )}
       {connect && <ConnectDialog canvas={canvas} onClose={() => setConnect(false)} />}
     </section>
   )

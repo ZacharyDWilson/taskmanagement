@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { isoDate } from '../lib/dates.js'
 import { colorHex } from '../lib/colors.js'
+import { usePomodoro, mmss } from '../lib/pomodoro.jsx'
 
 const fmtTime = t =>
   new Date(`1970-01-01T${t}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
@@ -8,6 +9,7 @@ const fmtTime = t =>
 // Read-only summary of what's on for today: tasks planned for today plus anything due today.
 // Adding, editing and checking things off all happen on the To Do page.
 export default function DueToday({ tasks }) {
+  const timer = usePomodoro()
   const today = isoDate(new Date())
   const items = tasks
     .filter(t => t.day === today || t.due_date === today)
@@ -22,6 +24,10 @@ export default function DueToday({ tasks }) {
   return (
     <section className="card fill">
       <h2>Due today <small>{heading}</small></h2>
+      <Link to="/study" className="lock-in-btn" aria-label="Open the focus timer">
+        <span className="lock-in-main">LOCK IN: Focus</span>
+        {timer.running && <small>{timer.mode === 'focus' ? 'Focusing' : 'On break'} · {mmss(timer.left)} left</small>}
+      </Link>
 
       {items.length > 0 && (
         <p className="muted small due-summary">

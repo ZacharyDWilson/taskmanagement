@@ -310,7 +310,18 @@ export const fakeSupabase = {
       getPublicUrl: path => ({ data: { publicUrl: uploaded[path] ?? '' } }),
     }),
   },
-  functions: { invoke: async () => ({ data: { assignments: [] }, error: null }) },
+  functions: {
+    // the preview pretends a school calendar is connected, with a few assignments this week and next
+    invoke: async name => {
+      if (name !== 'canvas-feed') return { data: { ok: true }, error: null }
+      const day = n => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10) }
+      const mk = (i, title, course, n) => ({ uid: 'fake-canvas-' + i, title, course, due: day(n), allDay: true, url: '', description: '' })
+      return { data: { connected: true, provider: 'canvas', assignments: [
+        mk(1, 'Problem Set 6', 'MAT 212', 1), mk(2, 'Lab report: titration', 'CHE 121', 2), mk(3, 'Reading response 4', 'ENG 101', 2),
+        mk(4, 'Discussion post', 'HIS 110', 4), mk(5, 'Midterm study guide', 'BIO 101', 8), mk(6, 'Essay outline', 'ENG 101', 10),
+      ] }, error: null }
+    },
+  },
   channel() { const c = { on: () => c, subscribe: () => c }; return c },
   removeChannel() {},
 }
