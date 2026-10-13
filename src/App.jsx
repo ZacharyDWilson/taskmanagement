@@ -20,6 +20,7 @@ import Login, { AuthSplash } from './pages/Login.jsx'
 import Logo from './components/Logo.jsx'
 import SettingsMenu from './components/SettingsMenu.jsx'
 import PageHelp from './components/PageHelp.jsx'
+import { VERSION_LABEL } from './lib/version.js'
 import InstallButton from './components/InstallButton.jsx'
 import Icon from './components/Icon.jsx'
 import Avatar from './components/Avatar.jsx'
@@ -109,6 +110,7 @@ export default function App() {
           <SettingsMenu />
           <PageHelp />
           <Link to="/" className="brand" aria-label="LOCK IN"><Logo size={24} /><span className="brand-text">LOCK IN</span></Link>
+          <span className="version-chip" title="This is an early version. Things will change.">{VERSION_LABEL}</span>
           <span className="spacer" />
           {user && timer.running && (
             <Link to="/study" className="timer-chip">

@@ -3412,3 +3412,29 @@ html, body { max-width: 100%; overflow-x: clip; }
 .profile-fit .post-list.strip .post-tile { flex: 0 0 140px; scroll-snap-align: start; }
 .profile-fit .post-list.strip .post-tile img { aspect-ratio: 4 / 3; height: auto; max-height: 96px; object-fit: cover; }
 .profile-fit .post-list.strip .post-tile p { margin: .25rem 0 0; font-size: .8rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ---- the version chip and a clearer Settings button ------------------------------------------------------------------- */
+.version-chip {
+  flex: none; align-self: center; margin-left: .45rem; padding: .08rem .5rem; border-radius: 999px; white-space: nowrap;
+  font-size: .68rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+  background: var(--glass-inner); color: var(--muted); border: 1px solid var(--glass-line);
+}
+@media (max-width: 520px) { .version-chip { display: none; } }   /* the phone shows it at the bottom of Settings */
+.settings-version { text-align: center; margin: .2rem 0 0; }
+.settings-label { display: none; font-weight: 700; font-size: .85rem; }
+@media (min-width: 900px) {
+  .settings-btn { width: auto; padding: 0 .85rem 0 .65rem; gap: .4rem; border-radius: 999px; display: inline-flex; align-items: center; }
+  .settings-label { display: inline; }
+}
+.settings-btn .icon { stroke-width: 1.8; stroke-linejoin: round; }
+
+/* ---- the side bar switched to still: nothing moves, grows or slides, not even on hover -------------------------------- */
+:root[data-dock='still'] .dock a,
+:root[data-dock='still'] .dock a:hover, :root[data-dock='still'] .dock a:focus-visible,
+:root[data-dock='still'] .dock a:hover + a, :root[data-dock='still'] .dock a:has(+ a:hover),
+:root[data-dock='still'] .dock a:hover + a + a, :root[data-dock='still'] .dock a:has(+ a + a:hover),
+:root[data-dock='still'] .dock a:focus-visible + a, :root[data-dock='still'] .dock a:has(+ a:focus-visible) {
+  scale: 1 !important; translate: none !important; rotate: none !important; transform: none !important;
+}
+/* the name label still appears on hover, but it just fades in beside the button (it used to slide and grow with it) */
+:root[data-dock='still'] .dock a::after { scale: 1 !important; translate: 0 -50% !important; transition: opacity .12s ease !important; }
