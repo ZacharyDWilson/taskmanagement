@@ -1,7 +1,8 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { supabase } from './supabase.js'
 import { useAuth } from './auth.jsx'
 import { IS_ADMIN } from './env.js'
+import Logo from '../components/Logo.jsx'
 
 // Original fan-inspired looks. They use their own names and palettes, with no logos or characters.
 // `preview` is the theme's five-colour palette, shown as swatches in the picker and the shop.
@@ -75,12 +76,39 @@ export function ThemeProvider({ children }) {
     })
   }, [user?.id]) // eslint-disable-line
 
+  // Changing look shows a short loading page (in the NEW look) while the new colours, scene and sounds settle in.
+  const [switching, setSwitching] = useState(null)   // { name, leaving }
+  const timers = useRef([])
+  const showSwitch = useCallback(name => {
+    timers.current.forEach(clearTimeout)
+    setSwitching({ name, leaving: false })
+    timers.current = [
+      setTimeout(() => setSwitching(s => (s ? { ...s, leaving: true } : s)), 1050),
+      setTimeout(() => setSwitching(null), 1450),
+    ]
+  }, [])
+  useEffect(() => () => timers.current.forEach(clearTimeout), [])
+
   const setTheme = useCallback(async id => {
     if (!valid(id)) return
+    if (id !== theme) showSwitch(THEMES.find(t => t.id === id)?.name ?? 'your new look')
     setThemeState(id)
     writeLocal(id)
     if (user && supabase && !IS_ADMIN) await supabase.from('profiles').update({ theme: id }).eq('id', user.id)
-  }, [user?.id]) // eslint-disable-line
+  }, [user?.id, theme]) // eslint-disable-line
 
-  return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      {children}
+      {switching && (
+        <div className={'theme-loading' + (switching.leaving ? ' leaving' : '')} role="status" aria-live="polite">
+          <div className="tl-card">
+            <Logo size={54} />
+            <div className="tl-name">Switching to <strong>{switching.name}</strong></div>
+            <div className="tl-bar" aria-hidden="true"><i /></div>
+          </div>
+        </div>
+      )}
+    </ThemeContext.Provider>
+  )
 }

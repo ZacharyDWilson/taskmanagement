@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
@@ -19,6 +19,7 @@ import LevelCard from '../components/LevelCard.jsx'
 import DayBars from '../components/DayBars.jsx'
 import { THEMES, useTheme } from '../lib/theme.jsx'
 import { useShop } from '../lib/shop.jsx'
+import { useToast } from '../lib/toast.jsx'
 import { useReducedMotion } from '../lib/motion.js'
 import { IS_ADMIN } from '../lib/env.js'
 
@@ -72,6 +73,8 @@ export default function Profile() {
   const mine = userId === user.id
   const { theme, setTheme } = useTheme()
   const shop = useShop()
+  const toast = useToast()
+  const baseline = useRef(null)    // picture / frame / banner as last saved, to tell what changed
 
   const [profile, setProfile] = useState(null)
   const [posts, setPosts] = useState([])
@@ -99,7 +102,10 @@ export default function Profile() {
     }
     setProfile(null)
     supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
-      .then(({ data }) => { setProfile(data ?? false); setLockedAtLoad(!!data?.username) })
+      .then(({ data }) => {
+        setProfile(data ?? false); setLockedAtLoad(!!data?.username)
+        baseline.current = data ? { avatar_path: data.avatar_path, frame: data.frame, banner: data.banner } : null
+      })
     supabase.from('posts').select('id, image_path, body, created_at').eq('user_id', userId)
       .order('created_at', { ascending: false }).limit(30)
       .then(({ data }) => setPosts(data ?? []))
@@ -138,6 +144,19 @@ export default function Profile() {
         : error.code === '23505' ? 'That username is already taken. Add a number or a middle initial.' : error.message)
       : 'Saved!')
     if (!error && username) setLockedAtLoad(true)
+    if (!error && baseline.current) {
+      const was = baseline.current
+      const nameOf = id => cosmetics.find(c => c.id === id)?.name
+      const changes = []
+      if (avatar_path !== was.avatar_path) changes.push('profile picture')
+      if (frame !== was.frame) changes.push(nameOf(frame) ? `frame (${nameOf(frame)})` : 'frame')
+      if (banner !== was.banner) changes.push(nameOf(banner) ? `banner (${nameOf(banner)})` : 'banner')
+      if (changes.length) {
+        const list = changes.length > 1 ? changes.slice(0, -1).join(', ') + ' and ' + changes.at(-1) : changes[0]
+        toast(`✓ Your ${list} ${changes.length > 1 ? 'were' : 'was'} updated`, 'xp')
+      }
+      baseline.current = { avatar_path, frame, banner }
+    }
   }
 
   const canGif = IS_ADMIN || shop.owned.has('perk-gif')
