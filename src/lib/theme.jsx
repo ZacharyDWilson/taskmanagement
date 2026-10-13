@@ -5,6 +5,7 @@ import { IS_ADMIN } from './env.js'
 
 // Original fan-inspired looks. They use their own names and palettes, with no logos or characters.
 // `preview` is the theme's five-colour palette, shown as swatches in the picker and the shop.
+// `signature` marks the looks whose dock buttons change shape too (flowers, monitors, stars, records); they cost more.
 // Each theme also has its own animated background (see "Themes" at the bottom of styles.css).
 export const THEMES = [
   { id: 'default', name: 'Classic', blurb: 'Airy whites and sky blue, with soft light drifting by.',
@@ -19,17 +20,17 @@ export const THEMES = [
     preview: ['#ffffff', '#bfeaff', '#5fd3e8', '#1a8fe3', '#7fd34a'] },
   { id: 'sprout', name: 'Sprout Squad', blurb: 'Olive leaves, cream and warm amber, with pollen floating up.',
     preview: ['#606c38', '#283618', '#fefae0', '#dda15e', '#bc6c25'] },
-  { id: 'console', name: 'Retro Console', blurb: 'Mint, steel blue and a pop of red over sliding stripes and tiles.',
+  { id: 'console', name: 'Retro Console', signature: 'computers', blurb: 'Mint, steel blue and a pop of red over sliding stripes and tiles.',
     preview: ['#e63946', '#f1faee', '#a8dadc', '#457b9d', '#1d3557'] },
   { id: 'capsule', name: 'Capsule Quest', blurb: 'Navy, red and sunny orange under a slowly turning sunburst.',
     preview: ['#003049', '#d62828', '#f77f00', '#fcbf49', '#eae2b7'] },
   { id: 'meadow', name: "Hero's Meadow", blurb: 'Dark earth, teal and parchment, lit by drifting fireflies.',
     preview: ['#0a0908', '#22333b', '#eae0d5', '#c6ac8f', '#5e503f'] },
-  { id: 'island', name: 'Cozy Island', blurb: 'Rose petals drifting down over soft aqua.',
+  { id: 'island', name: 'Cozy Island', signature: 'flowers', blurb: 'Rose petals drifting down over soft aqua.',
     preview: ['#880d1e', '#dd2d4a', '#f26a8d', '#f49cbb', '#cbeef3'] },
-  { id: 'arcade', name: 'Starlit Arcade', blurb: 'Deep lavender night with twinkling stars and drifting aurora.',
+  { id: 'arcade', name: 'Starlit Arcade', signature: 'stars', blurb: 'Deep lavender night with twinkling stars and drifting aurora.',
     preview: ['#22223b', '#4a4e69', '#9a8c98', '#c9ada7', '#f2e9e4'] },
-  { id: 'lofi', name: 'Lofi Nights', blurb: 'Purple, coral and pink over a rainy dusk skyline, with notes drifting up.',
+  { id: 'lofi', name: 'Lofi Nights', signature: 'records', blurb: 'Purple, coral and pink over a rainy dusk skyline, with notes drifting up.',
     preview: ['#a83aa0', '#ff7078', '#fdb1d2', '#cd98d3', '#8d88d8'] },
   { id: 'shore', name: 'Coral Shore', blurb: 'Coral sunset, warm sand and seafoam waves rolling in.',
     preview: ['#ffaea0', '#ffebd2', '#9bcbc0', '#6ba3c8', '#2f5f7d'] },

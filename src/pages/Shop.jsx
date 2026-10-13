@@ -103,6 +103,7 @@ export default function Shop() {
                 <Swatch colors={t.preview} />
                 <strong>{item.name}</strong>
                 <small>{t.blurb}</small>
+                {t.signature && <span className="sig-chip">✦ Signature dock: {t.signature}</span>}
                 {has && theme === item.id && <span className="owned">✓ Equipped</span>}
                 {has && theme !== item.id && (
                   <div className="row">

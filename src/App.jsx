@@ -11,7 +11,7 @@ import Todo from './pages/Todo.jsx'
 import Pomodoro from './pages/Pomodoro.jsx'
 import Profile from './pages/Profile.jsx'
 import Shop from './pages/Shop.jsx'
-import Login from './pages/Login.jsx'
+import Login, { AuthSplash } from './pages/Login.jsx'
 import InstallButton from './components/InstallButton.jsx'
 import Icon from './components/Icon.jsx'
 import Avatar from './components/Avatar.jsx'
@@ -36,7 +36,7 @@ const TABS = [
 
 function RequireAuth({ children }) {
   const { user, loading } = useAuth()
-  if (loading) return <p className="page">Loading…</p>
+  if (loading) return <AuthSplash />
   return user ? children : <Navigate to="/login" replace />
 }
 

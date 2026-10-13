@@ -1,6 +1,6 @@
-import { THEMES, useTheme } from '../lib/theme.jsx'
+import { useTheme } from '../lib/theme.jsx'
 
-// A person's name, set in its own typeface and a colour taken from the current theme's own palette, with a
+// A person's name, set in its own typeface and a colour chosen to suit the current theme, with a
 // soft glow. The font and the colour both come from the name, so the same name always looks the same,
 // different names look different, and it always belongs to the theme it sits in.
 const FONTS = [
@@ -23,34 +23,33 @@ function hash(s) {
   return h >>> 0
 }
 
-function hexToHsl(hex) {
-  const n = parseInt(hex.slice(1), 16)
-  const r = ((n >> 16) & 255) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255
-  const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2, d = max - min
-  let h = 0, s = 0
-  if (d) {
-    s = d / (1 - Math.abs(2 * l - 1))
-    h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4
-    h = Math.round(h * 60); if (h < 0) h += 360
-  }
-  return { h, s, l }
-}
-
-// The theme's vivid colours (skip whites, blacks and greys), so the name pops without clashing.
-function accentsFor(themeId) {
-  const theme = THEMES.find(t => t.id === themeId) ?? THEMES[0]
-  const vivid = theme.preview.map(hexToHsl).filter(c => c.s > .3 && c.l > .15 && c.l < .85)
-  return vivid.length ? vivid : [{ h: 210, s: .8, l: .5 }]
+// Hand-picked name colours for each theme: they belong to its palette but are vivid enough to pop off the
+// cards (the palettes themselves have too many pale or muddy colours to pick from directly). [hue, saturation %]
+const ACCENTS = {
+  default:    [[210, 85], [190, 80], [265, 65], [330, 70]],
+  dark:       [[205, 100], [175, 80], [265, 85], [330, 80]],
+  gordon:     [[200, 100], [215, 90], [38, 95]],
+  stonybrook: [[0, 80], [205, 80], [220, 75]],
+  aero:       [[200, 90], [175, 80], [100, 60], [285, 60]],
+  sprout:     [[85, 55], [32, 70], [18, 75], [100, 45]],
+  console:    [[355, 80], [205, 60], [175, 60]],
+  capsule:    [[0, 75], [28, 95], [205, 70]],
+  meadow:     [[175, 60], [32, 65], [48, 75], [12, 65]],
+  island:     [[350, 80], [335, 70], [190, 60], [320, 60]],
+  arcade:     [[265, 85], [45, 95], [300, 75], [190, 85]],
+  lofi:       [[300, 60], [355, 85], [270, 55], [330, 80]],
+  shore:      [[10, 80], [195, 60], [165, 50], [215, 55]],
+  twilight:   [[235, 55], [330, 60], [270, 50], [215, 60]],
 }
 
 export function nameLook(name, themeId) {
   const h = hash(String(name ?? '').trim().toLowerCase() || 'friend')
-  const accents = accentsFor(themeId)
-  const c = accents[(h >>> 8) % accents.length]
+  const list = ACCENTS[themeId] ?? ACCENTS.default
+  const [hue, sat] = list[(h >>> 8) % list.length]
   const dark = DARK_LOOKS.has(themeId)
-  // keep the theme's hue and richness, but set the lightness so it reads on the card behind it
-  const light = dark ? Math.max(66, Math.round(c.l * 100)) : Math.min(40, Math.round(c.l * 100))
-  return { font: FONTS[h % FONTS.length], hue: c.h, sat: Math.round(Math.max(.6, c.s) * 100), light, dark }
+  // light cards need a deep shade to read; dark cards need a bright one
+  const light = dark ? 70 : (hue > 35 && hue < 80 ? 36 : 40)
+  return { font: FONTS[h % FONTS.length], hue, sat, light, dark }
 }
 
 export default function FancyName({ name, as: Tag = 'span', className = '' }) {

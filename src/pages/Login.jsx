@@ -9,7 +9,8 @@ import { COLLEGES, collegeFromEmail } from '../lib/colleges.js'
 
 // ---- The welcome splash ------------------------------------------------------------------------
 // A little world of friends: a slowly turning globe, with faces and local times around it.
-// Shown the first time someone lands on the login page in a browser session.
+// Shown every time the login page opens or is refreshed, and (as <AuthSplash/>) while the app waits to
+// find out whether you are signed in, or for a sign-in to go through.
 const PLACES = [
   { city: 'Vancouver', tz: 'America/Vancouver', hue: '#e0568a' },
   { city: 'Sydney',    tz: 'Australia/Sydney',  hue: '#3b82f6' },
@@ -23,10 +24,7 @@ const timeIn = (tz, now) => {
   catch { return '' }
 }
 
-const SEEN = 'lock-in-splash-seen'
-const alreadySeen = () => { try { return sessionStorage.getItem(SEEN) === '1' } catch { return true } }
-
-function Splash({ onDone }) {
+function Splash({ onDone, waiting = false }) {
   const sound = useSound()
   const { play } = sound
   const music = useMusic()
@@ -39,7 +37,7 @@ function Splash({ onDone }) {
   }, [])
 
   const enter = () => {
-    if (leaving) return
+    if (waiting || leaving) return
     setLeaving(true)
     music.setPhase('quiet')
     play('intro')
@@ -47,6 +45,7 @@ function Splash({ onDone }) {
   }
   // Moves on by itself after a few seconds, or as soon as you tap.
   useEffect(() => {
+    if (waiting) return
     const t = setTimeout(enter, 6500)
     const key = e => { if (e.key === 'Enter' || e.key === ' ') enter() }
     window.addEventListener('keydown', key)
@@ -64,7 +63,8 @@ function Splash({ onDone }) {
   })), [])
 
   return createPortal(
-    <div className={'splash' + (leaving ? ' leaving' : '')} onClick={enter} role="button" tabIndex={0} aria-label="Enter LOCK IN">
+    <div className={'splash' + (leaving ? ' leaving' : '')} onClick={enter} role={waiting ? 'status' : 'button'} tabIndex={0}
+      aria-label={waiting ? 'Loading LOCK IN' : 'Enter LOCK IN'}>
       {stars.map((s, i) => (
         <span key={i} className="splash-star" style={{ left: s.left, top: s.top, width: s.size, height: s.size, animationDelay: `${s.delay}s`, animationDuration: `${s.dur}s` }} />
       ))}
@@ -87,11 +87,14 @@ function Splash({ onDone }) {
           )
         })}
       </div>
-      <div className="splash-hint">Tap to enter</div>
+      <div className="splash-hint">{waiting ? 'Loading…' : 'Tap to enter'}</div>
     </div>,
     document.body,
   )
 }
+
+// The same welcome animation, with nothing to tap: it stays up until the app is ready.
+export function AuthSplash() { return <Splash waiting /> }
 
 export default function Login({ preview = false }) {
   const [name, setName] = useState('')          // display name
@@ -103,16 +106,19 @@ export default function Login({ preview = false }) {
   const [inviteCode, setInviteCode] = useState('')
   const [mode, setMode] = useState('login')
   const [msg, setMsg] = useState('')
-  const [splash, setSplash] = useState(() => preview || !alreadySeen())
+  const [splash, setSplash] = useState(true)
+  const [busy, setBusy] = useState(false)       // waiting for a log-in or sign-up to go through
   const navigate = useNavigate()
 
-  const finishSplash = () => {
-    if (!preview) { try { sessionStorage.setItem(SEEN, '1') } catch { /* ignore */ } }
-    setSplash(false)
-  }
+  const finishSplash = () => setSplash(false)
 
   async function submit(e) {
     e.preventDefault()
+    setBusy(true)
+    try { await send() } finally { setBusy(false) }
+  }
+
+  async function send() {
     if (!supabase) return setMsg('Supabase is not configured.')
     if (mode === 'login') {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
@@ -142,7 +148,7 @@ export default function Login({ preview = false }) {
 
   return (
     <>
-      {splash && <Splash onDone={finishSplash} />}
+      {splash ? <Splash onDone={finishSplash} /> : busy && <Splash waiting />}
       <form onSubmit={submit} className="card narrow stack login-card">
         <div className="login-brand">LOCK IN</div>
         <h1>{mode === 'login' ? 'Log in' : 'Join the group'}</h1>
