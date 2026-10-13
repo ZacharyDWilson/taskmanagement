@@ -6,6 +6,8 @@ import { publicUrl, removeImage, uploadImage } from '../lib/storage.js'
 import { useToast } from '../lib/toast.jsx'
 import { useTopBadges } from '../lib/achievements.jsx'
 import MiniBadges from '../components/MiniBadges.jsx'
+import ReportButton from '../components/ReportButton.jsx'
+import { useMyModeration, blockedText } from '../lib/moderation.js'
 import Avatar from '../components/Avatar.jsx'
 import { DEMO, demoComments, demoPosts } from '../lib/demo.js' // DEMO
 
@@ -20,6 +22,7 @@ const MAX_CAPTION = 140
 function Composer({ onPosted }) {
   const { user } = useAuth()
   const toast = useToast()
+  const mod = useMyModeration()
   const [file, setFile] = useState(null)
   const [caption, setCaption] = useState('')
   const [busy, setBusy] = useState(false)
@@ -48,6 +51,7 @@ function Composer({ onPosted }) {
   return (
     <form className="card stack" onSubmit={submit}>
       <h2>Share your progress</h2>
+      {mod.status && <p className="warn">{blockedText(mod)}</p>}
       <input ref={input} type="file" accept="image/*" onChange={e => {
         const f = e.target.files[0] ?? null
         setFile(f)
@@ -57,9 +61,9 @@ function Composer({ onPosted }) {
       <div className="row">
         <input value={caption} maxLength={MAX_CAPTION} placeholder="Short caption…"
           onChange={e => setCaption(e.target.value)} />
-        <button disabled={busy}>{busy ? 'Posting…' : 'Post'}</button>
+        <button disabled={busy || !!mod.status}>{busy ? 'Posting…' : 'Post'}</button>
       </div>
-      <small className="muted">{caption.length}/{MAX_CAPTION}</small>
+      <small className="muted">{caption.length}/{MAX_CAPTION} · Posting means you agree to the <Link to="/terms">community rules</Link>.</small>
       {error && <p className="warn">{error}</p>}
     </form>
   )
@@ -70,6 +74,7 @@ const MAX_COMMENT = 200
 function Comments({ post, onCount }) {
   const { user } = useAuth()
   const toast = useToast()
+  const mod = useMyModeration()
   const [items, setItems] = useState(null)
   const [body, setBody] = useState('')
   const [error, setError] = useState('')
@@ -136,14 +141,16 @@ function Comments({ post, onCount }) {
             {(c.user_id === user.id || isPostAuthor) && (
               <button className="link" aria-label="Delete comment" onClick={() => remove(c)}>×</button>
             )}
+            {c.user_id !== user.id && !post.demo && <ReportButton commentId={c.id} className="link report-link" />}
           </li>
         ))}
       </ul>
       <form className="row" onSubmit={add}>
         <input value={body} maxLength={MAX_COMMENT} placeholder="Write a comment…" aria-label="Write a comment"
           onChange={e => setBody(e.target.value)} />
-        <button disabled={!body.trim()}>Comment</button>
+        <button disabled={!body.trim() || !!mod.status}>Comment</button>
       </form>
+      {mod.status && <p className="warn small">{blockedText(mod)}</p>}
       {error && <p className="warn">{error}</p>}
     </div>
   )
@@ -194,6 +201,7 @@ function PostCard({ post, onChanged, badges }) {
         <span className="muted small">{new Date(post.created_at).toLocaleString()}</span>
         <span className="spacer" />
         {post.user_id === user.id && <button className="link" onClick={remove}>delete</button>}
+        {post.user_id !== user.id && !post.demo && <ReportButton postId={post.id} className="link report-link" />}
       </header>
       {(post.image_url || post.image_path) && (
         <img className="photo" src={post.image_url ?? publicUrl(post.image_path)} alt={post.body} loading="lazy" />

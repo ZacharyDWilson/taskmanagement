@@ -12,6 +12,10 @@ import Pomodoro from './pages/Pomodoro.jsx'
 import Profile from './pages/Profile.jsx'
 import Shop from './pages/Shop.jsx'
 import Achievements from './pages/Achievements.jsx'
+import Terms from './pages/Terms.jsx'
+import Admin from './pages/Admin.jsx'
+import TermsGate from './components/TermsGate.jsx'
+import Announcements from './components/Announcements.jsx'
 import Login, { AuthSplash } from './pages/Login.jsx'
 import Logo from './components/Logo.jsx'
 import SettingsMenu from './components/SettingsMenu.jsx'
@@ -83,6 +87,7 @@ export default function App() {
       <Scene />
       {user && <LookPicker />}
       {user && <Tour />}
+      {user && <TermsGate />}
       {user && <InstallPrompt />}
       {IS_ADMIN && !IS_FAKE && user && <DevPanel />}   {/* hidden in the shareable preview */}
       {/* PC: icon dock down the side. Icons are dim until you hover them. */}
@@ -142,6 +147,7 @@ export default function App() {
               Supabase isn't configured yet. Copy <code>.env.example</code> to <code>.env</code> and fill it in.
             </p>
           )}
+          {user && <Announcements />}
           <Routes>
             <Route path="/" element={<RequireAuth><Overview /></RequireAuth>} />
             <Route path="/todo" element={<RequireAuth><Todo /></RequireAuth>} />
@@ -153,6 +159,8 @@ export default function App() {
             <Route path="/profile/:id" element={<RequireAuth><Profile /></RequireAuth>} />
             <Route path="/shop" element={<RequireAuth><Shop /></RequireAuth>} />
             <Route path="/achievements" element={<RequireAuth><Achievements /></RequireAuth>} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/admin" element={<RequireAuth><Admin /></RequireAuth>} />
             <Route path="/achievements/:id" element={<RequireAuth><Achievements /></RequireAuth>} />
             <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
             {IS_DEV_BUILD && <Route path="/preview/login" element={<Login preview />} />}

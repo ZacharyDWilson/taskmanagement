@@ -199,6 +199,9 @@ export default function Login({ preview = false }) {
           <input placeholder="Invite code" value={inviteCode} autoComplete="off"
             onChange={e => setInviteCode(e.target.value)} required />
         )}
+        {mode === 'signup' && (
+          <p className="muted small">By creating an account you agree to the <a href="#/terms" target="_blank" rel="noreferrer">community rules</a>.</p>
+        )}
         <button type="submit">{mode === 'login' ? 'Log in' : 'Create account'}</button>
         <button type="button" className="link" onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setMsg('') }}>
           {mode === 'login' ? 'Need an account? Sign up' : 'Have an account? Log in'}

@@ -28,6 +28,11 @@ const dayKey = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '
 const endOfDay = key => { const [y, m, d] = key.split('-').map(Number); return new Date(y, m - 1, d, 23, 59, 0, 0) }
 const startOfDay = d => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0)
 const KIND_KEY = 'lock-in-timer-kind'
+// A focus round that has not been saved yet: { doneMs, runStart, lastSeen }. It lives in this browser so that closing
+// the tab, a crash or a refresh in the middle of a round still saves the minutes you did, next time the app opens.
+const pomoKey = uid => `lock-in-pomo-pending-${uid}`
+const readPomo = uid => { try { return JSON.parse(localStorage.getItem(pomoKey(uid)) ?? 'null') } catch { return null } }
+const writePomo = (uid, v) => { try { v ? localStorage.setItem(pomoKey(uid), JSON.stringify(v)) : localStorage.removeItem(pomoKey(uid)) } catch { /* ignore */ } }
 const cuKey = uid => `lock-in-countup-${uid}`
 const readKind = () => { try { return localStorage.getItem(KIND_KEY) === 'countup' ? 'countup' : 'pomodoro' } catch { return 'pomodoro' } }
 const readCu = uid => {
@@ -77,6 +82,13 @@ export function PomodoroProvider({ children }) {
       left -= part
     }
     setLogged(n => n + 1)
+    if (!at) {
+      // say where the day stands, the same way for the Pomodoro and the count-up timer
+      const since = startOfDay(new Date()).toISOString()
+      const { data } = await supabase.from('study_sessions').select('minutes').eq('user_id', user.id).gte('created_at', since)
+      const todayMin = (data ?? []).reduce((n, r) => n + r.minutes, 0)
+      if (todayMin > 0) toast(`+${Math.min(minutes, MAX_DAY_MIN)} XP · ${todayMin} min of focus today (${todayMin} XP)`, 'xp', { silent: true })
+    }
     return true
   }
 
@@ -86,6 +98,7 @@ export function PomodoroProvider({ children }) {
 
   function switchMode(next) {
     setRunning(false)
+    if (user && next !== 'focus') writePomo(user.id, null)
     setMode(next)
     setLeft((next === 'focus' ? focusMin : breakMin) * 60000)
   }
@@ -97,6 +110,7 @@ export function PomodoroProvider({ children }) {
       if (l > 0) return setLeft(l)
       if (mode === 'focus') {
         // A focus round is done: celebrate, and tell them to start the break themselves.
+        if (user) writePomo(user.id, null)
         log(focusMin)
         play('celebrate', { volume: .8 })
         setFinished({ minutes: focusMin })
@@ -115,6 +129,31 @@ export function PomodoroProvider({ children }) {
     }, 250)
     return () => clearInterval(id)
   }, [running, endAt, mode, focusMin, breakMin]) // eslint-disable-line
+
+  // ---- an unsaved Pomodoro round: keep it recorded while it runs, save what is left over from last time ----
+  const roundRef = useRef({ doneMs: 0, runStart: null })
+  useEffect(() => {
+    if (!user) return
+    const left0 = readPomo(user.id)
+    if (left0) {
+      const ms = (left0.doneMs ?? 0) + (left0.runStart ? Math.max(0, (left0.lastSeen ?? left0.runStart) - left0.runStart) : 0)
+      const minutes = Math.min(120, Math.floor(ms / 60000))
+      writePomo(user.id, null)
+      if (minutes >= 1) {
+        logMinutes(minutes, new Date(left0.lastSeen ?? Date.now())).then(ok => {
+          if (ok) toast(`Saved ${minutes} min from your last focus round (the app was closed before it ended).`, 'xp')
+        })
+      }
+    }
+  }, [user?.id]) // eslint-disable-line
+
+  useEffect(() => {
+    if (!user || !running || mode !== 'focus') return
+    const beat = () => writePomo(user.id, { doneMs: roundRef.current.doneMs, runStart: roundRef.current.runStart, lastSeen: Date.now() })
+    beat()
+    const id = setInterval(beat, 10000)
+    return () => clearInterval(id)
+  }, [user?.id, running, mode]) // eslint-disable-line
 
   // ---- count-up: load this account's clock, keep it saved, and roll over at midnight ----
   const store = next => {
@@ -162,6 +201,12 @@ export function PomodoroProvider({ children }) {
       play('stop')
       store({ ...cuRef.current, accMs: cuTotalAt(cuRef.current, t), startedAt: null })
     } else {
+      if (running) {
+        // one clock at a time: pause the Pomodoro round, keeping its time
+        if (user && mode === 'focus') writePomo(user.id, { doneMs: total - left, runStart: null, lastSeen: t })
+        setRunning(false)
+        toast('Pomodoro paused while Count up runs.', 'info', { silent: true })
+      }
       play('start')
       setMsg('')
       store({ ...cuRef.current, startedAt: t })
@@ -196,16 +241,26 @@ export function PomodoroProvider({ children }) {
   }, [running, left, mode, cuRunning, cuElapsedMs])
 
   function startPause() {
-    if (running) { play('stop'); return setRunning(false) }
+    if (running) {
+      play('stop')
+      // paused: what has been done so far is kept, so it is saved even if the tab is closed before resuming
+      if (user && mode === 'focus') writePomo(user.id, { doneMs: total - left, runStart: null, lastSeen: Date.now() })
+      return setRunning(false)
+    }
+    // one clock at a time: starting a round pauses the count-up timer, so the same minutes are never counted twice
+    if (cuRef.current.startedAt) { cuStartPause(); toast('Count up paused while the Pomodoro runs.', 'info', { silent: true }) }
     play('start')
     setFinished(null)
     setMsg('')
-    setEndAt(Date.now() + left)
+    const t = Date.now()
+    roundRef.current = { doneMs: total - left, runStart: t }
+    setEndAt(t + left)
     setRunning(true)
   }
 
   async function finishEarly() {
     setRunning(false)
+    if (user) writePomo(user.id, null)
     await log(elapsedMin)
     switchMode('break')
   }

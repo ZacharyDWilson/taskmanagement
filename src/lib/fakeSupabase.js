@@ -197,7 +197,19 @@ const FAKE_STATS = {
   tasks_done: 28, sessions: 9, focus_minutes: 1320, longest_session: 75, streak_days: 5, weekly_minutes_best: 640,
   posts: 1, comments: 4, reactions_received: 7, level: 6, purchases: 2, profile_complete: 1,
 }
+const FAKE_PEOPLE = () => [
+  ...db.profiles.map(p => ({ id: p.id, display_name: p.display_name, username: p.username, college: p.college, email: 'preview@lock-in.test', created_at: p.created_at, last_sign_in: new Date().toISOString(), xp: FAKE_XP, level: 20, coins: 9999, posts: 0, comments: 0, status: 'active', mod_reason: null, mod_until: null, tos_version: 1 })),
+  { id: 'demo-u1', display_name: 'Priya S.', username: 'priya.s', college: 'Gordon College', email: 'priya@example.edu', created_at: new Date(Date.now() - 9 * 864e5).toISOString(), last_sign_in: new Date().toISOString(), xp: 1640, level: 6, coins: 410, posts: 5, comments: 12, status: 'active', mod_reason: null, mod_until: null, tos_version: 1 },
+  { id: 'demo-u2', display_name: 'Alex R.', username: 'alex.r', college: 'Gordon College', email: 'alex@example.edu', created_at: new Date(Date.now() - 4 * 864e5).toISOString(), last_sign_in: new Date().toISOString(), xp: 380, level: 3, coins: 90, posts: 1, comments: 3, status: 'muted', mod_reason: 'Spam in comments', mod_until: new Date(Date.now() + 2 * 864e5).toISOString(), tos_version: 1 },
+]
 const rpcs = {
+  is_admin: () => true,
+  accept_terms: () => { if (db.profiles[0]) db.profiles[0].tos_version = 1; save(); return null },
+  admin_overview: () => ({ users: 3, new_7d: 2, active_7d: 3, focus_hours_7d: 31.5, posts: 6, posts_7d: 4, comments: 15, reports_open: 1, muted: 1, banned: 0, tasks_done_7d: 22 }),
+  admin_list_users: () => FAKE_PEOPLE(),
+  admin_recent_posts: () => [{ id: 'demo-p1', user_id: 'demo-u1', author: 'Priya S.', body: 'Finished the whole problem set!', image_path: 'x', created_at: new Date().toISOString(), comments: 3, reports: 0 }],
+  admin_list_reports: () => [{ id: 'demo-r1', reason: 'Spam or ads', status: 'open', created_at: new Date().toISOString(), reporter: 'Priya S.', target_user: 'demo-u2', target: 'Alex R.', post_id: null, comment_id: 'demo-c1', content: 'check out my store!!', image_path: null }],
+  admin_recent_log: () => [{ created_at: new Date().toISOString(), action: 'set muted', detail: 'Spam in comments (3 days)', admin: 'Preview Admin', target: 'Alex R.' }],
   user_xp: () => FAKE_XP,
   coin_balance: () => 9999,
   my_achievement_stats: () => FAKE_STATS,

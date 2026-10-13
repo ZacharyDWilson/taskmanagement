@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { useIsAdmin } from '../lib/moderation.js'
 import { useSound, PACK_LABELS, SOUND_PACKS, SIGNATURE } from '../lib/sfx.jsx'
 import { useMusic } from '../lib/music.jsx'
 import { useNotify } from '../lib/notify.jsx'
@@ -17,6 +19,7 @@ export default function SettingsMenu() {
   const { theme } = useTheme()
   const [calm, setCalm] = useReducedMotion()
   const inst = useInstall()
+  const isAdmin = useIsAdmin()
   const [installMsg, setInstallMsg] = useState('')
   const os = platform()
   const mac = /Mac/.test(navigator.platform)
@@ -119,6 +122,8 @@ export default function SettingsMenu() {
             <h3>Help</h3>
             <div className="row">
               <button type="button" className="secondary" onClick={() => { setOpen(false); replayTour() }}>Replay the welcome tour</button>
+              <Link to="/terms" onClick={() => setOpen(false)}><button type="button" className="secondary">Community rules</button></Link>
+              {isAdmin && <Link to="/admin" onClick={() => setOpen(false)}><button type="button">Admin dashboard</button></Link>}
             </div>
           </section>
         </PickerModal>
