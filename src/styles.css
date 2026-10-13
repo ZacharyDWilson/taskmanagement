@@ -3530,3 +3530,18 @@ html, body { max-width: 100%; overflow-x: clip; }
 .skel-photo { height: 180px; border-radius: 12px; }
 @keyframes skel-pulse { 50% { opacity: .45; } }
 :root[data-motion='reduced'] .skel { animation: none; }
+
+
+/* ---- Share cards, pinned posts, share buttons (2.16) -------------------------------------------------------------------- */
+.share-card { display: flex; align-items: center; gap: .9rem; padding: .9rem 1rem; border-radius: 14px;
+  background: color-mix(in srgb, var(--accent) 12%, var(--glass-strong, #fff));
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+.share-card h3 { margin: .1rem 0; font-size: 1.35rem; }
+.share-medal { font-size: 2.4rem; line-height: 1; flex: none; }
+.share-card.ach.tier-silver { border-color: #aeb6c4; }
+.share-card.ach.tier-gold { border-color: #e2b93b; background: color-mix(in srgb, #f3c94a 18%, var(--glass-strong, #fff)); }
+.share-card.study .share-medal { filter: saturate(1.1); }
+.post.pinned { border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+.pin-flag { align-self: flex-start; font-size: .74rem; font-weight: 800; letter-spacing: .02em; color: var(--accent); }
+.share-row { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; }
+.ach-actions { display: flex; flex-direction: column; gap: .4rem; align-items: stretch; }

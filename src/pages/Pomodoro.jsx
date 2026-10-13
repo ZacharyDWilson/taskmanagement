@@ -12,6 +12,7 @@ import { useToast } from '../lib/toast.jsx'
 import { Link } from 'react-router-dom'
 import { IS_ADMIN } from '../lib/env.js'
 import BuddyPanel, { Person } from '../components/BuddyPanel.jsx'
+import ShareButton from '../components/ShareButton.jsx'
 import { useStudyBuddy } from '../lib/studyBuddy.js'
 
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, Number(n) || lo))
@@ -155,6 +156,12 @@ export default function Study() {
             <div><strong>{today.length}</strong><span>sessions today</span></div>
           </div>
           {today.length === 0 && <p className="muted">No sessions yet today. Start your first one!</p>}
+          {sessions.length > 0 && (
+            <div className="share-row">
+              {today.length > 0 && <ShareButton card="study_day" since={(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d.toISOString() })()}>📣 Share today</ShareButton>}
+              <ShareButton card="study_week" since={startOfWeek().toISOString()}>📣 Share this week</ShareButton>
+            </div>
+          )}
           <ul className="list scroll">
             {today.map(s => (
               <li key={s.id}>

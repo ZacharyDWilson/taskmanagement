@@ -7,6 +7,7 @@ import { useShop } from '../lib/shop.jsx'
 import { useToast } from '../lib/toast.jsx'
 import { THEMES } from '../lib/theme.jsx'
 import FancyName from '../components/FancyName.jsx'
+import ShareButton from '../components/ShareButton.jsx'
 
 const TIERS = [['all', 'All'], ['bronze', 'Bronze'], ['silver', 'Silver'], ['gold', 'Gold']]
 
@@ -132,11 +133,14 @@ export default function Achievements() {
                 </div>
               </div>
               {mine && row && (
+                <div className="ach-actions">
+                <ShareButton card="achievement" refId={a.id} className="secondary ach-share" title="Post this badge to the feed">📣 Share</ShareButton>
                 <button type="button" className={'secondary ach-pin' + (row.pinned ? ' on' : '')}
                   onClick={() => togglePin(a.id)} aria-pressed={!!row.pinned}
                   title={row.pinned ? 'Shown first on your profile' : 'Show this first on your profile'}>
                   {row.pinned ? '📌 Pinned' : '📍 Pin'}
                 </button>
+                </div>
               )}
             </article>
           )

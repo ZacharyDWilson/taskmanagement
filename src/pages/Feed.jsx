@@ -7,9 +7,10 @@ import { useToast } from '../lib/toast.jsx'
 import { useTopBadges } from '../lib/achievements.jsx'
 import MiniBadges from '../components/MiniBadges.jsx'
 import ReportButton from '../components/ReportButton.jsx'
-import { useMyModeration, blockedText } from '../lib/moderation.js'
+import { useMyModeration, blockedText, useIsAdmin } from '../lib/moderation.js'
 import Avatar from '../components/Avatar.jsx'
 import { POST_KINDS } from '../lib/postKinds.js'
+import ShareButton from '../components/ShareButton.jsx'
 import { DEMO, demoComments, demoPosts } from '../lib/demo.js' // DEMO
 
 const REACTIONS = [
@@ -25,7 +26,7 @@ const MAX_COMMENT = 200
 const PAGE = 20                    // posts shown at a time; "Load more" fetches the next batch
 const EDIT_MINUTES = 10            // how long after posting you can change the words
 const KEEP_DAYS = 14               // posts are removed from the app and storage after this (supabase/031_save_space.sql)
-const POST_COLS = 'id, user_id, body, image_path, kind, edited_at, created_at, profiles(display_name, avatar_path, color, frame), reactions(kind, user_id), comments(count)'
+const POST_COLS = 'id, user_id, body, image_path, kind, edited_at, created_at, pinned, share_kind, share_data, profiles(display_name, avatar_path, color, frame), reactions(kind, user_id), comments(count)'
 
 // "just now", "5m ago", "2h ago", "3d ago", then a date
 function timeAgo(iso) {
@@ -222,7 +223,7 @@ function Lightbox({ src, alt, onClose }) {
   )
 }
 
-function PostCard({ post, onChanged, onEdited, badges, names }) {
+function PostCard({ post, onChanged, onEdited, badges, names, isAdmin }) {
   const { user } = useAuth()
   const toast = useToast()
   const author = post.profiles
@@ -287,12 +288,20 @@ function PostCard({ post, onChanged, onEdited, badges, names }) {
     toast('✓ Post updated', 'info', { silent: true })
   }
 
+  async function togglePin() {
+    const { error } = await supabase.rpc('admin_pin_post', { pid: post.id, pin: !post.pinned })
+    if (error) return toast(error.message, 'info')
+    toast(post.pinned ? 'Unpinned' : '📌 Pinned to the top', 'info', { silent: true })
+    onChanged()
+  }
+
   const full = post.image_url ?? publicUrl(post.image_path)
   const small = post.image_url ? null : thumbUrl(post.image_path)
   const tag = kindOf(post.kind)
 
   return (
-    <article className="card post">
+    <article className={'card post' + (post.pinned ? ' pinned' : '')}>
+      {post.pinned && <span className="pin-flag">📌 Pinned</span>}
       <header className="row">
         <Avatar name={author?.display_name} path={author?.avatar_path} color={author?.color}
           frame={author?.frame} size={40} />
@@ -300,11 +309,13 @@ function PostCard({ post, onChanged, onEdited, badges, names }) {
         <MiniBadges userId={post.user_id} list={badges?.get(post.user_id)} />
         <span className="muted small" title={new Date(post.created_at).toLocaleString()}>{timeAgo(post.created_at)}</span>
         <span className="spacer" />
-        {canEdit && !editing && <button className="link" onClick={() => setEditing(true)}>edit</button>}
+        {isAdmin && !post.demo && <button className="link" onClick={togglePin}>{post.pinned ? 'unpin' : 'pin'}</button>}
+        {canEdit && !editing && !post.share_kind && <button className="link" onClick={() => setEditing(true)}>edit</button>}
         {mine && <button className="link" onClick={remove}>delete</button>}
         {!mine && !post.demo && <ReportButton postId={post.id} className="link report-link" />}
       </header>
-      {tag && <span className="kind-tag"><span aria-hidden="true">{tag.icon}</span> {tag.label}</span>}
+      {post.share_kind && <ShareCard post={post} />}
+      {tag && !post.share_kind && <span className="kind-tag"><span aria-hidden="true">{tag.icon}</span> {tag.label}</span>}
       {(post.image_url || post.image_path) && (
         <button type="button" className="photo-btn" onClick={() => setBig(true)} aria-label="Enlarge photo">
           <img className="photo" src={small ?? full} alt={post.body} loading="lazy"
@@ -330,7 +341,7 @@ function PostCard({ post, onChanged, onEdited, badges, names }) {
           </div>
         </form>
       ) : (
-        post.body && <p>{post.body}{post.edited_at && <small className="muted"> (edited)</small>}</p>
+        post.body && !post.share_kind && <p>{post.body}{post.edited_at && <small className="muted"> (edited)</small>}</p>
       )}
       <footer className="row reactions" aria-label="Reactions">
         {REACTIONS.map(({ kind: k, icon, word }) => {
@@ -360,12 +371,40 @@ function PostCard({ post, onChanged, onEdited, badges, names }) {
         <span className="chev" aria-hidden="true">{open ? '▴' : '▾'}</span>
       </button>
       {open && <Comments post={post} onCount={setCommentCount} />}
-      {!post.demo && (
+      {!post.demo && !post.pinned && (
         <small className="muted post-expiry">
           {left <= 0 ? 'Disappears tonight' : `Disappears in ${left} day${left === 1 ? '' : 's'}`}
         </small>
       )}
     </article>
+  )
+}
+
+// a card made by the Share button: a badge you earned, or your study time
+function ShareCard({ post }) {
+  const d = post.share_data ?? {}
+  if (post.share_kind === 'achievement') {
+    return (
+      <div className={'share-card ach tier-' + (d.tier ?? 'bronze')}>
+        <span className="share-medal" aria-hidden="true">{d.icon ?? '🏆'}</span>
+        <div>
+          <small className="muted">Badge unlocked</small>
+          <h3>{d.name}</h3>
+          {d.description && <p className="muted small">{d.description}</p>}
+        </div>
+      </div>
+    )
+  }
+  const mins = Number(d.minutes) || 0
+  return (
+    <div className="share-card study">
+      <span className="share-medal" aria-hidden="true">⏱️</span>
+      <div>
+        <small className="muted">{post.share_kind === 'study_week' ? 'Studied this week' : 'Studied today'}</small>
+        <h3>{Math.floor(mins / 60)}h {String(mins % 60).padStart(2, '0')}m</h3>
+        {d.sessions > 0 && <p className="muted small">{d.sessions} session{d.sessions === 1 ? '' : 's'}</p>}
+      </div>
+    </div>
   )
 }
 
@@ -412,7 +451,7 @@ export default function Feed() {
 
   const load = useCallback(async (append = false, from = 0) => {
     setBusy(true)
-    let q = supabase.from('posts').select(POST_COLS).order('created_at', { ascending: false }).range(from, from + PAGE - 1)
+    let q = supabase.from('posts').select(POST_COLS).order('pinned', { ascending: false }).order('created_at', { ascending: false }).range(from, from + PAGE - 1)
     if (tab === 'mine') q = q.eq('user_id', user.id)
     if (tab === 'question' || tab === 'win') q = q.eq('kind', tab)
     if (photoOnly) q = q.not('image_path', 'is', null)
@@ -420,10 +459,10 @@ export default function Feed() {
     setBusy(false)
     if (error) { setError(error.message); setPosts(p => p ?? []); return }
     setError('')
-    let rows = data ?? []
+    let rows = [...(data ?? [])].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0))
     setMore(rows.length === PAGE)
     if (DEMO && !append && tab === 'all' && !photoOnly) { // DEMO
-      rows = [...rows, ...demoPosts()].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      rows = [...rows, ...demoPosts()].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || new Date(b.created_at) - new Date(a.created_at))
     }
     setPosts(prev => (append && prev ? [...prev, ...rows.filter(r => !prev.some(p => p.id === r.id))] : rows))
     learnNames(rows)
@@ -434,6 +473,7 @@ export default function Feed() {
   const reload = () => load()
   const edited = (id, patch) => setPosts(list => list.map(p => (p.id === id ? { ...p, ...patch } : p)))
   const badges = useTopBadges((posts ?? []).map(p => p.user_id))
+  const isAdmin = useIsAdmin()
 
   return (
     <div className="narrow">
@@ -462,7 +502,7 @@ export default function Feed() {
           </p>
         </div>
       )}
-      {posts?.map(p => <PostCard key={p.id} post={p} onChanged={reload} onEdited={edited} badges={badges} names={names} />)}
+      {posts?.map(p => <PostCard key={p.id} post={p} onChanged={reload} onEdited={edited} badges={badges} names={names} isAdmin={isAdmin} />)}
       {more && (
         <div className="feed-more">
           <button type="button" className="secondary" disabled={busy} onClick={() => load(true, posts.filter(p => !p.demo).length)}>

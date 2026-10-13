@@ -3,6 +3,14 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.16', date: '2026-10-14', title: 'Share cards and pinned posts',
+    points: [
+      'Share a badge you earned from the Achievements page: it appears on the feed as a card with the badge and its name.',
+      'Share your study time for today or this week from the Study page. The numbers come from your real sessions, so a card cannot be made up.',
+      'The admin can pin up to 3 posts to the top of the feed. Pinned posts stay until they are unpinned.',
+    ],
+  },
+  {
     version: '2.15', date: '2026-10-14', title: 'A richer feed, and a lighter site',
     points: [
       'Posts can be just words, with an optional photo and a tag: Study session, Finished something, Question, Win or Need motivation.',

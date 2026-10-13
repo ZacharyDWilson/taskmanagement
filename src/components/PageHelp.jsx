@@ -33,6 +33,7 @@ const HELP = {
       'Press "Share your progress". A photo is optional: a few words is enough. Pick a tag (Question, Win...) so friends can filter for it.',
       'React with an emoji (hold one to see who gave it), tap a photo to enlarge it, or open "Add a comment".',
       'You can fix the words of your post for 10 minutes, and delete your own posts and comments any time.',
+      'Share a badge from Achievements, or your study time from the Study page, and it shows up here as a card.',
       'Posts disappear after 14 days. "Download my posts" on your profile saves yours as one file first.',
     ],
   },

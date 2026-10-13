@@ -235,6 +235,25 @@ const rpcs = {
     save()
     return null
   },
+  share_to_feed: args => {
+    const d = new Date().toISOString()
+    const base = { id: 'fake-share-' + Date.now(), user_id: ME, image_path: null, created_at: d, pinned: false, edited_at: null }
+    if (args?.card === 'achievement') {
+      const a = db.achievements.find(x => x.id === args.ref)
+      db.posts.unshift({ ...base, body: 'Unlocked the "' + (a?.name ?? 'badge') + '" badge', kind: 'win', share_kind: 'achievement',
+        share_data: { id: a?.id, name: a?.name, icon: a?.icon, tier: a?.tier, description: a?.description } })
+    } else {
+      db.posts.unshift({ ...base, body: 'Studied', kind: 'study', share_kind: args?.card,
+        share_data: { minutes: args?.card === 'study_week' ? 640 : 95, sessions: args?.card === 'study_week' ? 9 : 3 } })
+    }
+    save()
+    return base.id
+  },
+  admin_pin_post: args => {
+    const p = db.posts.find(x => x.id === args?.pid)
+    if (p) { p.pinned = !!args?.pin; save() }
+    return null
+  },
   username_available: () => true,
   weekly_leaderboard: () => [],
 }
