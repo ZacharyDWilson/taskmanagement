@@ -350,7 +350,7 @@ button.link:active { transform: none; }
 .embed { width: 100%; height: 420px; border: 1px solid var(--glass-line); border-radius: var(--r-sm); background: #fff; }
 
 /* ---- Overview: fits the window; the page itself never scrolls ------------------------------- */
-.page.fit { overflow: hidden; display: flex; flex-direction: column; }
+.page.fit { overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; }
 .page.fit > .overview { flex: 1; min-height: 0; }
 .overview { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; }
 .overview .col { min-height: 0; }
@@ -3390,3 +3390,25 @@ html, body { max-width: 100%; overflow-x: clip; }
 .terms-check input { margin-top: .2rem; flex: none; }
 .terms-summary { list-style: none; margin: 0; padding: 0; display: grid; gap: .35rem; }
 .terms-summary label { display: flex; gap: .5rem; align-items: center; font-weight: 600; }
+
+/* ---- Short screens (a Chromebook, a laptop with a lot of browser bars): the profile never gets cut off ---------------
+   The profile fits the window when there is room. When there is not, the page scrolls instead of hiding the bottom. */
+.page.fit > .profile-fit { min-height: 520px; }
+
+/* ---- Settings > Animate the side bar: off ---------------------------------------------------------------------------- */
+:root[data-dock='still'] .dock a, :root[data-dock='still'] .dock::before, :root[data-dock='still'] .dock::after,
+:root[data-dock='still'] .tabbar a, :root[data-dock='still'] .tabbar a .icon, :root[data-dock='still'] .tabbar a .avatar,
+:root[data-dock='still'] .liquid, :root[data-dock='still'] .liquid *, :root[data-dock='still'] .blob, :root[data-dock='still'] .blob::before {
+  animation: none !important; transition: none !important;
+}
+:root[data-dock='still'] .dock a:hover, :root[data-dock='still'] .dock a:focus-visible { transform: none !important; scale: 1 !important; translate: none !important; }
+
+/* ---- Profile: posts as a side-scrolling strip, the numbers and study bars under it ------------------------------------ */
+.profile-fit .posts-strip { flex: none; }
+.profile-fit .post-list.strip {
+  display: flex; gap: .7rem; overflow-x: auto; overflow-y: hidden; padding: .1rem .1rem .5rem; scroll-snap-type: x proximity;
+  grid-template-columns: none; scrollbar-width: thin;
+}
+.profile-fit .post-list.strip .post-tile { flex: 0 0 140px; scroll-snap-align: start; }
+.profile-fit .post-list.strip .post-tile img { aspect-ratio: 4 / 3; height: auto; max-height: 96px; object-fit: cover; }
+.profile-fit .post-list.strip .post-tile p { margin: .25rem 0 0; font-size: .8rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }

@@ -39,3 +39,27 @@ export function useReducedMotion() {
   }, [])
   return [on, setReducedMotion]
 }
+
+// ---- the side bar on its own --------------------------------------------------------------------------------------
+// The side bar buttons (bobbing bubbles, swaying flowers, glows) and the phone tab bar's liquid can be switched off by
+// themselves, without turning on Calm mode for the whole site. Per device, remembered in this browser.
+const DOCK_KEY = 'lock-in-dock-animated'
+const readDock = () => { try { return localStorage.getItem(DOCK_KEY) !== '0' } catch { return true } }
+const applyDock = on => { document.documentElement.dataset.dock = on ? 'animated' : 'still' }
+applyDock(readDock())
+
+export function setDockAnimated(on) {
+  try { localStorage.setItem(DOCK_KEY, on ? '1' : '0') } catch { /* ignore */ }
+  applyDock(on)
+  window.dispatchEvent(new Event('lock-in:dock'))
+}
+
+export function useDockAnimated() {
+  const [on, setOn] = useState(readDock)
+  useEffect(() => {
+    const sync = () => setOn(readDock())
+    window.addEventListener('lock-in:dock', sync)
+    return () => window.removeEventListener('lock-in:dock', sync)
+  }, [])
+  return [on, setDockAnimated]
+}

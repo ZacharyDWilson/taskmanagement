@@ -4,7 +4,7 @@ import { useIsAdmin } from '../lib/moderation.js'
 import { useSound, PACK_LABELS, SOUND_PACKS, SIGNATURE } from '../lib/sfx.jsx'
 import { useMusic } from '../lib/music.jsx'
 import { useNotify } from '../lib/notify.jsx'
-import { useReducedMotion } from '../lib/motion.js'
+import { useReducedMotion, useDockAnimated } from '../lib/motion.js'
 import { useInstall, platform } from '../lib/install.js'
 import { useTheme } from '../lib/theme.jsx'
 import { replayTour } from './Tour.jsx'
@@ -18,6 +18,7 @@ export default function SettingsMenu() {
   const notify = useNotify()
   const { theme } = useTheme()
   const [calm, setCalm] = useReducedMotion()
+  const [dockOn, setDockOn] = useDockAnimated()
   const inst = useInstall()
   const isAdmin = useIsAdmin()
   const [installMsg, setInstallMsg] = useState('')
@@ -74,6 +75,10 @@ export default function SettingsMenu() {
             <label className="row">
               <input type="checkbox" checked={calm} onChange={e => setCalm(e.target.checked)} />
               Calm mode <span className="muted small">(stills the moving backgrounds, glows and bouncing, and drops the frosted blur. Best for older phones.)</span>
+            </label>
+            <label className="row">
+              <input type="checkbox" checked={dockOn} onChange={e => setDockOn(e.target.checked)} />
+              Animate the side bar <span className="muted small">(the bobbing, swaying and glowing buttons on the left, and the liquid on the phone tab bar)</span>
             </label>
           </section>
 

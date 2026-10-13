@@ -196,7 +196,27 @@ export default function Profile() {
           {!profile.bio && !mine && <p className="muted">No bio yet.</p>}
         </section>
 
-        {/* The numbers, each labelled */}
+      </div>
+
+      <div className="col">
+        {/* Their posts: a short strip you scroll sideways, so the page never has to scroll */}
+        <section className="card posts-strip">
+          <h2>Posts <small>{posts.length} shared</small></h2>
+          {posts.length === 0 && <p className="muted">No posts yet.</p>}
+          <div className="post-list strip">
+            {posts.map(p => (
+              <article key={p.id} className="post-tile">
+                {(p.image_url || p.image_path) && (
+                  <img src={p.image_url ?? publicUrl(p.image_path)} alt={p.body} loading="lazy" />
+                )}
+                {p.body && <p>{p.body}</p>}
+                {p.created_at && <small className="muted">{new Date(p.created_at).toLocaleDateString()}</small>}
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* The numbers, each labelled (under the posts) */}
         <div className="tiles">
           <div className="tile"><strong>{fmtMinutes(total)}</strong><span>studied this week</span></div>
           <div className="tile">
@@ -211,26 +231,6 @@ export default function Profile() {
         <section className="card">
           <h2>Study time each day <small>this week, Monday to Sunday</small></h2>
           <DayBars minutes={days} start={startOfWeek()} highlight={todayIdx} />
-        </section>
-
-      </div>
-
-      <div className="col">
-        {/* Their posts */}
-        <section className="card fill">
-          <h2>Posts <small>{posts.length} shared</small></h2>
-          {posts.length === 0 && <p className="muted">No posts yet.</p>}
-          <div className="post-list scroll">
-            {posts.map(p => (
-              <article key={p.id} className="post-tile">
-                {(p.image_url || p.image_path) && (
-                  <img src={p.image_url ?? publicUrl(p.image_path)} alt={p.body} loading="lazy" />
-                )}
-                {p.body && <p>{p.body}</p>}
-                {p.created_at && <small className="muted">{new Date(p.created_at).toLocaleDateString()}</small>}
-              </article>
-            ))}
-          </div>
         </section>
       </div>
 
