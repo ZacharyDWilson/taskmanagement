@@ -75,6 +75,18 @@ export default function App() {
       .then(({ data }) => setMe(data))
   }, [user?.id, pathname, profileTick]) // eslint-disable-line
 
+  // about once a day per device: ask the server to tidy away what has expired (old posts and their photo files).
+  // Harmless if it is not set up yet, and it only ever removes what was already due.
+  useEffect(() => {
+    if (!user || !supabase || IS_FAKE) return
+    try {
+      const last = Number(localStorage.getItem('lock-in-cleanup-at') ?? 0)
+      if (Date.now() - last < 20 * 3600 * 1000) return
+      localStorage.setItem('lock-in-cleanup-at', String(Date.now()))
+    } catch { /* storage blocked: just run it */ }
+    supabase.functions.invoke('cleanup-files').catch(() => {})
+  }, [user?.id]) // eslint-disable-line
+
   useEffect(() => { setPressed(null) }, [pathname])
   useEffect(() => { document.title = APP_TITLE }, [])   // tells the dev builds apart in the tab strip
 

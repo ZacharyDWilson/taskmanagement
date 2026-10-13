@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabase.js'
+import { cachedTable } from './cache.js'
 
 // Must match public.level_for_xp in supabase/003_levels.sql.
 export const xpForLevel = n => 50 * n * (n - 1)
@@ -16,8 +17,7 @@ export function useXp(userId, version = 0) {
 export function useCosmetics() {
   const [items, setItems] = useState([])
   useEffect(() => {
-    supabase.from('cosmetics').select('*').order('min_level')
-      .then(({ data }) => setItems(data ?? []))
+    cachedTable('cosmetics', 'min_level').then(data => setItems(data ?? []))
   }, [])
   return items
 }

@@ -31,6 +31,7 @@ export const TERMS = [
       'Only post photos you took or have the right to share, and that are suitable for a school-age group.',
       'No nudity, graphic or violent content, anything illegal, or anything meant to shock.',
       'Do not post photos of other people without their say-so, and keep private details (addresses, phone numbers, passwords, account links) out of everything you post.',
+      'Posts are removed automatically after 14 days to keep the site small and free. You can save yours first with "Download my posts" on your profile.',
     ],
   },
   {

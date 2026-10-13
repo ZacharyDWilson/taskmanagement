@@ -3,6 +3,7 @@ import { supabase } from './supabase.js'
 import { useAuth } from './auth.jsx'
 import { useMyXp } from './xp.jsx'
 import { IS_ADMIN } from './env.js'
+import { cachedTable } from './cache.js'
 
 const ShopContext = createContext({
   items: [], bundles: [], owned: new Set(), balance: 0, starterChosen: true,
@@ -24,11 +25,11 @@ export function ShopProvider({ children }) {
   const refresh = useCallback(async () => {
     if (!user || !supabase) return
     const [shop, bought, coins, profile, bund] = await Promise.all([
-      supabase.from('shop_items').select('*').order('sort'),
+      cachedTable('shop_items', 'sort').then(data => ({ data })),
       supabase.from('purchases').select('item_id').eq('user_id', user.id),
       supabase.rpc('coin_balance', { uid: user.id }),
       supabase.from('profiles').select('starter_chosen').eq('id', user.id).maybeSingle(),
-      supabase.from('shop_bundles').select('*').order('sort'),
+      cachedTable('shop_bundles', 'sort').then(data => ({ data })),
     ])
     setItems(shop.data ?? [])
     setBundles(bund.data ?? [])

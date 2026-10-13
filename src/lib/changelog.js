@@ -3,6 +3,17 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.15', date: '2026-10-14', title: 'A richer feed, and a lighter site',
+    points: [
+      'Posts can be just words, with an optional photo and a tag: Study session, Finished something, Question, Win or Need motivation.',
+      'New on the feed: filter tabs (All, Mine, Questions, Wins), a "Has photo" switch, Load more, times like "2h ago", tap a photo to enlarge it, and hold a reaction to see who gave it.',
+      'You can fix the words of your post for 10 minutes. Reactions now update at once.',
+      'Posts disappear after 14 days to keep the site free. "Download my posts" on your profile saves yours, with photos, as one file.',
+      'Finished tasks tidy away after two weeks, and tasks you never finished after three. Your XP and achievements are not affected.',
+      'Photos load smaller and faster, and profile pictures are stored at a sensible size.',
+    ],
+  },
+  {
     version: '2.14', date: '2026-10-13', title: 'Top bar card follows your saved profile, and a calmer default background',
     points: [
       'The small profile card at the top now updates as soon as you save your picture, colour or banner.',

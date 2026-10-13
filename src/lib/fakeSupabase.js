@@ -138,7 +138,7 @@ function shape(row, table, sel) {
 
 class Query {
   constructor(table) { this.table = table; this.op = 'select'; this.filters = []; this.orders = []; this.max = null; this.want = 'many'; this.sel = '*' }
-  select(s = '*') { this.sel = s; this.returning = true; return this }
+  select(s = '*', opts = {}) { this.sel = s; this.returning = true; if (opts.head) this.head = true; return this }
   insert(v) { this.op = 'insert'; this.payload = v; return this }
   update(v) { this.op = 'update'; this.payload = v; return this }
   upsert(v) { this.op = 'upsert'; this.payload = v; return this }
@@ -151,12 +151,13 @@ class Query {
   lte(c, v) { return this.f(c, 'lte', v) }
   in(c, v) { return this.f(c, 'in', v) }
   is(c, v) { return this.f(c, 'is', v) }
+  not(c, op, v) { this.filters.push(r => !OPS[op](r[c], v)); return this }
   contains(c, v) { return this.f(c, 'contains', v) }
   or(expr) { this.filters.push(orPredicate(expr)); return this }
   f(c, op, v) { this.filters.push(r => OPS[op](r[c], v)); return this }
   order(c, o = {}) { this.orders.push([c, o.ascending !== false]); return this }
   limit(n) { this.max = n; return this }
-  range(a, b) { this.max = b + 1; return this }
+  range(a, b) { this.off = a; this.max = b + 1; return this }
   single() { this.want = 'single'; return this }
   maybeSingle() { this.want = 'maybe'; return this }
   then(res, rej) { return Promise.resolve(this.run()).then(res, rej) }
@@ -185,7 +186,8 @@ class Query {
     if (this.op !== 'select' && !this.returning) return { data: null, error: null }
     hit = hit.map(r => shape(r, this.table, this.sel))
     for (const [c, asc] of [...this.orders].reverse()) hit.sort((a, b) => (asc ? 1 : -1) * cmp(a[c] ?? '', b[c] ?? ''))
-    if (this.max != null) hit = hit.slice(0, this.max)
+    if (this.head) return { data: null, count: hit.length, error: null }
+    if (this.max != null) hit = hit.slice(this.off ?? 0, this.max)
     if (this.want === 'single') return hit.length === 1 ? { data: hit[0], error: null } : { data: null, error: { message: 'No row found' } }
     if (this.want === 'maybe') return { data: hit[0] ?? null, error: null }
     return { data: hit, error: null }

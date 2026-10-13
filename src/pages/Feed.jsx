@@ -2,43 +2,78 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
-import { publicUrl, removeImage, uploadImage } from '../lib/storage.js'
+import { publicUrl, removeImage, thumbUrl, uploadImage } from '../lib/storage.js'
 import { useToast } from '../lib/toast.jsx'
 import { useTopBadges } from '../lib/achievements.jsx'
 import MiniBadges from '../components/MiniBadges.jsx'
 import ReportButton from '../components/ReportButton.jsx'
 import { useMyModeration, blockedText } from '../lib/moderation.js'
 import Avatar from '../components/Avatar.jsx'
+import { POST_KINDS } from '../lib/postKinds.js'
 import { DEMO, demoComments, demoPosts } from '../lib/demo.js' // DEMO
 
 const REACTIONS = [
-  { kind: 'like', icon: '❤️' },
-  { kind: 'fire', icon: '🔥' },
-  { kind: 'clap', icon: '👏' },
-  { kind: 'strong', icon: '💪' },
+  { kind: 'like', icon: '❤️', word: 'Likes' },
+  { kind: 'fire', icon: '🔥', word: 'Fire' },
+  { kind: 'clap', icon: '👏', word: 'Claps' },
+  { kind: 'strong', icon: '💪', word: 'Strong' },
 ]
-const MAX_CAPTION = 140
+const kindOf = id => POST_KINDS.find(k => k.id === id)
+
+const MAX_CAPTION = 280
+const MAX_COMMENT = 200
+const PAGE = 20                    // posts shown at a time; "Load more" fetches the next batch
+const EDIT_MINUTES = 10            // how long after posting you can change the words
+const KEEP_DAYS = 14               // posts are removed from the app and storage after this (supabase/031_save_space.sql)
+const POST_COLS = 'id, user_id, body, image_path, kind, edited_at, created_at, profiles(display_name, avatar_path, color, frame), reactions(kind, user_id), comments(count)'
+
+// "just now", "5m ago", "2h ago", "3d ago", then a date
+function timeAgo(iso) {
+  const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000)
+  if (s < 60) return 'just now'
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`
+  if (s < 7 * 86400) return `${Math.floor(s / 86400)}d ago`
+  return new Date(iso).toLocaleDateString([], { month: 'short', day: 'numeric' })
+}
+
+// whole days until a post is cleared away (it goes on the night after its 14th day)
+function daysLeft(iso) {
+  const born = new Date(iso); born.setHours(0, 0, 0, 0)
+  const gone = born.getTime() + (KEEP_DAYS + 1) * 86400000
+  return Math.max(0, Math.floor((gone - Date.now()) / 86400000))
+}
 
 function Composer({ onPosted }) {
   const { user } = useAuth()
   const toast = useToast()
   const mod = useMyModeration()
+  const [open, setOpen] = useState(false)
   const [file, setFile] = useState(null)
   const [caption, setCaption] = useState('')
+  const [kind, setKind] = useState(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const input = useRef()
-  const preview = file ? URL.createObjectURL(file) : null
+  const [preview, setPreview] = useState(null)
+  useEffect(() => {
+    if (!file) { setPreview(null); return }
+    const url = URL.createObjectURL(file)
+    setPreview(url)
+    return () => URL.revokeObjectURL(url)
+  }, [file])
 
   async function submit(e) {
     e.preventDefault()
-    if (!file) return setError('Add a photo of your progress.')
+    if (!file && !caption.trim()) return setError('Add a photo or write a few words.')
     setBusy(true); setError('')
+    let image_path = null
     try {
-      const image_path = await uploadImage(file, user.id)
-      const { error } = await supabase.from('posts').insert({ user_id: user.id, body: caption.trim(), image_path })
+      if (file) image_path = await uploadImage(file, user.id)
+      const { error } = await supabase.from('posts').insert({ user_id: user.id, body: caption.trim(), image_path, kind })
       if (error) { await removeImage(image_path); throw error }
-      setFile(null); setCaption(''); input.current.value = ''
+      setFile(null); setCaption(''); setKind(null); if (input.current) input.current.value = ''
+      setOpen(false)
       toast('✓ Posted to your feed')
       onPosted()
     } catch (err) {
@@ -48,28 +83,45 @@ function Composer({ onPosted }) {
     }
   }
 
+  if (!open) {
+    return (
+      <button type="button" className="composer-bar card" onClick={() => setOpen(true)} disabled={!!mod.status}>
+        <span aria-hidden="true">✏️</span> Share your progress…
+      </button>
+    )
+  }
+
   return (
     <form className="card stack" onSubmit={submit}>
-      <h2>Share your progress</h2>
+      <div className="row between">
+        <h2>Share your progress</h2>
+        <button type="button" className="link" onClick={() => setOpen(false)}>Close</button>
+      </div>
       {mod.status && <p className="warn">{blockedText(mod)}</p>}
-      <input ref={input} type="file" accept="image/*" onChange={e => {
+      <textarea value={caption} maxLength={MAX_CAPTION} rows={3} placeholder="What did you get done? A photo is optional."
+        aria-label="Post text" onChange={e => setCaption(e.target.value)} />
+      <div className="kind-chips" role="group" aria-label="Tag">
+        {POST_KINDS.map(k => (
+          <button key={k.id} type="button" className={'kind-chip' + (kind === k.id ? ' on' : '')}
+            aria-pressed={kind === k.id} onClick={() => setKind(kind === k.id ? null : k.id)}>
+            <span aria-hidden="true">{k.icon}</span> {k.label}
+          </button>
+        ))}
+      </div>
+      <input ref={input} type="file" accept="image/*" aria-label="Photo (optional)" onChange={e => {
         const f = e.target.files[0] ?? null
         setFile(f)
         if (f) toast(`📷 Photo chosen: ${f.name}`, 'info', { silent: true })
       }} />
       {preview && <img className="preview" src={preview} alt="Preview" />}
-      <div className="row">
-        <input value={caption} maxLength={MAX_CAPTION} placeholder="Short caption…"
-          onChange={e => setCaption(e.target.value)} />
+      <div className="row between">
+        <small className="muted">{caption.length}/{MAX_CAPTION} · Posts disappear after {KEEP_DAYS} days · <Link to="/terms">Community rules</Link></small>
         <button disabled={busy || !!mod.status}>{busy ? 'Posting…' : 'Post'}</button>
       </div>
-      <small className="muted">{caption.length}/{MAX_CAPTION} · Posting means you agree to the <Link to="/terms">community rules</Link>.</small>
       {error && <p className="warn">{error}</p>}
     </form>
   )
 }
-
-const MAX_COMMENT = 200
 
 function Comments({ post, onCount }) {
   const { user } = useAuth()
@@ -84,7 +136,7 @@ function Comments({ post, onCount }) {
     if (post.demo) { setItems(prev => prev ?? demoComments(post.id)); return } // DEMO
     const { data, error } = await supabase
       .from('comments')
-      .select('*, profiles(display_name, avatar_path, color, frame)')
+      .select('id, user_id, body, created_at, profiles(display_name, avatar_path, color, frame)')
       .eq('post_id', post.id)
       .order('created_at')
     if (error) setError(error.message)
@@ -134,7 +186,7 @@ function Comments({ post, onCount }) {
             <div className="comment-body">
               <div>
                 <Link to={`/profile/${c.user_id}`}><strong>{c.profiles?.display_name ?? 'Someone'}</strong></Link>
-                {' '}<span className="muted small">{new Date(c.created_at).toLocaleString()}</span>
+                {' '}<span className="muted small" title={new Date(c.created_at).toLocaleString()}>{timeAgo(c.created_at)}</span>
               </div>
               <span>{c.body}</span>
             </div>
@@ -156,7 +208,21 @@ function Comments({ post, onCount }) {
   )
 }
 
-function PostCard({ post, onChanged, badges }) {
+function Lightbox({ src, alt, onClose }) {
+  useEffect(() => {
+    const key = e => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', key)
+    return () => window.removeEventListener('keydown', key)
+  }, [onClose])
+  return (
+    <div className="lightbox" role="dialog" aria-modal="true" aria-label="Photo" onClick={onClose}>
+      <img src={src} alt={alt} />
+      <button type="button" className="lightbox-close" aria-label="Close photo">×</button>
+    </div>
+  )
+}
+
+function PostCard({ post, onChanged, onEdited, badges, names }) {
   const { user } = useAuth()
   const toast = useToast()
   const author = post.profiles
@@ -164,24 +230,43 @@ function PostCard({ post, onChanged, badges }) {
   const [commentCount, setCommentCount] = useState(null)
   const baseCount = post.demo ? demoComments(post.id).length : (post.comments?.[0]?.count ?? 0)
   const shownCount = commentCount ?? baseCount
-  const [demoReactions, setDemoReactions] = useState(post.reactions) // DEMO
-  const reactions = post.demo ? demoReactions : post.reactions // DEMO
+  const [reactions, setReactions] = useState(post.reactions ?? [])   // changed on the spot, no reload
+  useEffect(() => { setReactions(post.reactions ?? []) }, [post.reactions])
+  const [who, setWho] = useState(null)         // which reaction's names are showing
+  const [big, setBig] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [text, setText] = useState(post.body ?? '')
+  const [kind, setKind] = useState(post.kind ?? null)
+  const [err, setErr] = useState('')
+  const press = useRef({ timer: null, long: false })
+  const mine = post.user_id === user.id
+  const canEdit = mine && !post.demo && Date.now() - new Date(post.created_at).getTime() < EDIT_MINUTES * 60000
+  const left = daysLeft(post.created_at)
 
-  async function toggle(kind) {
-    const mine = reactions.some(r => r.user_id === user.id && r.kind === kind)
-    const icon = REACTIONS.find(r => r.kind === kind)?.icon ?? ''
-    if (!mine) toast(`${icon} Reaction sent`, 'info', { silent: true })
-    if (post.demo) { // DEMO: demo posts react locally only
-      return setDemoReactions(rs => mine
-        ? rs.filter(r => !(r.user_id === user.id && r.kind === kind))
-        : [...rs, { kind, user_id: user.id }])
-    }
+  async function toggle(k) {
+    const had = reactions.some(r => r.user_id === user.id && r.kind === k)
+    const icon = REACTIONS.find(r => r.kind === k)?.icon ?? ''
+    if (!had) toast(`${icon} Reaction sent`, 'info', { silent: true })
+    const before = reactions
+    setReactions(had
+      ? reactions.filter(r => !(r.user_id === user.id && r.kind === k))
+      : [...reactions, { kind: k, user_id: user.id }])
+    if (post.demo) return // DEMO: demo posts react locally only
     const q = supabase.from('reactions')
-    const { error } = mine
-      ? await q.delete().match({ post_id: post.id, user_id: user.id, kind })
-      : await q.insert({ post_id: post.id, user_id: user.id, kind })
-    if (!error) onChanged()
+    const { error } = had
+      ? await q.delete().match({ post_id: post.id, user_id: user.id, kind: k })
+      : await q.insert({ post_id: post.id, user_id: user.id, kind: k })
+    if (error) setReactions(before)
   }
+
+  // hold a reaction to see who gave it (hovering shows the same list as a tooltip)
+  const downOn = k => {
+    press.current.long = false
+    clearTimeout(press.current.timer)
+    press.current.timer = setTimeout(() => { press.current.long = true; setWho(k) }, 500)
+  }
+  const upOn = () => clearTimeout(press.current.timer)
+  const nameList = k => reactions.filter(r => r.kind === k).map(r => (r.user_id === user.id ? 'You' : names.get(r.user_id) ?? 'Someone'))
 
   async function remove() {
     if (!confirm('Delete this post?')) return
@@ -191,6 +276,21 @@ function PostCard({ post, onChanged, badges }) {
     onChanged()
   }
 
+  async function saveEdit(e) {
+    e.preventDefault()
+    setErr('')
+    if (!post.image_path && !text.trim()) return setErr('A post without a photo needs some words.')
+    const { error } = await supabase.from('posts').update({ body: text.trim(), kind }).eq('id', post.id)
+    if (error) return setErr(error.message)
+    onEdited(post.id, { body: text.trim(), kind, edited_at: new Date().toISOString() })
+    setEditing(false)
+    toast('✓ Post updated', 'info', { silent: true })
+  }
+
+  const full = post.image_url ?? publicUrl(post.image_path)
+  const small = post.image_url ? null : thumbUrl(post.image_path)
+  const tag = kindOf(post.kind)
+
   return (
     <article className="card post">
       <header className="row">
@@ -198,61 +298,178 @@ function PostCard({ post, onChanged, badges }) {
           frame={author?.frame} size={40} />
         <Link to={`/profile/${post.user_id}`}>{author?.display_name ?? 'Someone'}</Link>
         <MiniBadges userId={post.user_id} list={badges?.get(post.user_id)} />
-        <span className="muted small">{new Date(post.created_at).toLocaleString()}</span>
+        <span className="muted small" title={new Date(post.created_at).toLocaleString()}>{timeAgo(post.created_at)}</span>
         <span className="spacer" />
-        {post.user_id === user.id && <button className="link" onClick={remove}>delete</button>}
-        {post.user_id !== user.id && !post.demo && <ReportButton postId={post.id} className="link report-link" />}
+        {canEdit && !editing && <button className="link" onClick={() => setEditing(true)}>edit</button>}
+        {mine && <button className="link" onClick={remove}>delete</button>}
+        {!mine && !post.demo && <ReportButton postId={post.id} className="link report-link" />}
       </header>
+      {tag && <span className="kind-tag"><span aria-hidden="true">{tag.icon}</span> {tag.label}</span>}
       {(post.image_url || post.image_path) && (
-        <img className="photo" src={post.image_url ?? publicUrl(post.image_path)} alt={post.body} loading="lazy" />
+        <button type="button" className="photo-btn" onClick={() => setBig(true)} aria-label="Enlarge photo">
+          <img className="photo" src={small ?? full} alt={post.body} loading="lazy"
+            onError={e => { if (small && e.currentTarget.src !== full) e.currentTarget.src = full }} />
+        </button>
       )}
-      {post.body && <p>{post.body}</p>}
+      {big && <Lightbox src={full} alt={post.body} onClose={() => setBig(false)} />}
+      {editing ? (
+        <form className="stack" onSubmit={saveEdit}>
+          <textarea value={text} maxLength={MAX_CAPTION} rows={3} aria-label="Edit post text" onChange={e => setText(e.target.value)} />
+          <div className="kind-chips" role="group" aria-label="Tag">
+            {POST_KINDS.map(k => (
+              <button key={k.id} type="button" className={'kind-chip' + (kind === k.id ? ' on' : '')}
+                aria-pressed={kind === k.id} onClick={() => setKind(kind === k.id ? null : k.id)}>
+                <span aria-hidden="true">{k.icon}</span> {k.label}
+              </button>
+            ))}
+          </div>
+          {err && <p className="warn small">{err}</p>}
+          <div className="row">
+            <button>Save</button>
+            <button type="button" className="secondary" onClick={() => { setEditing(false); setText(post.body ?? ''); setKind(post.kind ?? null); setErr('') }}>Cancel</button>
+          </div>
+        </form>
+      ) : (
+        post.body && <p>{post.body}{post.edited_at && <small className="muted"> (edited)</small>}</p>
+      )}
       <footer className="row reactions" aria-label="Reactions">
-        {REACTIONS.map(({ kind, icon }) => {
-          const count = reactions.filter(r => r.kind === kind).length
-          const mine = reactions.some(r => r.user_id === user.id && r.kind === kind)
+        {REACTIONS.map(({ kind: k, icon, word }) => {
+          const list = reactions.filter(r => r.kind === k)
+          const on = reactions.some(r => r.user_id === user.id && r.kind === k)
           return (
-            <button key={kind} className={'react' + (mine ? ' on' : '')} onClick={() => toggle(kind)}>
-              {icon} {count > 0 && count}
+            <button key={k} className={'react' + (on ? ' on' : '')}
+              title={list.length ? `${word}: ${nameList(k).join(', ')}` : word}
+              onPointerDown={() => downOn(k)} onPointerUp={upOn} onPointerLeave={upOn} onPointerCancel={upOn}
+              onContextMenu={e => { if (press.current.long) e.preventDefault() }}
+              onClick={() => { if (press.current.long) { press.current.long = false; return } setWho(null); toggle(k) }}>
+              {icon} {list.length > 0 && list.length}
             </button>
           )
         })}
       </footer>
+      {who && (
+        <p className="who small" role="status">
+          {REACTIONS.find(r => r.kind === who)?.icon}{' '}
+          {nameList(who).length ? nameList(who).join(', ') : 'No one yet'}
+          <button type="button" className="link" onClick={() => setWho(null)}> close</button>
+        </p>
+      )}
       <button type="button" className={'comment-toggle' + (open ? ' open' : '')} onClick={() => setOpen(o => !o)} aria-expanded={open}>
         <span aria-hidden="true">💬</span>
         {shownCount === 0 ? 'Add a comment' : `${shownCount} comment${shownCount === 1 ? '' : 's'}`}
         <span className="chev" aria-hidden="true">{open ? '▴' : '▾'}</span>
       </button>
       {open && <Comments post={post} onCount={setCommentCount} />}
+      {!post.demo && (
+        <small className="muted post-expiry">
+          {left <= 0 ? 'Disappears tonight' : `Disappears in ${left} day${left === 1 ? '' : 's'}`}
+        </small>
+      )}
     </article>
   )
 }
 
-export default function Feed() {
-  const [posts, setPosts] = useState([])
-  const [error, setError] = useState('')
+function Skeletons() {
+  return (
+    <>
+      {[0, 1, 2].map(i => (
+        <div key={i} className="card post post-skel" aria-hidden="true">
+          <div className="skel-row"><span className="skel skel-avatar" /><span className="skel skel-line" /></div>
+          <span className="skel skel-photo" />
+          <span className="skel skel-line wide" />
+        </div>
+      ))}
+    </>
+  )
+}
 
-  async function load() {
-    const { data, error } = await supabase
-      .from('posts')
-      .select('*, profiles(display_name, avatar_path, color, frame), reactions(kind, user_id), comments(count)')
-      .order('created_at', { ascending: false })
-      .limit(50)
-    if (error) setError(error.message)
-    else setPosts(DEMO // DEMO
-      ? [...data, ...demoPosts()].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-      : data)
+const TABS = [
+  { id: 'all', label: 'All' },
+  { id: 'mine', label: 'Mine' },
+  { id: 'question', label: 'Questions' },
+  { id: 'win', label: 'Wins' },
+]
+
+export default function Feed() {
+  const { user } = useAuth()
+  const [posts, setPosts] = useState(null)       // null while the first batch loads
+  const [error, setError] = useState('')
+  const [tab, setTab] = useState('all')
+  const [photoOnly, setPhotoOnly] = useState(false)
+  const [more, setMore] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [names, setNames] = useState(() => new Map())   // user id -> name, for "who reacted"
+  const asked = useRef(new Set())
+
+  // only names not already known are fetched, then added to what we have
+  async function learnNames(rows) {
+    const need = [...new Set(rows.flatMap(p => (p.reactions ?? []).map(r => r.user_id)))].filter(id => !asked.current.has(id))
+    if (!need.length) return
+    need.forEach(id => asked.current.add(id))
+    const { data } = await supabase.from('profiles').select('id, display_name').in('id', need)
+    if (data?.length) setNames(m => { const n = new Map(m); data.forEach(p => n.set(p.id, p.display_name)); return n })
   }
-  useEffect(() => { load() }, [])
-  const badges = useTopBadges(posts.map(p => p.user_id))
+
+  const load = useCallback(async (append = false, from = 0) => {
+    setBusy(true)
+    let q = supabase.from('posts').select(POST_COLS).order('created_at', { ascending: false }).range(from, from + PAGE - 1)
+    if (tab === 'mine') q = q.eq('user_id', user.id)
+    if (tab === 'question' || tab === 'win') q = q.eq('kind', tab)
+    if (photoOnly) q = q.not('image_path', 'is', null)
+    const { data, error } = await q
+    setBusy(false)
+    if (error) { setError(error.message); setPosts(p => p ?? []); return }
+    setError('')
+    let rows = data ?? []
+    setMore(rows.length === PAGE)
+    if (DEMO && !append && tab === 'all' && !photoOnly) { // DEMO
+      rows = [...rows, ...demoPosts()].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    }
+    setPosts(prev => (append && prev ? [...prev, ...rows.filter(r => !prev.some(p => p.id === r.id))] : rows))
+    learnNames(rows)
+  }, [tab, photoOnly, user.id]) // eslint-disable-line
+
+  useEffect(() => { setPosts(null); load() }, [load])
+
+  const reload = () => load()
+  const edited = (id, patch) => setPosts(list => list.map(p => (p.id === id ? { ...p, ...patch } : p)))
+  const badges = useTopBadges((posts ?? []).map(p => p.user_id))
 
   return (
     <div className="narrow">
       <h1>Progress feed</h1>
-      <Composer onPosted={load} />
+      <Composer onPosted={() => { if (tab !== 'all' || photoOnly) { setTab('all'); setPhotoOnly(false) } else reload() }} />
+      <div className="feed-filters">
+        <div className="tabs" role="tablist" aria-label="Show">
+          {TABS.map(t => (
+            <button key={t.id} type="button" role="tab" aria-selected={tab === t.id}
+              className={tab === t.id ? 'active' : ''} onClick={() => setTab(t.id)}>{t.label}</button>
+          ))}
+        </div>
+        <label className="feed-photo-toggle">
+          <input type="checkbox" checked={photoOnly} onChange={e => setPhotoOnly(e.target.checked)} /> Has photo
+        </label>
+      </div>
       {error && <p className="warn">{error}</p>}
-      {posts.length === 0 && !error && <p className="muted">No posts yet. Be the first to share your progress!</p>}
-      {posts.map(p => <PostCard key={p.id} post={p} onChanged={load} badges={badges} />)}
+      {posts === null && !error && <Skeletons />}
+      {posts?.length === 0 && !error && (
+        <div className="card empty-feed">
+          <p><strong>{tab === 'all' && !photoOnly ? 'Nothing here yet' : 'No posts match'}</strong></p>
+          <p className="muted small">
+            {tab === 'all' && !photoOnly
+              ? 'Be the first: share what you finished, a question, or a photo of your notes.'
+              : 'Try another tab, or turn off the photo filter.'}
+          </p>
+        </div>
+      )}
+      {posts?.map(p => <PostCard key={p.id} post={p} onChanged={reload} onEdited={edited} badges={badges} names={names} />)}
+      {more && (
+        <div className="feed-more">
+          <button type="button" className="secondary" disabled={busy} onClick={() => load(true, posts.filter(p => !p.demo).length)}>
+            {busy ? 'Loading…' : 'Load more'}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

@@ -4,7 +4,8 @@ import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
 import { DAY_NAMES, fmtMinutes, startOfWeek } from '../lib/dates.js'
 import { levelFromXp, useCosmetics, useXp } from '../lib/levels.js'
-import { publicUrl, uploadImage } from '../lib/storage.js'
+import { publicUrl, removeImage, thumbUrl, uploadImage } from '../lib/storage.js'
+import { downloadMyPosts } from '../lib/exportPosts.js'
 import { DEMO, demoProfile, isDemoId } from '../lib/demo.js' // DEMO
 import Avatar, { FramePreview } from '../components/Avatar.jsx'
 import FancyName from '../components/FancyName.jsx'
@@ -73,6 +74,7 @@ export default function Profile() {
   const shop = useShop()
   const toast = useToast()
   const baseline = useRef(null)    // picture / frame / banner as last saved, to tell what changed
+  const pendingAvatar = useRef(null)   // a picture uploaded but not saved yet (deleted if you pick another or leave)
 
   const [profile, setProfile] = useState(null)
   const [posts, setPosts] = useState([])
@@ -152,6 +154,9 @@ export default function Profile() {
         const list = changes.length > 1 ? changes.slice(0, -1).join(', ') + ' and ' + changes.at(-1) : changes[0]
         toast(`✓ Your ${list} ${changes.length > 1 ? 'were' : 'was'} updated`, 'xp')
       }
+      // the picture you replaced is no longer used by anything: remove the file (only ever your own folder)
+      if (was.avatar_path && was.avatar_path !== avatar_path && was.avatar_path.startsWith(user.id + '/')) removeImage(was.avatar_path).catch(() => {})
+      pendingAvatar.current = null
       baseline.current = { avatar_path, frame, banner }
     }
   }
@@ -163,7 +168,10 @@ export default function Profile() {
     if (!file) return
     try {
       const gif = file.type === 'image/gif'
-      edit({ avatar_path: await uploadImage(file, user.id, { allowGif: canGif }) })
+      const path = await uploadImage(file, user.id, { allowGif: canGif, kind: 'avatar' })
+      if (pendingAvatar.current && pendingAvatar.current !== baseline.current?.avatar_path) removeImage(pendingAvatar.current).catch(() => {})
+      pendingAvatar.current = path
+      edit({ avatar_path: path })
       toast(`📷 Picture chosen: ${file.name}. Press Save profile to keep it.`, 'info', { silent: true })
       if (gif && !canGif) setMsg('Animated GIFs are a Shop perk, so this one was saved as a still picture.')
     }
@@ -202,13 +210,22 @@ export default function Profile() {
       <div className="col">
         {/* Their posts: a short strip you scroll sideways, so the page never has to scroll */}
         <section className="card posts-strip">
-          <h2>Posts <small>{posts.length} shared</small></h2>
+          <h2>Posts <small>{posts.length} shared</small>
+            {mine && posts.length > 0 && (
+              <button type="button" className="link" style={{ marginLeft: 'auto' }}
+                title="Posts disappear after 14 days. This saves them, with their photos, as one file you keep."
+                onClick={async () => { try { const n = await downloadMyPosts(user.id); toast(`✓ Saved ${n} post${n === 1 ? '' : 's'}`) } catch (err) { toast(err.message || 'Could not save your posts', 'info') } }}>
+                Download my posts
+              </button>
+            )}
+          </h2>
           {posts.length === 0 && <p className="muted">No posts yet.</p>}
           <div className="post-list strip">
             {posts.map(p => (
               <article key={p.id} className="post-tile">
                 {(p.image_url || p.image_path) && (
-                  <img src={p.image_url ?? publicUrl(p.image_path)} alt={p.body} loading="lazy" />
+                  <img src={p.image_url ?? thumbUrl(p.image_path) ?? publicUrl(p.image_path)} alt={p.body} loading="lazy"
+                    onError={e => { const full = p.image_url ?? publicUrl(p.image_path); if (e.currentTarget.src !== full) e.currentTarget.src = full }} />
                 )}
                 {p.body && <p>{p.body}</p>}
                 {p.created_at && <small className="muted">{new Date(p.created_at).toLocaleDateString()}</small>}

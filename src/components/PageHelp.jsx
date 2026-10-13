@@ -23,16 +23,17 @@ const HELP = {
       'Drag a task onto a day (or onto the Day, Week or Month planner). On a phone, a row of day buttons pops up while you drag.',
       'Click a task to set its class, due date, time, category and notes.',
       'Use the class filter above the planner to show one subject at a time.',
-      'Finished tasks tidy themselves away after a week. Your XP stays.',
+      'Finished tasks tidy themselves away after two weeks, and tasks you never finished after three weeks. Your XP stays.',
     ],
   },
   '/feed': {
     title: 'Feed',
     intro: 'Share what you got done.',
     steps: [
-      'Choose a photo, add a short caption, and press Post.',
-      'React with an emoji, or open "Add a comment" to write one.',
-      'You can delete your own posts and comments at any time.',
+      'Press "Share your progress". A photo is optional: a few words is enough. Pick a tag (Question, Win...) so friends can filter for it.',
+      'React with an emoji (hold one to see who gave it), tap a photo to enlarge it, or open "Add a comment".',
+      'You can fix the words of your post for 10 minutes, and delete your own posts and comments any time.',
+      'Posts disappear after 14 days. "Download my posts" on your profile saves yours as one file first.',
     ],
   },
   '/study': {

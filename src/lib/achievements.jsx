@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { supabase } from './supabase.js'
+import { cachedTable } from './cache.js'
 import { useAuth } from './auth.jsx'
 import { useMyXp } from './xp.jsx'
 import { useShop } from './shop.jsx'
@@ -60,7 +61,7 @@ export function AchievementsProvider({ children }) {
   const load = useCallback(async () => {
     if (!user || !supabase) return
     const [cat, mine, st] = await Promise.all([
-      supabase.from('achievements').select('*').order('sort'),
+      cachedTable('achievements', 'sort').then(data => ({ data })),
       supabase.from('user_achievements').select('*').eq('user_id', user.id),
       supabase.rpc('my_achievement_stats'),
     ])

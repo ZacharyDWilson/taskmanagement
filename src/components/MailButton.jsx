@@ -24,7 +24,7 @@ function useMail() {
   useEffect(() => {
     if (!user || !supabase) return
     let live = true
-    supabase.from('announcements').select('*').order('created_at', { ascending: false }).limit(30).then(({ data }) => {
+    supabase.from('announcements').select('id, title, body, major, created_at, expires_at').order('created_at', { ascending: false }).limit(30).then(({ data }) => {
       if (!live) return
       const now = Date.now()
       setItems((data ?? []).filter(a => !a.expires_at || new Date(a.expires_at).getTime() > now))
