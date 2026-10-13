@@ -33,7 +33,7 @@ export const THEMES = [
     preview: ['#22223b', '#4a4e69', '#9a8c98', '#c9ada7', '#f2e9e4'] },
   { id: 'lofi', name: 'Lofi Nights', signature: 'records', blurb: 'Purple, coral and pink over a rainy dusk skyline, with notes drifting up.',
     preview: ['#a83aa0', '#ff7078', '#fdb1d2', '#cd98d3', '#8d88d8'] },
-  { id: 'shore', name: 'Coral Shore', blurb: 'Coral sunset, warm sand and seafoam waves rolling in.',
+  { id: 'shore', name: 'Coral Shore', signature: 'shells', blurb: 'Coral sunset, warm sand and seafoam waves rolling in.',
     preview: ['#ffaea0', '#ffebd2', '#9bcbc0', '#6ba3c8', '#2f5f7d'] },
   { id: 'rose', name: 'Dusty Rose', signature: 'petals and leaves', blurb: 'A vintage parlour in rose, blush and cream: lace, climbing roses and a sunlit window.',
     preview: ['#de929d', '#e4babe', '#f7efd9', '#99976c', '#6f5d4e'] },

@@ -228,42 +228,42 @@
    "id": "sprout",
    "kind": "theme",
    "name": "Sprout Squad",
-   "price": 300,
+   "price": 200,
    "sort": 1
   },
   {
    "id": "console",
    "kind": "theme",
    "name": "Retro Console",
-   "price": 500,
+   "price": 400,
    "sort": 2
   },
   {
    "id": "capsule",
    "kind": "theme",
    "name": "Capsule Quest",
-   "price": 300,
+   "price": 200,
    "sort": 3
   },
   {
    "id": "island",
    "kind": "theme",
    "name": "Cozy Island",
-   "price": 500,
+   "price": 400,
    "sort": 4
   },
   {
    "id": "meadow",
    "kind": "theme",
    "name": "Hero's Meadow",
-   "price": 450,
+   "price": 300,
    "sort": 5
   },
   {
    "id": "arcade",
    "kind": "theme",
    "name": "Starlit Arcade",
-   "price": 500,
+   "price": 400,
    "sort": 6
   },
   {
@@ -298,21 +298,21 @@
    "id": "lofi",
    "kind": "theme",
    "name": "Lofi Nights",
-   "price": 500,
+   "price": 400,
    "sort": 7
   },
   {
    "id": "shore",
    "kind": "theme",
    "name": "Coral Shore",
-   "price": 300,
+   "price": 400,
    "sort": 8
   },
   {
    "id": "twilight",
    "kind": "theme",
    "name": "Twilight Sky",
-   "price": 300,
+   "price": 200,
    "sort": 9
   },
   {
@@ -368,7 +368,7 @@
    "id": "aero",
    "kind": "theme",
    "name": "Frutiger Aero",
-   "price": 600,
+   "price": 500,
    "sort": 10
   },
   {
@@ -522,14 +522,14 @@
    "id": "rose",
    "kind": "theme",
    "name": "Dusty Rose",
-   "price": 550,
+   "price": 500,
    "sort": 11
   },
   {
    "id": "tile",
    "kind": "theme",
    "name": "Glazed Tile",
-   "price": 500,
+   "price": 400,
    "sort": 12
   }
  ]
