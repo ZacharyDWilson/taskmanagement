@@ -524,6 +524,13 @@
    "name": "Dusty Rose",
    "price": 550,
    "sort": 11
+  },
+  {
+   "id": "tile",
+   "kind": "theme",
+   "name": "Glazed Tile",
+   "price": 500,
+   "sort": 12
   }
  ]
 }

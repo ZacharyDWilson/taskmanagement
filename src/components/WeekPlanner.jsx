@@ -1,63 +1,66 @@
 import { useState } from 'react'
 import { addDays, DAY_NAMES, fmtDay, isoDate, startOfWeek } from '../lib/dates.js'
 import { classesFrom } from '../lib/tasks.js'
+import { colorHex } from '../lib/colors.js'
 import ColorPicker from './ColorPicker.jsx'
 import ClassPicker from './ClassPicker.jsx'
 import { TaskItem } from './TodayList.jsx'
-import PickerModal from './PickerModal.jsx'
 import DragTray from './DragTray.jsx'
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-const WEEK_MS = 7 * 24 * 60 * 60 * 1000
+const ALL = '__all__'      // class filter: every class
+const NONE = '__none__'    // class filter: tasks with no class set
 
-// A month at a glance. Tap any week to open it in the planner.
-function MonthPicker({ tasks, shownStart, onPick, onClose }) {
-  const [month, setMonth] = useState(() => new Date(shownStart.getFullYear(), shownStart.getMonth(), 1))
-  const first = startOfWeek(month)
-  const lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 0)
+// A real month: every day is a drop target, shows its tasks, and opens as a day when you tap it.
+function MonthGrid({ tasks, anchor, onOpenDay, onOpenTask, move }) {
+  const first = new Date(anchor.getFullYear(), anchor.getMonth(), 1)
+  const last = new Date(anchor.getFullYear(), anchor.getMonth() + 1, 0)
   const weeks = []
-  for (let s = first; s <= lastDay; s = addDays(s, 7)) weeks.push(s)
-
-  const perDay = {}
-  for (const task of tasks) if (task.day) perDay[task.day] = (perDay[task.day] ?? 0) + 1
+  for (let w = startOfWeek(first); w <= last; w = addDays(w, 7)) weeks.push(w)
   const todayKey = isoDate(new Date())
-  const shownKey = isoDate(shownStart)
+  const byDay = {}
+  for (const t of tasks) if (t.day) (byDay[t.day] ??= []).push(t)
+  const [over, setOver] = useState('')
+
+  function drop(e, key) {
+    e.preventDefault()
+    setOver('')
+    const task = tasks.find(t => t.id === e.dataTransfer.getData('text/task-id'))
+    if (task && task.day !== key) move(task, key)
+  }
 
   return (
-    <PickerModal title="Pick a week" hint="Tap a week to plan it. Dots show how many tasks are on a day." onClose={onClose}>
-      <div className="month">
-        <div className="month-head">
-          <button type="button" className="secondary" aria-label="Previous month"
-            onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1))}>‹</button>
-          <strong>{MONTHS[month.getMonth()]} {month.getFullYear()}</strong>
-          <button type="button" className="secondary" aria-label="Next month"
-            onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1))}>›</button>
-        </div>
-        <div className="month-days" aria-hidden="true">{DAY_NAMES.map(d => <span key={d}>{d}</span>)}</div>
-        {weeks.map(ws => {
-          const key = isoDate(ws)
-          return (
-            <button key={key} type="button" className={'month-week' + (key === shownKey ? ' on' : '')}
-              onClick={() => onPick(ws)} aria-label={'Week of ' + fmtDay(ws)}>
-              {Array.from({ length: 7 }, (_, i) => {
-                const d = addDays(ws, i)
-                const k = isoDate(d)
-                const n = perDay[k] ?? 0
-                return (
-                  <span key={k} className={'month-day' + (d.getMonth() !== month.getMonth() ? ' out' : '') + (k === todayKey ? ' today' : '')}>
-                    {d.getDate()}
-                    <i className={n ? 'dot' : ''} title={n ? n + ' task' + (n === 1 ? '' : 's') : ''}>{n > 1 ? n : ''}</i>
-                  </span>
-                )
-              })}
-            </button>
-          )
-        })}
-        <div className="row">
-          <button type="button" className="secondary" onClick={() => { setMonth(new Date(new Date().getFullYear(), new Date().getMonth(), 1)) }}>This month</button>
-        </div>
-      </div>
-    </PickerModal>
+    <div className="month-grid" role="grid" aria-label={MONTHS[anchor.getMonth()] + ' ' + anchor.getFullYear()}>
+      {DAY_NAMES.map(d => <div key={d} className="mg-dow" role="columnheader">{d}</div>)}
+      {weeks.flatMap(w => Array.from({ length: 7 }, (_, i) => addDays(w, i))).map(d => {
+        const key = isoDate(d)
+        const list = byDay[key] ?? []
+        const open = list.filter(t => !t.done).length
+        return (
+          <div key={key} role="gridcell" tabIndex={0}
+            className={'mg-cell' + (d.getMonth() !== anchor.getMonth() ? ' out' : '') + (key === todayKey ? ' today' : '') + (over === key ? ' over' : '')}
+            onClick={() => onOpenDay(d)}
+            onKeyDown={e => { if (e.key === 'Enter') onOpenDay(d) }}
+            onDragOver={e => { e.preventDefault(); if (over !== key) setOver(key) }}
+            onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget)) setOver(o => (o === key ? '' : o)) }}
+            onDrop={e => drop(e, key)}>
+            <span className="mg-num">{d.getDate()}</span>
+            <ul className="mg-tasks">
+              {list.slice(0, 3).map(t => (
+                <li key={t.id} className={'mg-task' + (t.done ? ' done' : '')} style={{ borderLeftColor: colorHex(t.color) }}
+                  draggable title={t.title}
+                  onClick={e => { e.stopPropagation(); onOpenTask(t) }}
+                  onDragStart={e => { e.stopPropagation(); e.dataTransfer.setData('text/task-id', t.id); e.dataTransfer.effectAllowed = 'move' }}>
+                  <span>{t.title}</span>
+                </li>
+              ))}
+            </ul>
+            {list.length > 3 && <small className="mg-more">+{list.length - 3} more</small>}
+            {list.length > 0 && <i className="mg-count" aria-label={open + ' open'}>{open || '✓'}</i>}
+          </div>
+        )
+      })}
+    </div>
   )
 }
 
@@ -113,56 +116,111 @@ function Column({ title, dates, tasks, add, toggle, remove, move, onOpen, color,
   )
 }
 
+// The planner: Day, Week or Month, with a filter to show one class or subject at a time.
 export default function WeekPlanner({ tasks, add, toggle, remove, move, onOpen }) {
-  const [offset, setOffset] = useState(0)
-  const [monthOpen, setMonthOpen] = useState(false)
+  const [mode, setMode] = useState('week')                 // 'day' | 'week' | 'month'
+  const [anchor, setAnchor] = useState(() => new Date())    // the day / week / month being looked at
+  const [filter, setFilter] = useState(ALL)                 // class filter
   const [color, setColor] = useState('purple')
   const [course, setCourse] = useState('')
-  const start = addDays(startOfWeek(), offset * 7)
 
+  const classes = classesFrom(tasks)
+  const hasUnclassed = tasks.some(t => !t.course)
+  const visible = tasks.filter(t => (filter === ALL ? true : filter === NONE ? !t.course : t.course === filter))
+  const newCourse = course || (filter !== ALL && filter !== NONE ? filter : '')
+
+  const start = startOfWeek(anchor)
   const columns = [
     ...[0, 1, 2, 3, 4].map(i => ({ title: DAY_NAMES[i], dates: [addDays(start, i)] })),
     { title: 'Weekend', dates: [addDays(start, 5), addDays(start, 6)] },
   ]
-  const keys = new Set(columns.flatMap(c => c.dates.map(isoDate)))
-  const weekTasks = tasks.filter(t => keys.has(t.day))
-  const weekDone = weekTasks.filter(t => t.done).length
+  const weekKeys = new Set(columns.flatMap(c => c.dates.map(isoDate)))
+  const weekTasks = visible.filter(t => weekKeys.has(t.day))
+  const dayTasks = visible.filter(t => t.day === isoDate(anchor))
+  const monthTasks = visible.filter(t => t.day && t.day.slice(0, 7) === isoDate(anchor).slice(0, 7))
+  const shown = mode === 'day' ? dayTasks : mode === 'week' ? weekTasks : monthTasks
+  const done = shown.filter(t => t.done).length
+
+  const step = dir => setAnchor(a => (
+    mode === 'day' ? addDays(a, dir)
+      : mode === 'week' ? addDays(a, dir * 7)
+        : new Date(a.getFullYear(), a.getMonth() + dir, 1)))
+  const label = mode === 'day'
+    ? anchor.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })
+    : mode === 'week'
+      ? `${fmtDay(start)} – ${fmtDay(addDays(start, 6))}`
+      : `${MONTHS[anchor.getMonth()]} ${anchor.getFullYear()}`
 
   return (
     <section className="card fill planner">
-      {monthOpen && (
-        <MonthPicker tasks={tasks} shownStart={start}
-          onPick={ws => { setOffset(Math.round((ws - startOfWeek()) / WEEK_MS)); setMonthOpen(false) }}
-          onClose={() => setMonthOpen(false)} />
-      )}
       <div className="planner-head">
         <h2>
-          Week planner{' '}
-          <small>{fmtDay(start)} – {fmtDay(addDays(start, 6))} · {weekDone}/{weekTasks.length} done</small>
+          Planner{' '}
+          <small>{label} · {done}/{shown.length} done</small>
         </h2>
-        <div className="row">
-          <button className="secondary" onClick={() => setOffset(o => Math.max(-52, o - 1))} aria-label="Previous week">‹</button>
-          <button className="secondary" onClick={() => setOffset(0)}>This week</button>
-          <button className="secondary" onClick={() => setMonthOpen(true)}>Month</button>
-          <button className="secondary" onClick={() => setOffset(o => Math.min(104, o + 1))} aria-label="Next week">›</button>
+        <div className="planner-controls">
+          <div className="seg" role="tablist" aria-label="Planner view">
+            {['day', 'week', 'month'].map(m => (
+              <button key={m} type="button" role="tab" aria-selected={mode === m}
+                className={'seg-btn' + (mode === m ? ' on' : '')} onClick={() => setMode(m)}>
+                {m[0].toUpperCase() + m.slice(1)}
+              </button>
+            ))}
+          </div>
+          <div className="row">
+            <button className="secondary" onClick={() => step(-1)} aria-label={'Previous ' + mode}>‹</button>
+            <button className="secondary" onClick={() => setAnchor(new Date())}>Today</button>
+            <button className="secondary" onClick={() => step(1)} aria-label={'Next ' + mode}>›</button>
+          </div>
         </div>
       </div>
 
+      {(classes.length > 0 || hasUnclassed) && (
+        <div className="planner-filter" role="group" aria-label="Filter by class or subject">
+          <span className="muted small">Show:</span>
+          <button type="button" className={'chip' + (filter === ALL ? ' on' : '')} onClick={() => setFilter(ALL)}>All classes</button>
+          {classes.map(c => (
+            <button key={c} type="button" className={'chip' + (filter === c ? ' on' : '')}
+              onClick={() => setFilter(f => (f === c ? ALL : c))}>{c}</button>
+          ))}
+          {hasUnclassed && classes.length > 0 && (
+            <button type="button" className={'chip' + (filter === NONE ? ' on' : '')}
+              onClick={() => setFilter(f => (f === NONE ? ALL : NONE))}>No class</button>
+          )}
+        </div>
+      )}
+
+      {mode !== 'month' && (
       <div className="planner-tools">
         <span className="muted small">New tasks:</span>
         <ColorPicker value={color} onChange={setColor} />
-        <ClassPicker compact value={course} onChange={setCourse} options={classesFrom(tasks)}
-          placeholder="Class or subject (optional)" />
+        <ClassPicker compact value={course} onChange={setCourse} options={classes}
+          placeholder={filter !== ALL && filter !== NONE ? 'Class: ' + filter : 'Class or subject (optional)'} />
       </div>
+      )}
 
-      <DragTray columns={columns} tasks={tasks} move={move} />
+      {mode !== 'month' && <DragTray columns={columns} tasks={tasks} move={move} />}
 
-      <div className="week">
-        {columns.map(c => (
-          <Column key={c.title} {...c} tasks={tasks} add={add} toggle={toggle} remove={remove}
-            move={move} onOpen={onOpen} color={color} course={course} />
-        ))}
-      </div>
+      {mode === 'week' && (
+        <div className="week">
+          {columns.map(c => (
+            <Column key={c.title} {...c} tasks={visible} add={add} toggle={toggle} remove={remove}
+              move={move} onOpen={onOpen} color={color} course={newCourse} />
+          ))}
+        </div>
+      )}
+
+      {mode === 'day' && (
+        <div className="week day-view">
+          <Column title={anchor.toLocaleDateString(undefined, { weekday: 'long' })} dates={[anchor]} tasks={visible}
+            add={add} toggle={toggle} remove={remove} move={move} onOpen={onOpen} color={color} course={newCourse} />
+        </div>
+      )}
+
+      {mode === 'month' && (
+        <MonthGrid tasks={visible} anchor={anchor} move={move} onOpenTask={onOpen}
+          onOpenDay={d => { setAnchor(d); setMode('day') }} />
+      )}
     </section>
   )
 }

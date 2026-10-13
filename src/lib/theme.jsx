@@ -36,6 +36,8 @@ export const THEMES = [
     preview: ['#ffaea0', '#ffebd2', '#9bcbc0', '#6ba3c8', '#2f5f7d'] },
   { id: 'rose', name: 'Dusty Rose', signature: 'petals and leaves', blurb: 'A vintage parlour in rose, blush and cream: lace, climbing roses and a sunlit window.',
     preview: ['#de929d', '#e4babe', '#f7efd9', '#99976c', '#6f5d4e'] },
+  { id: 'tile', name: 'Glazed Tile', signature: 'glazed tiles', blurb: 'An arts-and-crafts tile wall: relief tiles in moss, amber, teal and terracotta.',
+    preview: ['#587d3e', '#d29a35', '#2b6862', '#ad522a', '#27382c'] },
   { id: 'twilight', name: 'Twilight Sky', blurb: 'Blush clouds and a crescent moon over indigo mountains and stars.',
     preview: ['#fff1f1', '#a9b4dc', '#7885c6', '#2c3470', '#161b45'] },
 ]
