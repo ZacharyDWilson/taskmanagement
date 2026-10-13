@@ -205,6 +205,16 @@ export default function Profile() {
           {!profile.bio && !mine && <p className="muted">No bio yet.</p>}
         </section>
 
+        {/* The numbers, each labelled (under who this is) */}
+        <div className="tiles">
+          <div className="tile"><strong>{fmtMinutes(total)}</strong><span>studied this week</span></div>
+          <div className="tile">
+            <strong>{best ? fmtMinutes(best) : '–'}</strong>
+            <span>best day{best ? ` (${DAY_NAMES[days.indexOf(best)]})` : ''}</span>
+          </div>
+          <div className="tile"><strong>{posts.length}</strong><span>posts shared</span></div>
+          <div className="tile"><strong>Lv {level}</strong><span>{(xp ?? 0).toLocaleString()} XP total</span></div>
+        </div>
       </div>
 
       <div className="col">
@@ -234,19 +244,8 @@ export default function Profile() {
           </div>
         </section>
 
-        {/* The numbers, each labelled (under the posts) */}
-        <div className="tiles">
-          <div className="tile"><strong>{fmtMinutes(total)}</strong><span>studied this week</span></div>
-          <div className="tile">
-            <strong>{best ? fmtMinutes(best) : '–'}</strong>
-            <span>best day{best ? ` (${DAY_NAMES[days.indexOf(best)]})` : ''}</span>
-          </div>
-          <div className="tile"><strong>{posts.length}</strong><span>posts shared</span></div>
-          <div className="tile"><strong>Lv {level}</strong><span>{(xp ?? 0).toLocaleString()} XP total</span></div>
-        </div>
-
         {/* Hours each day */}
-        <section className="card">
+        <section className="card week-bars-card">
           <h2>Study time each day <small>this week, Monday to Sunday</small></h2>
           <DayBars minutes={days} start={startOfWeek()} highlight={todayIdx} />
         </section>

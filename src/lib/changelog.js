@@ -3,6 +3,13 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.20', date: '2026-10-14', title: 'A roomier profile',
+    points: [
+      'The profile page uses its space better: who you are and your four numbers on the left, posts and a much bigger study-time chart in the middle, editing on the right.',
+      'The study-time bars stretch to fill their card, so each day is easy to read.',
+    ],
+  },
+  {
     version: '2.19', date: '2026-10-14', title: 'A tidier Study page',
     points: [
       'The study leaderboard now lives only on the Overview page.',

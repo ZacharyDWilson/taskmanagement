@@ -3820,3 +3820,34 @@ button.danger { color: #c0392b; border-color: color-mix(in srgb, #c0392b 45%, tr
 .study .st-main > .row > button { padding: clamp(.7rem, 1.8vh, 1.05rem) 1.8rem; font-size: 1.05rem; min-width: 8rem; }
 .study .st-main .row.small label { font-size: 1rem; }
 .study .st-main .row.small input { width: 4.6rem; padding: .55rem .7rem; font-size: 1.05rem; }
+
+
+/* ---- Profile, rearranged to use the space: who + numbers | posts + a big study-time chart | edit (2.20) ------------------- */
+.profile-fit .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+.profile-fit .tiles .tile { padding: .8rem .9rem; }
+.profile-fit .tiles .tile strong { font-size: 1.45rem; }
+.profile-fit .tiles .tile span { font-size: .82rem; }
+.profile-fit > .col { gap: 1rem; }
+.profile-fit .week-bars-card { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
+.profile-fit .week-bars-card .daybars { flex: 1 1 auto; align-items: stretch; min-height: 150px; gap: .7rem; }
+.profile-fit .week-bars-card .daybar { height: 100%; }
+.profile-fit .week-bars-card .daybar-track { flex: 1 1 auto; height: auto; min-height: 90px; }
+.profile-fit .week-bars-card .daybar-value { font-size: .85rem; }
+.profile-fit .week-bars-card .daybar-day { font-size: .95rem; }
+@media (max-width: 1000px) {
+  .profile-fit .week-bars-card { flex: none; }
+  .profile-fit .week-bars-card .daybar-track { height: 130px; flex: none; }
+}
+
+/* make each profile column use its whole height: tiles stretch under the profile card, the chart takes the rest of the middle */
+.profile-fit > .col > .tiles { flex: 1 1 0; min-height: 0; grid-auto-rows: 1fr; }
+.profile-fit > .col > .tiles .tile { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.profile-fit > .col > .tiles .tile strong { font-size: clamp(1.4rem, 3.2vh, 2rem); }
+.profile-fit > .col > .week-bars-card { flex: 1 1 0; min-height: 0; }
+.profile-fit > .col > .week-bars-card .daybars { flex: 1 1 0; min-height: 0; }
+@media (max-width: 1000px) {
+  .profile-fit > .col > .tiles { flex: none; }
+  .profile-fit > .col > .week-bars-card { flex: none; }
+}
+.profile-fit > .col > .card.week-bars-card:not(.fill) { flex: 1 1 0; min-height: 0; }
+@media (max-width: 1000px) { .profile-fit > .col > .card.week-bars-card:not(.fill) { flex: none; } }
