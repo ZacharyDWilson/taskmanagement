@@ -5,6 +5,7 @@ import { spawn } from 'node:child_process'
 const servers = [
   { name: 'basic', script: 'dev:basic' },
   { name: 'admin', script: 'dev:admin' },
+  { name: 'intro', script: 'dev:intro' },
 ]
 
 const children = servers.map(({ name, script }) => {

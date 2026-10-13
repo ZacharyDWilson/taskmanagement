@@ -2,6 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import App from './App.jsx'
+import IntroPreview from './pages/IntroPreview.jsx'
+import { IS_INTRO } from './lib/env.js'
 import { AuthProvider } from './lib/auth.jsx'
 import { ThemeProvider } from './lib/theme.jsx'
 import { SoundProvider } from './lib/sfx.jsx'
@@ -36,7 +38,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <XpProvider>
                     <ShopProvider>
                       <NotifyProvider>
-                        <App />
+                        {IS_INTRO ? <IntroPreview /> : <App />}
                       </NotifyProvider>
                     </ShopProvider>
                   </XpProvider>

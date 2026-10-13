@@ -5,9 +5,11 @@
 // nothing fake is saved to the account.
 export const APP_MODE = import.meta.env.VITE_APP_MODE || 'production'
 export const IS_ADMIN = APP_MODE === 'admin'
+export const IS_INTRO = APP_MODE === 'intro'   // the start page and tour preview (port 5175)
 export const IS_DEV_BUILD = import.meta.env.DEV
 
 export const APP_TITLE =
   APP_MODE === 'admin' ? 'LOCK IN · ADMIN'
   : APP_MODE === 'basic' ? 'LOCK IN · BASIC'
+  : APP_MODE === 'intro' ? 'LOCK IN · INTRO'
   : 'LOCK IN'

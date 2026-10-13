@@ -3,6 +3,7 @@ import { supabase } from './supabase.js'
 import { useAuth } from './auth.jsx'
 import { APP_TITLE } from './env.js'
 import { useSound } from './sfx.jsx'
+import { useToast } from './toast.jsx'
 
 const PomodoroContext = createContext(null)
 export const usePomodoro = () => useContext(PomodoroContext)
@@ -16,6 +17,8 @@ export const mmss = ms => {
 export function PomodoroProvider({ children }) {
   const { user } = useAuth()
   const { play } = useSound()
+  const toast = useToast()
+  const [finished, setFinished] = useState(null)   // set when a focus round has just ended: { minutes }
   const [focusMin, setFocusMin] = useState(25)
   const [breakMin, setBreakMin] = useState(5)
   const [mode, setMode] = useState('focus')
@@ -50,9 +53,23 @@ export function PomodoroProvider({ children }) {
     const id = setInterval(() => {
       const l = endAt - Date.now()
       if (l > 0) return setLeft(l)
-      if (mode === 'focus') log(focusMin)
-      play('complete')
-      switchMode(mode === 'focus' ? 'break' : 'focus')
+      if (mode === 'focus') {
+        // A focus round is done: celebrate, and tell them to start the break themselves.
+        log(focusMin)
+        play('celebrate', { volume: .8 })
+        setFinished({ minutes: focusMin })
+        toast(`🎉 Focus session done! Press Start when you're ready for your ${breakMin} min break.`, 'level', { silent: true })
+        try {
+          if (document.visibilityState !== 'visible' && 'Notification' in window && Notification.permission === 'granted') {
+            new Notification('Focus session done 🎉', { body: 'Press Start to begin your break.', tag: 'lock-in-timer' })
+          }
+        } catch { /* notifications blocked: fine */ }
+        switchMode('break')
+      } else {
+        play('complete')
+        toast("Break's over. Ready for another focus session?", 'info', { silent: true })
+        switchMode('focus')
+      }
     }, 250)
     return () => clearInterval(id)
   }, [running, endAt, mode, focusMin, breakMin]) // eslint-disable-line
@@ -64,6 +81,7 @@ export function PomodoroProvider({ children }) {
   function startPause() {
     if (running) { play('stop'); return setRunning(false) }
     play('start')
+    setFinished(null)
     setMsg('')
     setEndAt(Date.now() + left)
     setRunning(true)
@@ -77,7 +95,7 @@ export function PomodoroProvider({ children }) {
 
   const value = {
     focusMin, setFocusMin, breakMin, setBreakMin, mode, switchMode, running, left, total,
-    elapsedMin, msg, logged, startPause, finishEarly,
+    elapsedMin, msg, logged, startPause, finishEarly, finished, clearFinished: () => setFinished(null),
   }
   return <PomodoroContext.Provider value={value}>{children}</PomodoroContext.Provider>
 }

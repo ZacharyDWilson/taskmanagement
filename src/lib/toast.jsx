@@ -9,8 +9,8 @@ export function ToastProvider({ children }) {
   const [items, setItems] = useState([])
   const { play } = useSound()
 
-  const toast = useCallback((message, kind = 'info') => {
-    play(kind === 'level' ? 'success' : kind === 'xp' ? 'check' : 'info')
+  const toast = useCallback((message, kind = 'info', options = {}) => {
+    if (!options.silent) play(kind === 'level' ? 'success' : kind === 'xp' ? 'check' : 'info')
     const id = `${Date.now()}-${Math.random()}`
     setItems(list => [...list, { id, message, kind }])
     setTimeout(() => setItems(list => list.filter(t => t.id !== id)), kind === 'level' ? 6000 : 4000)

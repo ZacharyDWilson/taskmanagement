@@ -8,4 +8,4 @@ export const CUSTOM_SFX = Object.fromEntries(
 export const HAS_CUSTOM_SFX = Object.keys(CUSTOM_SFX).length > 0
 
 // The moments the app plays sounds for. Name your files after these.
-export const SFX_CUES = ['loading', 'intro', 'press', 'open', 'close', 'check', 'uncheck', 'success', 'info', 'notification', 'start', 'stop', 'complete']
+export const SFX_CUES = ['loading', 'intro', 'celebrate', 'press', 'open', 'close', 'check', 'uncheck', 'success', 'info', 'notification', 'start', 'stop', 'complete']

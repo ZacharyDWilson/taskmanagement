@@ -56,10 +56,17 @@ export default function Study() {
           <button className={p.mode === 'focus' ? 'active' : ''} onClick={() => p.switchMode('focus')}>Focus</button>
           <button className={p.mode === 'break' ? 'active' : ''} onClick={() => p.switchMode('break')}>Break</button>
         </div>
+        {p.finished && (
+          <div className="celebrate" role="status">
+            <span className="confetti" aria-hidden="true">{Array.from({ length: 14 }, (_, i) => <i key={i} style={{ '--i': i }} />)}</span>
+            <strong>🎉 Focus session complete!</strong>
+            <span>{p.finished.minutes} min logged. Press <b>Start</b> to begin your {p.breakMin} min break.</span>
+          </div>
+        )}
         <TimerFace styleId={timerStyle.current.id} left={p.left} total={p.total} mode={p.mode} running={p.running} />
         <div className="row">
-          <button onClick={p.startPause}>{p.running ? 'Pause' : p.left < p.total ? 'Resume' : 'Start'}</button>
-          <button className="secondary" onClick={() => p.switchMode(p.mode)}>Reset</button>
+          <button className={p.finished && !p.running ? 'pulse-cta' : ''} onClick={p.startPause}>{p.running ? 'Pause' : p.left < p.total ? 'Resume' : p.finished ? 'Start break' : 'Start'}</button>
+          <button className="secondary" onClick={() => { p.clearFinished(); p.switchMode(p.mode) }}>Reset</button>
           {p.mode === 'focus' && p.elapsedMin >= 1 && (
             <button className="secondary" onClick={p.finishEarly}>Finish &amp; log {p.elapsedMin}m</button>
           )}

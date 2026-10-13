@@ -264,7 +264,7 @@ export default function Profile() {
           {picker === 'theme' && (
             <PickerModal title="Page theme" hint="Changes how the whole site looks for you." onClose={() => setPicker(null)}>
               <div className="themes">
-                {THEMES.filter(t => t.id === 'default' || shop.owned.has(t.id)).map(t => (
+                {THEMES.filter(t => t.id === 'default' || t.id === 'dark' || shop.owned.has(t.id)).map(t => (
                   <button key={t.id} type="button" data-t={t.id} className={'theme-opt' + (theme === t.id ? ' on' : '')}
                     onClick={() => { setTheme(t.id); setPicker(null) }} aria-pressed={theme === t.id}>
                     <span className="theme-swatch" aria-hidden="true">

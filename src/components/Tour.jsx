@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { createPortal } from 'react-dom'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../lib/auth.jsx'
+import { useShop } from '../lib/shop.jsx'
 import Icon from './Icon.jsx'
 
 // A short, hands-on welcome tour for brand-new accounts. It walks through the real pages, spotlighting
@@ -38,8 +39,11 @@ export const replayTour = () => window.dispatchEvent(new Event('lock-in:tour'))
 
 const PAD = 8
 
-export default function Tour() {
-  const { user } = useAuth()
+export default function Tour({ preview = false }) {
+  const auth = useAuth()
+  const shop = useShop()
+  // the intro build runs the tour with no account at all
+  const user = preview ? { id: 'preview', created_at: new Date().toISOString() } : auth.user
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [open, setOpen] = useState(false)
@@ -50,10 +54,11 @@ export default function Tour() {
 
   // Brand-new accounts: show once, during the first week.
   useEffect(() => {
-    if (!user) return
+    if (!user || preview) return
+    if (!shop.starterChosen) return          // pick Light or Dark first, then the tour
     const ageDays = (Date.now() - new Date(user.created_at ?? 0).getTime()) / 86400000
     if (!seen(user.id) && ageDays < 7) { setI(0); setOpen(true) }
-  }, [user?.id]) // eslint-disable-line
+  }, [user?.id, shop.starterChosen]) // eslint-disable-line
 
   useEffect(() => {
     const again = () => { setI(0); setOpen(true) }
@@ -98,7 +103,7 @@ export default function Tour() {
 
   if (!open || !user) return null
   const last = i === STEPS.length - 1
-  const close = () => { markSeen(user.id); setOpen(false) }
+  const close = () => { if (!preview) markSeen(user.id); setOpen(false) }
   const go = n => setI(Math.max(0, Math.min(STEPS.length - 1, n)))
 
   const vw = window.innerWidth, vh = window.innerHeight

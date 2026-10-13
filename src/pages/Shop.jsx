@@ -62,28 +62,6 @@ export default function Shop() {
         </div>
       </header>
 
-      {!starterChosen && themes.length > 0 && (
-        <section className="card">
-          <h2>Pick your free starter theme</h2>
-          <p className="muted">Choose one to keep for free. You can buy the rest with coins later.</p>
-          <div className="themes">
-            {themes.map(item => {
-              const t = themeById[item.id]
-              return (
-                <div key={item.id} className="theme-opt shop-card">
-                  <Swatch colors={t.preview} />
-                  <strong>{item.name}</strong>
-                  <small>{t.blurb}</small>
-                  <button onClick={() => pickStarter(item.id)} disabled={!!busy}>
-                    {busy === item.id ? 'Choosing…' : 'Choose this one'}
-                  </button>
-                </div>
-              )
-            })}
-          </div>
-        </section>
-      )}
-
       <section className="card">
         <h2>Themes</h2>
         <div className="themes">
@@ -94,6 +72,15 @@ export default function Shop() {
             {theme === 'default'
               ? <span className="owned">✓ Equipped</span>
               : <button className="secondary" onClick={() => setTheme('default')}>Equip</button>}
+          </div>
+
+          <div className={'theme-opt shop-card' + (theme === 'dark' ? ' on' : '')} data-t="dark">
+            <Swatch colors={themeById.dark.preview} />
+            <strong>Classic Dark</strong>
+            <small>{themeById.dark.blurb}</small>
+            {theme === 'dark'
+              ? <span className="owned">✓ Equipped</span>
+              : <button className="secondary" onClick={() => setTheme('dark')}>Equip</button>}
           </div>
 
           {themes.map(item => {

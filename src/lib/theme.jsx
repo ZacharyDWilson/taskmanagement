@@ -9,6 +9,8 @@ import { IS_ADMIN } from './env.js'
 export const THEMES = [
   { id: 'default', name: 'Classic', blurb: 'Airy whites and sky blue, with soft light drifting by.',
     preview: ['#f4f8fc', '#dfeaf5', '#bfe3ff', '#2d8fe6', '#1f2d3d'] },
+  { id: 'dark', name: 'Classic Dark', blurb: 'The classic look in deep navy, easy on the eyes at night.',
+    preview: ['#0c1428', '#16243f', '#25395f', '#5aa9ff', '#e8eefc'] },
   { id: 'sprout', name: 'Sprout Squad', blurb: 'Olive leaves, cream and warm amber, with pollen floating up.',
     preview: ['#606c38', '#283618', '#fefae0', '#dda15e', '#bc6c25'] },
   { id: 'console', name: 'Retro Console', blurb: 'Mint, steel blue and a pop of red over sliding stripes and tiles.',

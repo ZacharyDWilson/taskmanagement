@@ -7,6 +7,7 @@
     "dev": "vite --mode basic --port 5173 --strictPort",
     "dev:basic": "vite --mode basic --port 5173 --strictPort",
     "dev:admin": "vite --mode admin --port 5174 --strictPort",
+    "dev:intro": "vite --mode intro --port 5175 --strictPort",
     "dev:both": "node scripts/dev-both.mjs",
     "build": "vite build",
     "preview": "vite preview"

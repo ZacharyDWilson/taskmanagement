@@ -8,6 +8,7 @@ import { CUSTOM_SFX, HAS_CUSTOM_SFX } from './customSfx.js'
 export const SOUND_PACKS = {
   // Polished, short menu clicks (think a console's system menu): crisp and dry, never bleepy.
   default: 'minimal',
+  dark: 'minimal',
   console: 'minimal',
   capsule: 'minimal',
   arcade: 'studio',     // deliberately NOT the chiptune pack
@@ -77,7 +78,7 @@ export function SoundProvider({ children }) {
         a.play().catch(() => {})
         return { stop: () => a.pause() }
       }
-      const name = cue === 'intro' ? 'start' : cue
+      const name = cue === 'intro' ? 'start' : cue === 'celebrate' ? 'achievement' : cue
       // The built-in cues are mixed very low; lift each one so the default is comfortably audible.
       const base = getCue(name)?.defaultVolume ?? .2
       return player.current?.play(name, { volume: Math.min(1, base * 2.6), ...options }) ?? null
