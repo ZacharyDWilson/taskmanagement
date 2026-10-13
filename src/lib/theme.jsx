@@ -23,6 +23,10 @@ export const THEMES = [
     preview: ['#22223b', '#4a4e69', '#9a8c98', '#c9ada7', '#f2e9e4'] },
   { id: 'lofi', name: 'Lofi Nights', blurb: 'Purple, coral and pink over a rainy dusk skyline, with notes drifting up.',
     preview: ['#a83aa0', '#ff7078', '#fdb1d2', '#cd98d3', '#8d88d8'] },
+  { id: 'shore', name: 'Coral Shore', blurb: 'Coral sunset, warm sand and seafoam waves rolling in.',
+    preview: ['#ffaea0', '#ffebd2', '#9bcbc0', '#6ba3c8', '#2f5f7d'] },
+  { id: 'twilight', name: 'Twilight Sky', blurb: 'Blush clouds and a crescent moon over indigo mountains and stars.',
+    preview: ['#fff1f1', '#a9b4dc', '#7885c6', '#2c3470', '#161b45'] },
 ]
 
 const KEY = 'friends-site-theme'

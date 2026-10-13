@@ -6,6 +6,7 @@ import { AuthProvider } from './lib/auth.jsx'
 import { ThemeProvider } from './lib/theme.jsx'
 import { SoundProvider } from './lib/sfx.jsx'
 import { ToastProvider } from './lib/toast.jsx'
+import { MusicProvider } from './lib/music.jsx'
 import { PomodoroProvider } from './lib/pomodoro.jsx'
 import { XpProvider } from './lib/xp.jsx'
 import { ShopProvider } from './lib/shop.jsx'
@@ -31,13 +32,15 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <SoundProvider>
             <ToastProvider>
               <PomodoroProvider>
-                <XpProvider>
-                  <ShopProvider>
-                    <NotifyProvider>
-                      <App />
-                    </NotifyProvider>
-                  </ShopProvider>
-                </XpProvider>
+                <MusicProvider>
+                  <XpProvider>
+                    <ShopProvider>
+                      <NotifyProvider>
+                        <App />
+                      </NotifyProvider>
+                    </ShopProvider>
+                  </XpProvider>
+                </MusicProvider>
               </PomodoroProvider>
             </ToastProvider>
           </SoundProvider>

@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { useSound } from '../lib/sfx.jsx'
-import { CUSTOM_SFX } from '../lib/customSfx.js'
+import { useMusic } from '../lib/music.jsx'
+import { usernameProblem } from '../lib/username.js'
+import { COLLEGES, collegeFromEmail } from '../lib/colleges.js'
 
 // ---- The welcome splash ------------------------------------------------------------------------
 // A little world of friends: a slowly turning globe, with faces and local times around it.
@@ -27,7 +29,7 @@ const alreadySeen = () => { try { return sessionStorage.getItem(SEEN) === '1' } 
 function Splash({ onDone }) {
   const sound = useSound()
   const { play } = sound
-  const audioStop = useRef(null)
+  const music = useMusic()
   const [now, setNow] = useState(() => new Date())
   const [leaving, setLeaving] = useState(false)
 
@@ -39,7 +41,7 @@ function Splash({ onDone }) {
   const enter = () => {
     if (leaving) return
     setLeaving(true)
-    audioStop.current?.()
+    music.setPhase('quiet')
     play('intro')
     setTimeout(onDone, 750)
   }
@@ -51,23 +53,10 @@ function Splash({ onDone }) {
     return () => { clearTimeout(t); window.removeEventListener('keydown', key) }
   }, []) // eslint-disable-line
 
-  // Optional loading music: put loading.mp3 (or .wav/.ogg) in src/assets/sfx/. It loops quietly and fades out on entry.
+  // The background music is a little louder on the splash, then settles to a quiet bed once you're past it.
   useEffect(() => {
-    const url = CUSTOM_SFX.loading
-    if (!url || !sound.enabled) return
-    const a = new Audio(url)
-    a.loop = true
-    a.volume = Math.min(1, sound.volume * .8)
-    const start = () => a.play().catch(() => {})
-    start()
-    window.addEventListener('pointerdown', start, { once: true })
-    window.addEventListener('keydown', start, { once: true })
-    let fade
-    const stop = () => {
-      fade = setInterval(() => { a.volume = Math.max(0, a.volume - .08); if (a.volume <= 0) { clearInterval(fade); a.pause() } }, 60)
-    }
-    audioStop.current = stop
-    return () => { window.removeEventListener('pointerdown', start); window.removeEventListener('keydown', start); clearInterval(fade); a.pause() }
+    music.setPhase('splash')
+    return () => music.setPhase('quiet')
   }, []) // eslint-disable-line
 
   const stars = useMemo(() => Array.from({ length: 9 }, (_, i) => ({
@@ -105,7 +94,10 @@ function Splash({ onDone }) {
 }
 
 export default function Login({ preview = false }) {
-  const [name, setName] = useState('')
+  const [name, setName] = useState('')          // display name
+  const [username, setUsername] = useState('')  // first and last name
+  const [college, setCollege] = useState('')
+  const [collegeTouched, setCollegeTouched] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [inviteCode, setInviteCode] = useState('')
@@ -127,10 +119,15 @@ export default function Login({ preview = false }) {
       if (error) return setMsg(error.message)
       navigate('/')
     } else {
+      const problem = usernameProblem(username)
+      if (problem) return setMsg(problem)
+      if (!college.trim()) return setMsg('Tell us which college you are from.')
+      const free = await supabase.rpc('username_available', { name: username.trim() })
+      if (free.data === false) return setMsg('That username is already taken. Add a number or a middle initial.')
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { display_name: name.trim(), invite_code: inviteCode.trim() } },
+        options: { data: { display_name: name.trim(), username: username.trim(), college: college.trim(), invite_code: inviteCode.trim() } },
       })
       if (error) {
         // The database rejects bad codes, which Supabase reports as a generic "Database error".
@@ -150,10 +147,37 @@ export default function Login({ preview = false }) {
         <div className="login-brand">LOCK IN</div>
         <h1>{mode === 'login' ? 'Log in' : 'Join the group'}</h1>
         {mode === 'signup' && (
-          <input placeholder="Display name" value={name} maxLength={40}
-            onChange={e => setName(e.target.value)} required />
+          <>
+            <label>Your name
+              <input placeholder="First and last name, e.g. Jane Doe" value={username} maxLength={40} autoComplete="name"
+                onChange={e => setUsername(e.target.value)} required />
+              <small className="muted">This is your username. Use your real first and last name: Jane Doe, jane.doe or JaneDoe.</small>
+            </label>
+            <label>Display name
+              <input placeholder="What should we call you?" value={name} maxLength={40}
+                onChange={e => setName(e.target.value)} required />
+              <small className="muted">Shown around the app. It can be anything you like.</small>
+            </label>
+          </>
         )}
-        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
+        <input type="email" placeholder="Email" value={email} required
+          onChange={e => {
+            setEmail(e.target.value)
+            // A school email fills in the college for you (until you type your own).
+            if (mode === 'signup' && !collegeTouched) setCollege(collegeFromEmail(e.target.value))
+          }} />
+        {mode === 'signup' && (
+          <label>College
+            <input list="college-list" placeholder="Start typing your college" value={college} maxLength={80}
+              onChange={e => { setCollege(e.target.value); setCollegeTouched(true) }} required />
+            <datalist id="college-list">{COLLEGES.map(c => <option key={c} value={c} />)}</datalist>
+            <small className="muted">
+              {collegeFromEmail(email) && college === collegeFromEmail(email)
+                ? 'Picked from your school email. Change it if that is wrong.'
+                : 'Friends will see this on your profile. A .edu email fills it in for you.'}
+            </small>
+          </label>
+        )}
         <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}
           required minLength={6} />
         {mode === 'signup' && (

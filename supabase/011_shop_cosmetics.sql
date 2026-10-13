@@ -6,7 +6,7 @@
 
 alter table public.shop_items drop constraint if exists shop_items_kind_check;
 alter table public.shop_items
-  add constraint shop_items_kind_check check (kind in ('theme', 'banner', 'frame'));
+  add constraint shop_items_kind_check check (kind in ('theme', 'banner', 'frame', 'timer'));
 
 -- min_level 9999 = "never by level"; only a purchase unlocks these.
 insert into public.cosmetics (id, kind, name, min_level) values
@@ -52,9 +52,11 @@ end $$;
 -- Lofi Nights theme (the profile.theme check needs to know about it)
 alter table public.profiles drop constraint if exists profiles_theme_check;
 alter table public.profiles add constraint profiles_theme_check
-  check (theme in ('default', 'sprout', 'console', 'capsule', 'meadow', 'island', 'arcade', 'lofi'));
+  check (theme in ('default', 'sprout', 'console', 'capsule', 'meadow', 'island', 'arcade', 'lofi', 'shore', 'twilight'));
 insert into public.shop_items (id, kind, name, price, sort) values
-  ('lofi', 'theme', 'Lofi Nights', 300, 7)
+  ('lofi', 'theme', 'Lofi Nights', 300, 7),
+  ('shore', 'theme', 'Coral Shore', 300, 8),
+  ('twilight', 'theme', 'Twilight Sky', 300, 9)
 on conflict (id) do nothing;
 
 -- Keep-alive: a tiny function the scheduled GitHub job calls so the free project never goes idle.

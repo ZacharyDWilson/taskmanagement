@@ -49,7 +49,7 @@ export default function App() {
   const [pressed, setPressed] = useState(null) // tab being pressed right now (moves the liquid blob at once)
 
   // Overview fits the window with no page scrolling; To Do gets extra width for its day columns.
-  const pageClass = 'page' + (pathname === '/' || pathname === '/study' ? ' wide fit' : pathname === '/todo' ? ' wide stretch' : '')
+  const pageClass = 'page' + (pathname === '/' || pathname === '/study' || pathname.startsWith('/profile') ? ' wide fit' : pathname === '/todo' ? ' wide stretch' : '')
 
   // Your own photo/frame for the "Me" button. Re-check on page change so it updates after you edit it.
   useEffect(() => {

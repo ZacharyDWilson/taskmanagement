@@ -1274,3 +1274,299 @@ input[type='file']::file-selector-button:hover { filter: brightness(1.08); }
 }
 
 .splash .globe-wrap { margin-top: 7vh; }
+
+.profile-username { color: var(--muted); font-weight: 600; margin: 0 0 .1rem !important; }
+
+/* ---- Sprout Squad, earthier: morning sky, rolling hills, soil, saplings and grass --------------------- */
+:root[data-theme='sprout'] .scene {
+  background:
+    radial-gradient(circle at 82% 14%, rgba(255, 236, 170, .95) 0 5vmax, rgba(255, 226, 150, .35) 9vmax, transparent 22vmax),
+    linear-gradient(180deg, #cfe3cf 0%, #e6edcc 38%, #fefae0 70%, #f4e6bd 100%);
+}
+:root[data-theme='sprout'] .scene .g1 { width: 70vmax; height: 40vmax; left: -22vmax; bottom: -20vmax; background: radial-gradient(ellipse, rgba(96, 108, 56, .35), transparent 68%); }
+:root[data-theme='sprout'] .scene .g2 { width: 46vmax; height: 46vmax; right: -12vmax; top: -22vmax; background: radial-gradient(circle, rgba(255, 224, 140, .55), transparent 66%); }
+
+:root[data-theme='sprout'] .scene::before {        /* hills, soil, a sapling and a young tree, grass tufts, sprouts */
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: min(48vh, 56vw); min-height: 240px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 420' preserveAspectRatio='xMidYMax slice'><defs><g id='t'><path d='M0 0 q-3-20-9-26 q7 7 9 26 q2-22 11-30 q-5 12-5 30 q3-16 12-20 q-7 8-8 20z' fill='%233c4a1e'/></g><g id='s'><path d='M0 0 V-24' stroke='%23283618' stroke-width='3' stroke-linecap='round'/><ellipse cx='-9' cy='-27' rx='10' ry='5' transform='rotate(-28 -9 -27)' fill='%234f6a2a'/><ellipse cx='9' cy='-30' rx='10' ry='5' transform='rotate(28 9 -30)' fill='%23607a30'/></g><g id='f'><path d='M0 0 V-16' stroke='%23283618' stroke-width='2'/><circle cx='0' cy='-18' r='4.5' fill='%23fefae0'/><circle cx='0' cy='-18' r='1.8' fill='%23dda15e'/></g></defs><path d='M0 250C150 190 300 230 450 215S760 140 900 180 1120 190 1200 205V420H0Z' fill='%23b9c48a' opacity='.7'/><path d='M0 292C140 250 260 302 420 272S700 285 860 262 1100 270 1200 256V420H0Z' fill='%238d9b57'/><path d='M0 336C180 300 330 346 520 322S860 346 1040 318 1170 322 1200 316V420H0Z' fill='%23606c38'/><path d='M0 372C200 354 400 382 600 368S1000 380 1200 362V420H0Z' fill='%23bc6c25'/><path d='M0 398C300 388 800 404 1200 392V420H0Z' fill='%236e3f17' opacity='.65'/><g fill='%23dda15e' opacity='.55'><circle cx='90' cy='392' r='3'/><circle cx='240' cy='404' r='2.5'/><circle cx='430' cy='396' r='3'/><circle cx='700' cy='402' r='2.5'/><circle cx='930' cy='394' r='3'/><circle cx='1110' cy='404' r='2.5'/></g><rect x='326' y='296' width='8' height='76' rx='3' fill='%236b4a2b'/><circle cx='330' cy='288' r='34' fill='%23606c38'/><circle cx='308' cy='300' r='24' fill='%234f5f2a'/><circle cx='354' cy='302' r='25' fill='%236f7d3f'/><rect x='954' y='268' width='12' height='104' rx='4' fill='%236b4a2b'/><circle cx='960' cy='250' r='48' fill='%23566a2c'/><circle cx='926' cy='274' r='34' fill='%234a5c26'/><circle cx='996' cy='276' r='35' fill='%23687a37'/><use href='%23t' x='40' y='374'/><use href='%23t' x='150' y='368'/><use href='%23t' x='255' y='372'/><use href='%23t' x='470' y='366'/><use href='%23t' x='590' y='372'/><use href='%23t' x='700' y='368'/><use href='%23t' x='790' y='372'/><use href='%23t' x='1080' y='366'/><use href='%23t' x='1160' y='370'/><use href='%23s' x='190' y='376'/><use href='%23s' x='520' y='370'/><use href='%23s' x='840' y='376'/><use href='%23s' x='1030' y='368'/><use href='%23f' x='100' y='372'/><use href='%23f' x='410' y='368'/><use href='%23f' x='640' y='374'/><use href='%23f' x='1120' y='368'/></svg>") center bottom / cover no-repeat;
+  transform-origin: 50% 100%; animation: ground-sway 9s ease-in-out infinite alternate;
+}
+:root[data-theme='sprout'] .scene::after {          /* slow clouds across the upper sky */
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 42vh; opacity: .9;
+  background-image:
+    radial-gradient(ellipse 120px 26px at 140px 70px, rgba(255, 255, 255, .85), transparent 72%),
+    radial-gradient(ellipse 80px 20px at 190px 56px, rgba(255, 255, 255, .8), transparent 72%),
+    radial-gradient(ellipse 150px 30px at 560px 130px, rgba(255, 255, 255, .7), transparent 72%),
+    radial-gradient(ellipse 90px 22px at 620px 112px, rgba(255, 255, 255, .7), transparent 72%),
+    radial-gradient(ellipse 110px 24px at 860px 50px, rgba(255, 255, 255, .75), transparent 72%);
+  background-size: 1000px 220px; background-repeat: repeat-x;
+  animation: cloud-drift 120s linear infinite;
+}
+@keyframes cloud-drift { to { background-position: 1000px 0; } }
+@keyframes ground-sway { from { transform: rotate(-.15deg) scaleX(1); } to { transform: rotate(.2deg) scaleX(1.005); } }
+@keyframes seed-drift { 0% { translate: 0 0; opacity: 0; } 10% { opacity: .9; } 90% { opacity: .9; } 100% { translate: 36vw -14vh; opacity: 0; } }
+
+/* the old petal-like leaves are gone; what floats now is pollen and the occasional dandelion seed */
+:root[data-theme='sprout'] .scene span:nth-of-type(3n) {
+  width: calc(4px + var(--i) * .5px); height: calc(4px + var(--i) * .5px); aspect-ratio: auto; border-radius: 50%;
+  background: radial-gradient(circle, #fffef6 0 30%, rgba(255, 255, 255, .35) 55%, transparent 72%);
+  bottom: auto; top: calc(30% + var(--i) * 3.2%); left: calc(var(--i) * 3% - 4%);
+  animation: seed-drift calc(22s + var(--i) * 1.4s) linear infinite; animation-delay: calc(var(--i) * -3.3s);
+}
+:root[data-theme='sprout'] .scene span:nth-of-type(n + 9) { display: none; }
+@media (prefers-reduced-motion: reduce) { :root[data-theme='sprout'] .scene::after, :root[data-theme='sprout'] .scene::before { animation: none; } }
+
+/* ---- My Profile fits the window: stats | posts | edit tabs (no page scrolling) ------------------------- */
+.profile-fit.solo { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.profile-fit .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .6rem; }
+.profile-fit .tile { padding: .6rem .7rem; }
+.profile-fit .tile strong { font-size: 1.1rem; }
+.profile-fit .post-list { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .8rem; align-content: start; }
+.profile-fit .banner { height: 96px; }
+.profile-fit .profile-id { margin-top: -34px; }
+.profile-fit form.card .tabs { align-self: flex-start; }
+.profile-fit form.card textarea { min-height: 4.5rem; }
+@media (max-width: 1000px) { .profile-fit .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .profile-fit.solo { grid-template-columns: minmax(0, 1fr); } }
+
+/* tighten My Profile so every column fits one screen */
+.profile-fit .profile-head { flex: none; }
+.profile-fit .tiles { flex: none; }
+.profile-fit > .col > .card:not(.fill) { flex: none; }
+.profile-fit .banner { height: 76px; }
+.profile-fit .profile-head > :last-child { margin-bottom: .8rem; }
+.profile-fit .profile-id { margin-bottom: .5rem; }
+.profile-fit .profile-id > div:not(.avatar) { padding-top: calc(34px + .5rem); }
+.profile-fit .profile-id .shop-link { margin-top: calc(34px + .4rem); }
+.profile-fit .profile-id h1 { font-size: 1.3rem; margin: 0; }
+.profile-fit .profile-id p { margin: 0; font-size: .9rem; }
+.profile-fit .daybar-track { height: 56px; }
+.profile-fit .card h2 { margin-bottom: .5rem; }
+.profile-fit form.card { gap: .55rem; }
+.profile-fit form.card label { font-size: .9rem; }
+.profile-fit form.card .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem .7rem; }
+.profile-fit form.card textarea { min-height: 3.2rem; }
+.profile-fit form.card small { font-size: .75rem; }
+@media (max-height: 760px) { .profile-fit .banner { height: 60px; } .profile-fit .tile { padding: .4rem .6rem; } }
+
+/* =====================================================================
+   Shapes. Not everything is a rectangle: circles and pills where they fit, and each theme gets its own
+   corner language. Everything reads from these tokens, so a theme only has to set them.
+   ===================================================================== */
+:root {
+  --card-shape: var(--r);                 /* big panels */
+  --tile-shape: var(--r-sm);              /* stat tiles, post tiles */
+  --btn-shape: 999px;                     /* buttons and chips: pills */
+  --field-shape: 999px;                   /* single-line inputs: pills */
+  --dock-shape: 16px;                     /* the side dock's icon tiles */
+}
+:root[data-theme='sprout']  { --card-shape: 34px 8px 34px 8px; --tile-shape: 26px 6px 26px 6px; --dock-shape: 20px 5px 20px 5px; }  /* leaves */
+:root[data-theme='capsule'] { --card-shape: 44px; --tile-shape: 999px; --dock-shape: 50%; }                                          /* capsules */
+:root[data-theme='island']  { --card-shape: 34px 34px 34px 10px; --tile-shape: 28px 28px 28px 8px; --dock-shape: 50%; }              /* speech bubbles */
+:root[data-theme='meadow']  { --card-shape: 44px 44px 12px 12px; --tile-shape: 30px 30px 10px 10px; --dock-shape: 18px 18px 8px 8px; } /* stone arches */
+:root[data-theme='lofi']    { --card-shape: 30px 30px 8px 30px; --tile-shape: 22px 22px 6px 22px; --dock-shape: 50%; }              /* tape-label corners */
+:root[data-theme='console'] { --card-shape: 16px; --tile-shape: 12px; --btn-shape: 12px; --field-shape: 10px; --dock-shape: 12px; }  /* console tiles: squarer */
+:root[data-theme='arcade']  { --card-shape: 4px; --tile-shape: 3px; --btn-shape: 4px; --field-shape: 4px; --dock-shape: 3px; }       /* pixels */
+
+.card, .profile-head, .tabbar-card { border-radius: var(--card-shape); }
+.tile, .post-tile, .buddy, .due-item, .customize-row { border-radius: var(--tile-shape); }
+.dock a { border-radius: var(--dock-shape); }
+
+/* buttons and chips become pills (cards-in-a-button controls keep their own shape) */
+button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.picker-close) { border-radius: var(--btn-shape); }
+.chip, .tabs button { border-radius: var(--btn-shape); }
+input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='range']):not([type='color']), select {
+  border-radius: var(--field-shape); padding-inline: 1.05rem;
+}
+textarea { border-radius: calc(var(--r) * .8); }
+
+/* My Profile: round, friendly numbers */
+.profile-fit .tile { text-align: center; padding: .55rem 1rem; }
+.profile-fit .tiles { gap: .5rem; }
+.daybar-track, .daybar-fill { border-radius: 999px; }
+.level-badge { border-radius: 999px; }
+.profile-head .avatar { box-shadow: 0 0 0 5px var(--glass-strong), 0 8px 20px rgba(0, 0, 0, .2); }
+.profile-fit form.card { overflow-x: hidden; }
+.profile-fit form.card .details-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.profile-fit form.card .details-grid label { min-width: 0; }
+.profile-fit form.card input[type='file'] { padding: .35rem; font-size: .8rem; }
+.profile-fit form.card input[type='file']::file-selector-button { padding: .35rem .7rem; margin-right: .5rem; }
+
+/* ---- Fix: the profile header's banner must sit flush against the card's edge ----------------------- */
+.overview .profile-head, .profile-fit .profile-head { padding: 0; overflow: hidden; }
+.profile-id .shop-link button { white-space: nowrap; align-items: center; }
+.profile-id .shop-link small { white-space: nowrap; }
+
+/* =====================================================================
+   Buttons take on each theme's personality. (Cards-in-a-button controls keep their own shape.)
+   ===================================================================== */
+:root[data-theme='sprout'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip),
+:root[data-theme='sprout'] .tabs button {
+  border-radius: 22px 4px 22px 4px;                       /* a leaf */
+  border: 1px solid color-mix(in srgb, #283618 45%, transparent);
+  position: relative;
+}
+:root[data-theme='sprout'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip):not(.secondary)::before {
+  content: ''; position: absolute; left: 14px; right: 14px; top: 50%; height: 1px; background: rgba(254, 250, 224, .35);   /* the leaf's midrib */
+  transform: translateY(-50%) rotate(-3deg); pointer-events: none;
+}
+
+:root[data-theme='console'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip),
+:root[data-theme='console'] .tabs button {
+  border-radius: 2px;                                     /* an old desktop push-button: bevelled, then sunken when pressed */
+  border: 2px solid; border-color: #ffffff #1d3557 #1d3557 #ffffff;
+  box-shadow: inset -1px -1px 0 #457b9d, inset 1px 1px 0 #f1faee; font-weight: 700;
+}
+:root[data-theme='console'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip):active:not(:disabled) {
+  border-color: #1d3557 #ffffff #ffffff #1d3557; box-shadow: inset 1px 1px 0 #457b9d; translate: 1px 1px; scale: 1;
+}
+:root[data-theme='console'] input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='range']),
+:root[data-theme='console'] select, :root[data-theme='console'] textarea {
+  border-radius: 2px; border: 2px solid; border-color: #1d3557 #ffffff #ffffff #1d3557; box-shadow: inset 1px 1px 0 #457b9d;   /* sunken fields */
+}
+
+:root[data-theme='capsule'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip):not(.secondary) {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .38) 0 46%, rgba(255, 255, 255, 0) 50%);    /* a glossy two-tone capsule */
+  border: 2px solid rgba(0, 48, 73, .55); box-shadow: 0 4px 0 rgba(0, 48, 73, .35);
+}
+:root[data-theme='capsule'] button:active:not(:disabled) { box-shadow: 0 1px 0 rgba(0, 48, 73, .35); translate: 0 3px; }
+
+:root[data-theme='island'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip),
+:root[data-theme='island'] .tabs button {
+  border-radius: 22px 22px 22px 5px;                      /* a speech bubble */
+}
+
+:root[data-theme='meadow'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip),
+:root[data-theme='meadow'] .tabs button {
+  border-radius: 20px 20px 5px 5px;                       /* a small stone arch */
+  border: 1px solid rgba(198, 172, 143, .55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18), 0 2px 0 rgba(0, 0, 0, .35);
+  letter-spacing: .02em;
+}
+
+:root[data-theme='lofi'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip),
+:root[data-theme='lofi'] .tabs button {
+  border-radius: 8px;                                     /* a cassette label with a stitched edge */
+  outline: 1.5px dashed rgba(255, 255, 255, .7); outline-offset: -5px;
+}
+
+:root[data-theme='arcade'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip),
+:root[data-theme='arcade'] .tabs button {
+  border-radius: 0; border: 2px solid #f2e9e4; box-shadow: 4px 4px 0 #0d0d1a;     /* chunky pixel keys that press down */
+  text-transform: uppercase; letter-spacing: .06em; font-weight: 700;
+}
+:root[data-theme='arcade'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip):active:not(:disabled) {
+  box-shadow: 1px 1px 0 #0d0d1a; translate: 3px 3px; scale: 1;
+}
+
+/* ---- Coral Shore: salmon sunset, cream sand, seafoam and steel-blue waves ------------------------------ */
+:root[data-theme='shore'] {
+  --text: #1c3f57; --muted: #46687d; --accent: #2f77a0; --accent-2: #ff8f7e; --on-accent: #ffffff;
+  --glass: rgba(255, 244, 230, .84); --glass-inner: rgba(255, 244, 230, .68); --glass-field: rgba(255, 250, 242, .92);
+  --glass-strong: rgba(255, 246, 235, .97); --glass-line: rgba(255, 255, 255, .85); --glass-shadow: 0 10px 34px rgba(47, 95, 125, .18);
+  --sky-1: #ffd7c9; --sky-2: #9bcbc0;
+  --font: 'Josefin Sans', 'Quicksand', system-ui, sans-serif;
+  --font-head: 'Fredoka', 'Josefin Sans', system-ui, sans-serif; --head-weight: 600;
+  --r: 24px;
+  --card-shape: 40px 18px 40px 18px; --tile-shape: 30px 14px 30px 14px; --dock-shape: 50%;   /* smooth sea-pebbles */
+}
+:root[data-theme='shore'] body { font-size: 1.02rem; }
+:root[data-theme='shore'] .scene {
+  background: linear-gradient(180deg, #ffaea0 0%, #ffc9b6 30%, #ffebd2 56%, #bfe0d6 57%, #6ba3c8 100%);
+}
+:root[data-theme='shore'] .scene .g1 {            /* the low sun's glow on the horizon */
+  width: 60vmax; height: 30vmax; left: 50%; top: 40vh; margin-left: -30vmax; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255, 245, 220, .9), rgba(255, 190, 160, .35) 50%, transparent 70%); animation: drift-a 40s ease-in-out infinite alternate;
+}
+:root[data-theme='shore'] .scene .g2 { width: 40vmax; height: 40vmax; right: -10vmax; top: -16vmax; background: radial-gradient(circle, rgba(255, 255, 255, .55), transparent 66%); }
+:root[data-theme='shore']  .scene::before {       /* two layers of waves sliding in at different speeds */
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 46vh;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 120' preserveAspectRatio='none'><path d='M0 60C75 22 150 22 225 60S375 98 450 60 600 22 600 60V120H0Z' fill='%239bcbc0' opacity='0.9'/></svg>"), url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 120' preserveAspectRatio='none'><path d='M0 60C75 22 150 22 225 60S375 98 450 60 600 22 600 60V120H0Z' fill='%234f89b0' opacity='0.85'/></svg>");
+  background-repeat: repeat-x, repeat-x; background-position: 0 30%, 0 78%; background-size: 700px 38%, 900px 46%;
+  animation: shore-waves 26s linear infinite;
+}
+:root[data-theme='shore'] .scene::after {         /* a strip of warm sand along the bottom edge */
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 15vh;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 90' preserveAspectRatio='none'><path d='M0 40C200 6 400 58 620 30S1000 8 1200 36V90H0Z' fill='%23ffebd2'/><path d='M0 62C260 40 500 76 760 56S1060 44 1200 60V90H0Z' fill='%23ffd9b3' opacity='.8'/><g fill='%23ffaea0'><circle cx='180' cy='64' r='5'/><circle cx='640' cy='70' r='4'/><circle cx='1010' cy='62' r='5'/></g></svg>") center bottom / 100% 100% no-repeat;
+}
+:root[data-theme='shore'] .scene span {           /* sun-glints dancing on the water */
+  left: var(--x); top: calc(60% + var(--i) * 2.3%); width: calc(3px + var(--i) * .5px); height: 2px; aspect-ratio: auto; border-radius: 99px;
+  background: rgba(255, 255, 255, .9); box-shadow: 0 0 8px rgba(255, 255, 255, .8);
+  animation: twinkle calc(2.6s + var(--i) * .3s) ease-in-out infinite; animation-delay: calc(var(--i) * -.8s);
+}
+:root[data-theme='shore'] .scene span:nth-of-type(n + 11) { display: none; }
+@keyframes shore-waves { to { background-position: 700px 30%, -900px 78%; } }
+
+/* buttons: smooth pebbles with a coral highlight */
+:root[data-theme='shore'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip),
+:root[data-theme='shore'] .tabs button {
+  border-radius: 26px 12px 26px 12px;
+}
+:root[data-theme='shore'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip):not(.secondary) {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .22), transparent 60%);
+  box-shadow: 0 4px 0 rgba(28, 63, 87, .28);
+}
+@media (prefers-reduced-motion: reduce) { :root[data-theme='shore'] .scene::before { animation: none; } }
+
+/* ---- Month picker in the planner ------------------------------------------------------------------- */
+.month { display: flex; flex-direction: column; gap: .35rem; }
+.month-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: .3rem; }
+.month-head strong { font-size: 1.05rem; font-family: var(--font-head); }
+.month-days, .month-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .25rem; }
+.month-days span { text-align: center; font-size: .75rem; font-weight: 700; color: var(--muted); letter-spacing: .04em; }
+.month-week {
+  width: 100%; padding: .25rem; text-align: center; background: var(--glass-inner); color: var(--text);
+  border: 1.5px solid transparent; box-shadow: none; font-weight: 500; border-radius: var(--tile-shape, 14px);
+}
+.month-week:hover { border-color: var(--accent); }
+.month-week.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--glass-inner)); }
+.month-day { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: .35rem 0; border-radius: 10px; font-variant-numeric: tabular-nums; }
+.month-day.out { opacity: .38; }
+.month-day.today { background: var(--accent); color: var(--on-accent); font-weight: 700; }
+.month-day i { display: block; min-width: 8px; height: 8px; border-radius: 999px; font-style: normal; font-size: .62rem; line-height: 8px; color: transparent; }
+.month-day i.dot { background: var(--accent-2); color: #fff; min-width: 14px; height: 14px; line-height: 14px; padding: 0 3px; font-weight: 700; }
+.month-day.today i.dot { background: #fff; color: var(--accent); }
+
+/* ---- Twilight Sky: blush, periwinkle, indigo and navy. A night of stars, a crescent moon and mountains ---- */
+:root[data-theme='twilight'] {
+  --text: #232a5c; --muted: #4f5a92; --accent: #5662b4; --accent-2: #8d98d8; --on-accent: #ffffff;
+  --glass: rgba(255, 243, 245, .86); --glass-inner: rgba(255, 243, 245, .7); --glass-field: rgba(255, 250, 251, .93);
+  --glass-strong: rgba(255, 246, 247, .97); --glass-line: rgba(255, 255, 255, .85); --glass-shadow: 0 12px 36px rgba(22, 27, 69, .3);
+  --sky-1: #5d6bb4; --sky-2: #2c3470;
+  --font: 'Nunito', system-ui, sans-serif;
+  --font-head: 'Comfortaa', 'Nunito', system-ui, sans-serif; --head-weight: 700;
+  --r: 26px;
+  --card-shape: 46px 46px 22px 46px; --tile-shape: 32px 32px 14px 32px; --dock-shape: 50%;     /* soft, cloud-like */
+}
+:root[data-theme='twilight'] .scene { background: linear-gradient(180deg, #161b45 0%, #2c3470 26%, #5d6bb4 56%, #a9b4dc 80%, #fff1f1 100%); }
+:root[data-theme='twilight'] .scene::before {       /* three ridges of mountains */
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 40vh;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'><path d='M0 170L110 90 210 150 330 60 450 140 560 80 700 160 830 70 960 140 1080 90 1200 150V300H0Z' fill='%237885c6' opacity='.55'/><path d='M0 230L140 160 260 215 400 140 540 220 680 170 820 230 960 175 1100 225 1200 190V300H0Z' fill='%234a569c' opacity='.85'/><path d='M0 270L180 235 340 268 520 240 700 272 880 242 1040 270 1200 248V300H0Z' fill='%232c3470'/></svg>") center bottom / 100% 100% no-repeat;
+}
+:root[data-theme='twilight'] .scene::after {        /* stars that breathe, fading out toward the horizon */
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 66vh;
+  background-image:
+    radial-gradient(circle 1.4px at 20px 30px, #fff 60%, transparent 70%), radial-gradient(circle 1px at 90px 70px, #fff 60%, transparent 70%),
+    radial-gradient(circle 1.6px at 160px 20px, #fff 60%, transparent 70%), radial-gradient(circle 1px at 230px 110px, #fff 60%, transparent 70%),
+    radial-gradient(circle 1.3px at 60px 150px, #fff 60%, transparent 70%), radial-gradient(circle 1.1px at 190px 190px, #fff 60%, transparent 70%),
+    radial-gradient(circle 1.5px at 280px 60px, #fff 60%, transparent 70%), radial-gradient(circle 1px at 130px 120px, #ffe 60%, transparent 70%);
+  background-size: 320px 220px; -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent); mask-image: linear-gradient(to bottom, #000 40%, transparent);
+  animation: star-breathe 5s ease-in-out infinite alternate;
+}
+@keyframes star-breathe { from { opacity: .35; } to { opacity: 1; } }
+:root[data-theme='twilight'] .scene .g1 {           /* the crescent moon */
+  width: 7vmax; height: 7vmax; right: 12vw; top: 9vh; left: auto; border-radius: 50%; background: transparent;
+  box-shadow: -1.5vmax .3vmax 0 0 #fff1f1; filter: drop-shadow(0 0 1.4vmax rgba(255, 241, 241, .7)); animation: bob 12s ease-in-out infinite alternate;
+}
+:root[data-theme='twilight'] .scene .g2 { width: 80vmax; height: 30vmax; left: 50%; bottom: 8vh; margin-left: -40vmax; background: radial-gradient(ellipse, rgba(255, 215, 225, .55), transparent 68%); }
+:root[data-theme='twilight'] .scene span {          /* soft clouds drifting past */
+  left: var(--x); top: calc(14% + var(--i) * 4.2%); width: calc(12vmax + var(--i) * 1vmax); height: calc(3vmax + var(--i) * .3vmax); aspect-ratio: auto;
+  border-radius: 999px; background: rgba(255, 241, 241, .38); filter: blur(10px);
+  animation: cloud-pass calc(70s + var(--i) * 6s) linear infinite; animation-delay: calc(var(--i) * -17s);
+}
+:root[data-theme='twilight'] .scene span:nth-of-type(n + 7) { display: none; }
+@keyframes cloud-pass { from { translate: -30vw 0; } to { translate: 40vw 0; } }
+:root[data-theme='twilight'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip):not(.secondary) {
+  box-shadow: 0 6px 18px rgba(86, 98, 180, .45), inset 0 1px 0 rgba(255, 255, 255, .35);    /* a soft glow, like a lit window */
+}
+@media (prefers-reduced-motion: reduce) { :root[data-theme='twilight'] .scene::after, :root[data-theme='twilight'] .scene span { animation: none; } }
+:root[data-theme='twilight'] .brand { color: #fff1f1; text-shadow: 0 1px 8px rgba(22, 27, 69, .6); }

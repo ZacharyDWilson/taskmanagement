@@ -9,6 +9,9 @@ import { DEMO, demoProfile, isDemoId } from '../lib/demo.js' // DEMO
 import Avatar from '../components/Avatar.jsx'
 import PickerModal from '../components/PickerModal.jsx'
 import { replayTour } from '../components/Tour.jsx'
+import { useMusic } from '../lib/music.jsx'
+import { usernameProblem } from '../lib/username.js'
+import { COLLEGES } from '../lib/colleges.js'
 import { useSound, PACK_LABELS, SOUND_PACKS, SIGNATURE } from '../lib/sfx.jsx'
 import ColorPicker from '../components/ColorPicker.jsx'
 import LevelCard from '../components/LevelCard.jsx'
@@ -79,6 +82,10 @@ export default function Profile() {
   const level = levelFromXp(xp ?? 0)
   const shopIds = new Set(shop.items.map(i => i.id))
   const sound = useSound()
+  const music = useMusic()
+  const [lockedAtLoad, setLockedAtLoad] = useState(false)     // had a username when the page loaded
+  const lockedUsername = lockedAtLoad && mine
+  const [tab, setTab] = useState('details')   // edit form tab: details | style | sound
   const [picker, setPicker] = useState(null) // which customization pop-up is open: 'theme' | 'frame' | 'banner'
   const currentTheme = THEMES.find(t => t.id === theme) ?? THEMES[0]
 
@@ -89,7 +96,7 @@ export default function Profile() {
     }
     setProfile(null)
     supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
-      .then(({ data }) => setProfile(data ?? false))
+      .then(({ data }) => { setProfile(data ?? false); setLockedAtLoad(!!data?.username) })
     supabase.from('posts').select('id, image_path, body, created_at').eq('user_id', userId)
       .order('created_at', { ascending: false }).limit(30)
       .then(({ data }) => setPosts(data ?? []))
@@ -113,14 +120,20 @@ export default function Profile() {
   async function save(e) {
     e.preventDefault()
     const { display_name, bio, color, avatar_path, frame, banner } = profile
+    const username = (profile.username ?? '').trim()
+    if (username) {
+      const problem = usernameProblem(username)
+      if (problem) return setMsg(problem)
+    }
     const { error } = await supabase.from('profiles')
-      .update({ display_name: display_name.trim() || 'Friend', bio, color, avatar_path, frame, banner })
+      .update({ display_name: display_name.trim() || 'Friend', ...(lockedUsername ? {} : { username: username || null }), college: (profile.college ?? '').trim() || null, bio, color, avatar_path, frame, banner })
       .eq('id', user.id)
     setMsg(error
       ? (IS_ADMIN && /reach level/i.test(error.message)
         ? 'Admin preview only: that style is above your real level, so it was not saved.'
-        : error.message)
+        : error.code === '23505' ? 'That username is already taken. Add a number or a middle initial.' : error.message)
       : 'Saved!')
+    if (!error && username) setLockedAtLoad(true)
   }
 
   async function onAvatar(e) {
@@ -131,7 +144,7 @@ export default function Profile() {
   }
 
   return (
-    <div className={mine ? 'two profile-grid' : 'one'}>
+    <div className={'dash overview profile-fit' + (mine ? '' : ' solo')}>
       <div className="col">
         {/* Who this is */}
         <section className="card profile-head">
@@ -141,6 +154,8 @@ export default function Profile() {
               frame={profile.frame} size={88} />
             <div>
               <h1>{profile.display_name}</h1>
+              {profile.username && <p className="profile-username">@{profile.username}</p>}
+              {profile.college && <p className="profile-username">🎓 {profile.college}</p>}
               <p className="muted">{mine ? 'This is how friends see you' : 'Friend profile'}</p>
             </div>
             {mine && (
@@ -171,11 +186,14 @@ export default function Profile() {
           <DayBars minutes={days} start={startOfWeek()} highlight={todayIdx} />
         </section>
 
+      </div>
+
+      <div className="col">
         {/* Their posts */}
-        <section className="card">
+        <section className="card fill">
           <h2>Posts <small>{posts.length} shared</small></h2>
           {posts.length === 0 && <p className="muted">No posts yet.</p>}
-          <div className="post-list">
+          <div className="post-list scroll">
             {posts.map(p => (
               <article key={p.id} className="post-tile">
                 {(p.image_url || p.image_path) && (
@@ -192,18 +210,42 @@ export default function Profile() {
       {mine && (
         <form className="card stack" onSubmit={save}>
           <h2>Edit your profile</h2>
+          <div className="tabs" role="tablist">
+            {[['details', 'You'], ['style', 'Style'], ['sound', 'Sound']].map(([id, label]) => (
+              <button key={id} type="button" role="tab" aria-selected={tab === id}
+                className={tab === id ? 'active' : ''} onClick={() => setTab(id)}>{label}</button>
+            ))}
+          </div>
+          {tab === 'details' && (<>
+          <div className="details-grid">
           <label>Display name
             <input value={profile.display_name} maxLength={40} onChange={e => edit({ display_name: e.target.value })} />
           </label>
-          <label>Bio
-            <textarea value={profile.bio} maxLength={200} rows={3} onChange={e => edit({ bio: e.target.value })} />
+          <label>Username <span className="muted small">(your first and last name)</span>
+            <input value={profile.username ?? ''} maxLength={40} placeholder="e.g. Jane Doe or jane.doe"
+              readOnly={lockedUsername} disabled={lockedUsername}
+              onChange={e => edit({ username: e.target.value })} />
+            {lockedUsername
+              ? <small className="muted">🔒 Locked. Ask the group admin to change it.</small>
+              : <small className="muted">Set once. Only the group admin can change it after.</small>}
+          </label>
+          <label>College
+            <input list="college-list" value={profile.college ?? ''} maxLength={80} placeholder="Where do you go?"
+              onChange={e => edit({ college: e.target.value })} />
+            <datalist id="college-list">{COLLEGES.map(c => <option key={c} value={c} />)}</datalist>
           </label>
           <label>Profile picture
             <input type="file" accept="image/*" onChange={onAvatar} />
           </label>
+          </div>
+          <label>Bio
+            <textarea value={profile.bio} maxLength={200} rows={3} onChange={e => edit({ bio: e.target.value })} />
+          </label>
           <label>Your color
             <ColorPicker value={profile.color} onChange={color => edit({ color })} />
           </label>
+          </>)}
+          {tab === 'style' && (
           <div className="stack customize">
             <div className="muted small">
               Customize <span>(tap one to see all the choices)</span>
@@ -218,6 +260,7 @@ export default function Profile() {
               onClick={() => setPicker('banner')}
               preview={<span className={'swatch-preview ' + profile.banner} aria-hidden="true" />} />
           </div>
+          )}
           {picker === 'theme' && (
             <PickerModal title="Page theme" hint="Changes how the whole site looks for you." onClose={() => setPicker(null)}>
               <div className="themes">
@@ -246,11 +289,16 @@ export default function Profile() {
                 items={cosmetics.filter(c => c.kind === 'banner')} onChange={banner => { edit({ banner }); setPicker(null) }} />
             </PickerModal>
           )}
+          {tab === 'sound' && (
           <div className="stack sound-settings">
             <div className="muted small">Sound</div>
             <label className="row">
               <input type="checkbox" checked={sound.enabled} onChange={e => sound.setEnabled(e.target.checked)} />
               Interface sounds
+            </label>
+            <label className="row">
+              <input type="checkbox" checked={music.musicOn} disabled={!sound.enabled} onChange={e => music.setMusicOn(e.target.checked)} />
+              Quiet background music <span className="muted small">(pauses while the timer runs)</span>
             </label>
             <label>Volume
               <input type="range" min="0" max="1" step="0.05" value={sound.volume} disabled={!sound.enabled}
@@ -265,12 +313,13 @@ export default function Profile() {
               </select>
             </label>
           </div>
-          <button type="button" className="secondary" onClick={replayTour}>Replay the welcome tour</button>
+          )}
+          {tab === 'sound' && <button type="button" className="secondary" onClick={replayTour}>Replay the welcome tour</button>}
           <button type="submit">Save profile</button>
           {msg && <p className="muted">{msg}</p>}
-          <small className="muted">
+          {tab === 'sound' && <small className="muted">
             Earn XP: 1 per focus minute, 10 per finished task, 25 per post, 2 per reaction you receive.
-          </small>
+          </small>}
         </form>
       )}
     </div>

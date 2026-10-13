@@ -1,23 +1,26 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { createUISFX } from 'uisfx'
+import { createUISFX, getCue } from 'uisfx'
 import { useTheme } from './theme.jsx'
 import { CUSTOM_SFX, HAS_CUSTOM_SFX } from './customSfx.js'
 
 // Sound effects, from the open-source "UI SFX" library (MIT code, CC0 audio; https://uisfx.com).
 // Every theme gets its own sound personality (a "pack"). Same actions, different feel.
 export const SOUND_PACKS = {
-  default: 'minimal',    // Classic: dry, precise, nearly invisible
-  sprout: 'organic',     // soft wood and water
-  console: 'studio',     // tactile and restrained
-  capsule: 'soft',       // rounded and warm
-  island: 'zen',         // paper, brush strokes and quiet chimes
-  arcade: 'studio',      // deliberately NOT the chiptune pack
-  meadow: 'zen',
+  // Polished, short menu clicks (think a console's system menu): crisp and dry, never bleepy.
+  default: 'minimal',
+  console: 'minimal',
+  capsule: 'minimal',
+  arcade: 'studio',     // deliberately NOT the chiptune pack
   lofi: 'soft',
+  shore: 'organic',     // water and soft wood
+  twilight: 'zen',      // quiet chimes
+  sprout: 'organic',    // soft wood and water
+  island: 'zen',        // paper, brush strokes and quiet chimes
+  meadow: 'zen',
 }
 // Only the understated packs are offered. The bright, bleepy ones are left out on purpose.
 export const PACK_LABELS = { minimal: 'Minimal', soft: 'Soft', studio: 'Studio', zen: 'Zen', organic: 'Organic' }
-export const DEFAULT_VOLUME = .35
+export const DEFAULT_VOLUME = .85
 
 // '' = the default (your LOCK IN sounds when they exist, otherwise the theme's pack); 'theme' = the theme's pack
 const OVERRIDE_KEY = 'lock-in-sound-pack'
@@ -44,7 +47,7 @@ export function SoundProvider({ children }) {
   // One player for the whole app. The audio engine itself only starts after your first tap or key press.
   if (!player.current && typeof window !== 'undefined') {
     try {
-      player.current = createUISFX({ pack, volume: DEFAULT_VOLUME, preferences: { key: 'lock-in-quiet:sound' } })
+      player.current = createUISFX({ pack, volume: DEFAULT_VOLUME, preferences: { key: 'lock-in-sfx-v3:sound' } })
     } catch { player.current = null }
   }
   useEffect(() => {
@@ -74,7 +77,10 @@ export function SoundProvider({ children }) {
         a.play().catch(() => {})
         return { stop: () => a.pause() }
       }
-      return player.current?.play(cue === 'intro' ? 'start' : cue, options) ?? null
+      const name = cue === 'intro' ? 'start' : cue
+      // The built-in cues are mixed very low; lift each one so the default is comfortably audible.
+      const base = getCue(name)?.defaultVolume ?? .2
+      return player.current?.play(name, { volume: Math.min(1, base * 2.6), ...options }) ?? null
     } catch { return null }
   }, [])
 
@@ -117,6 +123,21 @@ export function SoundProvider({ children }) {
       const btn = t.closest('button')
       if (btn && btn.type === 'submit' && !btn.disabled) play('press')
     }
+    // A faint tick when you point at (or arrow-key onto) something clickable, like a console menu.
+    const CLICKABLE = 'a[href], button, [role="button"], summary, label.radio, input[type="checkbox"], input[type="radio"], .style-opt, .theme-opt, .week-chip, .chip, .task-main'
+    let lastHover = null
+    const onOver = e => {
+      if (e.pointerType && e.pointerType !== 'mouse') return
+      if (e.buttons) return                                        // mid-drag or mid-click
+      const t = e.target instanceof Element ? e.target.closest(CLICKABLE) : null
+      if (!t || t === lastHover || t.disabled || t.getAttribute?.('aria-disabled') === 'true') { if (!t) lastHover = null; return }
+      lastHover = t
+      play('hover')
+    }
+    const onFocus = e => {
+      const t = e.target
+      if (t instanceof Element && t.matches(':focus-visible') && t.matches(CLICKABLE)) play('hover')
+    }
     const onChange = e => {
       const t = e.target
       if (t instanceof HTMLInputElement && t.type === 'checkbox') play(t.checked ? 'check' : 'uncheck')
@@ -125,11 +146,15 @@ export function SoundProvider({ children }) {
     document.addEventListener('pointerdown', onPointerDown, true)
     document.addEventListener('click', onClick, true)
     document.addEventListener('change', onChange, true)
+    document.addEventListener('pointerover', onOver, true)
+    document.addEventListener('focusin', onFocus, true)
     document.addEventListener('keydown', unlock, { once: true })
     return () => {
       document.removeEventListener('pointerdown', onPointerDown, true)
       document.removeEventListener('click', onClick, true)
       document.removeEventListener('change', onChange, true)
+      document.removeEventListener('pointerover', onOver, true)
+      document.removeEventListener('focusin', onFocus, true)
     }
   }, [play])
 
