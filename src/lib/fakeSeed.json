@@ -203,6 +203,24 @@
    "kind": "frame",
    "name": "Glitch",
    "min_level": 9999
+  },
+  {
+   "id": "banner-route",
+   "kind": "banner",
+   "name": "Capsule Route",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-sunrise",
+   "kind": "banner",
+   "name": "Sunrise Hill",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-strings",
+   "kind": "banner",
+   "name": "Strings",
+   "min_level": 9999
   }
  ],
  "shop_items": [
@@ -478,6 +496,27 @@
    "name": "Animated profile picture (GIF)",
    "price": 500,
    "sort": 60
+  },
+  {
+   "id": "banner-route",
+   "kind": "banner",
+   "name": "Capsule Route",
+   "price": 250,
+   "sort": 24
+  },
+  {
+   "id": "banner-sunrise",
+   "kind": "banner",
+   "name": "Sunrise Hill",
+   "price": 250,
+   "sort": 25
+  },
+  {
+   "id": "banner-strings",
+   "kind": "banner",
+   "name": "Strings",
+   "price": 250,
+   "sort": 26
   }
  ]
 }

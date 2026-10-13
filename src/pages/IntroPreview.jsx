@@ -16,7 +16,7 @@ export default function IntroPreview() {
       <Scene />
       <div className="content">
         <nav className="nav">
-          <span className="brand"><Logo size={24} /><span>LOCK IN</span></span>
+          <span className="brand"><Logo size={24} /><span className="brand-text">LOCK IN</span></span>
           <span className="intro-badge">Intro preview</span>
           <span className="spacer" />
           <button type="button" onClick={() => setRun(r => r + 1)}>Replay loading screen</button>

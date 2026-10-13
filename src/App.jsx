@@ -13,6 +13,7 @@ import Profile from './pages/Profile.jsx'
 import Shop from './pages/Shop.jsx'
 import Login, { AuthSplash } from './pages/Login.jsx'
 import Logo from './components/Logo.jsx'
+import SettingsMenu from './components/SettingsMenu.jsx'
 import InstallButton from './components/InstallButton.jsx'
 import Icon from './components/Icon.jsx'
 import Avatar from './components/Avatar.jsx'
@@ -22,7 +23,7 @@ import LookPicker from './components/LookPicker.jsx'
 import InstallPrompt from './components/InstallPrompt.jsx'
 import { useSound } from './lib/sfx.jsx'
 import DevPanel from './components/DevPanel.jsx'
-import { APP_TITLE, IS_ADMIN, IS_DEV_BUILD } from './lib/env.js'
+import { APP_TITLE, IS_ADMIN, IS_DEV_BUILD, IS_FAKE } from './lib/env.js'
 import { DEMO } from './lib/demo.js' // DEMO
 
 // The six main pages. On a PC they live in the side dock; on a phone, in the bottom bar.
@@ -81,7 +82,7 @@ export default function App() {
       {user && <LookPicker />}
       {user && <Tour />}
       {user && <InstallPrompt />}
-      {IS_ADMIN && user && <DevPanel />}
+      {IS_ADMIN && !IS_FAKE && user && <DevPanel />}   {/* hidden in the shareable preview */}
       {/* PC: icon dock down the side. Icons are dim until you hover them. */}
       {user && (
         <aside className="dock-wrap">
@@ -98,7 +99,8 @@ export default function App() {
 
       <div className="content">
         <nav className="nav">
-          <Link to="/" className="brand" aria-label="LOCK IN"><Logo size={24} /><span>LOCK IN</span></Link>
+          <SettingsMenu />
+          <Link to="/" className="brand" aria-label="LOCK IN"><Logo size={24} /><span className="brand-text">LOCK IN</span></Link>
           <span className="spacer" />
           {user && timer.running && (
             <Link to="/study" className="timer-chip">
@@ -107,7 +109,7 @@ export default function App() {
           )}
           {user && xp !== null && (
             <Link to="/profile" className="xp-chip" title="Your level. Finish tasks and focus sessions to earn XP.">
-              Lv {level} · {xp.toLocaleString()} XP
+              Lv {level}<span className="xp-more"> · {xp.toLocaleString()} XP</span>
             </Link>
           )}
           {user && (

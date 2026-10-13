@@ -74,13 +74,16 @@ export default function Tour({ preview = false }) {
   }, [open, i]) // eslint-disable-line
 
   // Find the target (the page may still be loading) and keep its box up to date.
+  // Only ever replaces the box when it really moved, and keeps the last box while the page is still loading.
+  // (Swapping between "no box" and "a box", or setting a new object every tick, made the whole screen flicker.)
   const measure = useCallback(() => {
     if (!step.target) { setRect(null); return }
     const el = step.target.map(s => document.querySelector(s)).find(Boolean)
-    if (!el) { setRect(null); return }
+    if (!el) return
     const r = el.getBoundingClientRect()
-    if (r.width === 0 && r.height === 0) { setRect(null); return }
-    setRect({ top: r.top, left: r.left, width: r.width, height: r.height, el })
+    if (r.width === 0 && r.height === 0) return
+    const next = { top: Math.round(r.top), left: Math.round(r.left), width: Math.round(r.width), height: Math.round(r.height) }
+    setRect(prev => (prev && prev.top === next.top && prev.left === next.left && prev.width === next.width && prev.height === next.height ? prev : next))
   }, [step])
 
   useEffect(() => {
@@ -90,7 +93,12 @@ export default function Tour({ preview = false }) {
       measure()
       if (!scrolled) {
         const el = step.target?.map(s => document.querySelector(s)).find(Boolean)
-        if (el) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); scrolled = true }
+        if (el) {
+          const b = el.getBoundingClientRect()
+          const visible = b.top >= 56 && b.bottom <= window.innerHeight - 90
+          if (!visible) el.scrollIntoView({ block: 'center', behavior: 'auto' })   // jump, don't glide: a glide fights the box
+          scrolled = true
+        }
       }
     }
     tick()
@@ -99,7 +107,11 @@ export default function Tour({ preview = false }) {
     return () => { clearInterval(id); window.removeEventListener('resize', measure) }
   }, [open, i, measure]) // eslint-disable-line
 
-  useLayoutEffect(() => { if (tip.current) setTipH(tip.current.offsetHeight) })
+  useLayoutEffect(() => {
+    if (!tip.current) return
+    const h = tip.current.offsetHeight
+    setTipH(prev => (prev === h ? prev : h))
+  })
 
   if (!open || !user) return null
   const last = i === STEPS.length - 1

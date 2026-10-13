@@ -5,6 +5,7 @@ import ColorPicker from './ColorPicker.jsx'
 import ClassPicker from './ClassPicker.jsx'
 import { TaskItem } from './TodayList.jsx'
 import PickerModal from './PickerModal.jsx'
+import DragTray from './DragTray.jsx'
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000
@@ -153,6 +154,8 @@ export default function WeekPlanner({ tasks, add, toggle, remove, move, onOpen }
         <ClassPicker compact value={course} onChange={setCourse} options={classesFrom(tasks)}
           placeholder="Class or subject (optional)" />
       </div>
+
+      <DragTray columns={columns} tasks={tasks} move={move} />
 
       <div className="week">
         {columns.map(c => (

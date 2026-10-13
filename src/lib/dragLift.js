@@ -50,6 +50,8 @@ export function installDragLift() {
   document.addEventListener('dragstart', e => {
     const el = e.target instanceof Element ? e.target.closest('.task') : null
     if (!el || !e.dataTransfer) return
+    document.querySelectorAll('.drag-ghost').forEach(g => g.remove())   // never leave an old card floating around
+    cancelAnimationFrame(raf)
     try { e.dataTransfer.setDragImage(blank, 0, 0) } catch { return }
     const r = el.getBoundingClientRect()
     ghost = el.cloneNode(true)

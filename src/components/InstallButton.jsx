@@ -5,5 +5,5 @@ import { useInstall } from '../lib/install.js'
 export default function InstallButton() {
   const { canPrompt, install } = useInstall()
   if (!canPrompt) return null
-  return <button className="secondary" onClick={install}>Install app</button>
+  return <button className="secondary install-btn" onClick={install}>Install app</button>
 }

@@ -963,6 +963,10 @@ a:hover > .avatar, .profile-id .avatar:hover { scale: 1.08; }
 .banner-grove { background: #5aa7d6 url('./assets/banners/grove.webp') center 38% / cover no-repeat; }
 .banner-cabin { background: #1f3340 url('./assets/banners/cabin.webp') center 52% / cover no-repeat; }
 .banner-orbit { background: #02060f url('./assets/banners/orbit.webp') center 62% / cover no-repeat; }
+/* Drawn or cropped so the main thing (the route, the cross on the hill, the violin) stays in view in a thin strip. */
+.banner-route { background: #6b8ad3 url('./assets/banners/route.webp') center / cover no-repeat; image-rendering: pixelated; }
+.banner-sunrise { background: #2d2a5e url('./assets/banners/sunrise.webp') center / cover no-repeat; }
+.banner-strings { background: #3a2210 url('./assets/banners/strings.webp') center / cover no-repeat; }
 
 /* ---- Cozy Island: a sakura tree on the left and a flurry of petals ---------------------------------- */
 :root[data-theme='island'] .scene::before {
@@ -1155,11 +1159,15 @@ a:hover > .avatar, .profile-id .avatar:hover { scale: 1.08; }
 .tour-dim { position: fixed; inset: 0; z-index: 59; background: rgba(10, 15, 30, .55); }
 .tour-spot {
   position: fixed; z-index: 59; border-radius: 20px; pointer-events: none;     /* you can still click what is lit */
-  box-shadow: 0 0 0 9999px rgba(10, 15, 30, .55), 0 0 0 3px var(--accent), 0 0 24px 4px color-mix(in srgb, var(--accent) 55%, transparent);
-  transition: top .35s var(--spring-soft, ease), left .35s var(--spring-soft, ease), width .35s var(--spring-soft, ease), height .35s var(--spring-soft, ease);
-  animation: spot-pulse 1.8s ease-in-out infinite;
+  box-shadow: 0 0 0 100vmax rgba(10, 15, 30, .55);                              /* static: a pulsing full-screen shadow flickers on phones */
+  transition: top .28s ease, left .28s ease, width .28s ease, height .28s ease;
 }
-@keyframes spot-pulse { 50% { box-shadow: 0 0 0 9999px rgba(10, 15, 30, .55), 0 0 0 6px var(--accent), 0 0 34px 8px color-mix(in srgb, var(--accent) 45%, transparent); } }
+.tour-spot::after {                                                             /* the pulse lives on a small ring instead */
+  content: ''; position: absolute; inset: -3px; border-radius: inherit; border: 3px solid var(--accent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 50%, transparent);
+  animation: spot-ring 1.6s ease-in-out infinite alternate;
+}
+@keyframes spot-ring { to { scale: 1.035; opacity: .55; } }
 .tour-tip { position: fixed; z-index: 61; display: flex; flex-direction: column; gap: .7rem; padding: 1.1rem 1.2rem; background: var(--glass-strong); }
 .tour-head { display: flex; align-items: center; gap: .7rem; }
 .tour-head h2 { margin: 0; font-size: 1.15rem; flex: 1; }
@@ -1168,7 +1176,7 @@ a:hover > .avatar, .profile-id .avatar:hover { scale: 1.08; }
 .tour-tip p { margin: 0; line-height: 1.5; font-size: .95rem; }
 .tour-tip .tour-try { color: var(--accent-ink); font-weight: 700; }
 .tour-tip .tour-dots { justify-content: flex-start; }
-@media (prefers-reduced-motion: reduce) { .tour-spot { animation: none; transition: none; } }
+@media (prefers-reduced-motion: reduce) { .tour-spot { transition: none; } .tour-spot::after { animation: none; } }
 
 /* ---- File pickers (profile picture, feed photo) fit the theme ---------------------------------------- */
 input[type='file'] {
@@ -2226,3 +2234,74 @@ textarea { border-radius: calc(var(--r) * .8); }
 .splash-title { display: flex; align-items: center; justify-content: center; gap: .5em; text-indent: 0; }
 .splash-title .logo-mark { height: 1.15em; width: auto; }
 .login-brand .logo-mark { opacity: .9; }
+
+/* ---- Phone fit: nothing may be wider than the screen ----------------------------------------------------------
+   A single over-wide element (the top bar with all its chips) makes a phone zoom the whole page out and pushes
+   the bottom bar off screen, so the bar now sheds its least useful parts as the screen gets narrow. */
+html, body { max-width: 100%; overflow-x: clip; }
+.shell, .content { max-width: 100%; }
+.nav > * { min-width: 0; }
+@media (max-width: 520px) {
+  .brand-text, .xp-more, .demo-chip, .mode-chip, .nav .install-btn { display: none; }   /* the install card still offers it */
+  .nav { gap: .3rem; padding-left: max(.7rem, env(safe-area-inset-left)); padding-right: max(.7rem, env(safe-area-inset-right)); }
+}
+@media (max-width: 380px) {
+  .nav .install-btn, .nav .sound-chip { display: none; }
+  .nav .secondary { padding: .3rem .5rem; font-size: .75rem; }
+}
+
+/* Profile header in a narrow column: let the Shop button drop below instead of squeezing the name into a
+   one-letter-per-line strip. */
+.profile-id { flex-wrap: wrap; }
+.profile-id > div:not(.avatar) { flex: 1 1 9.5rem; }
+.profile-id h1 { overflow-wrap: break-word; word-break: normal; }
+.profile-id .shop-link { margin-left: 0; }
+.profile-fit .profile-id .shop-link { margin-top: .4rem; }
+
+/* ---- Drag tray: big drop targets that appear while a task is being dragged ------------------------------------ */
+.drag-dim { position: fixed; inset: 0; z-index: 40; background: rgba(10, 15, 30, .38); pointer-events: none; animation: tray-fade .18s ease-out; }
+.drag-tray {
+  position: fixed; z-index: 45; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); translate: -50% 0;
+  width: min(560px, calc(100vw - 20px)); padding: .65rem .7rem .75rem; border-radius: 24px;
+  background: var(--glass-strong); border: 1px solid var(--glass-line);
+  box-shadow: 0 22px 50px rgba(10, 20, 40, .35), inset 0 1px 0 rgba(255, 255, 255, .4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.6); backdrop-filter: blur(22px) saturate(1.6);
+  animation: tray-up .22s var(--spring, cubic-bezier(.3, 1.4, .5, 1));
+}
+.drag-tray-title { font-weight: 700; font-size: .85rem; margin: 0 .2rem .5rem; color: var(--text); }
+.drag-tray-title small { color: var(--muted); font-weight: 600; margin-left: .4rem; }
+.drag-tray-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .4rem; }
+.drag-target {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .1rem; min-height: 58px;
+  padding: .3rem .1rem; border-radius: 16px; text-align: center; color: var(--text);
+  background: var(--glass-inner); border: 1.5px dashed color-mix(in srgb, var(--accent) 55%, transparent);
+  transition: scale .14s ease, background .14s ease, border-color .14s ease;
+}
+.drag-target strong { font-size: .8rem; }
+.drag-target small { font-size: .68rem; color: var(--muted); }
+.drag-target.today { border-style: solid; }
+.drag-target.plan { border-color: color-mix(in srgb, var(--text) 35%, transparent); }
+.drag-target.over { scale: 1.12; background: var(--accent); border-style: solid; border-color: var(--accent-ink); }
+.drag-target.over strong, .drag-target.over small { color: var(--on-accent, #fff); }
+@keyframes tray-up { from { translate: -50% 40px; opacity: 0; } }
+@keyframes tray-fade { from { opacity: 0; } }
+@media (max-width: 700px) {
+  .drag-tray { bottom: calc(92px + env(safe-area-inset-bottom)); }   /* sits just above the floating tab bar */
+  .drag-target { min-height: 64px; }
+  .drag-target strong { font-size: .72rem; }
+}
+@media (prefers-reduced-motion: reduce) { .drag-tray, .drag-dim { animation: none; } .drag-target { transition: none; } }
+
+/* ---- Settings button (top left) and its pop-up ---------------------------------------------------------------- */
+.settings-btn {
+  display: inline-grid; place-items: center; width: 38px; height: 38px; padding: 0; flex: none;
+  border-radius: 50%; color: var(--text); background: var(--glass-inner); border: 1px solid var(--glass-line); box-shadow: none;
+}
+.settings-btn .icon { stroke: currentColor; fill: none; stroke-width: 1.9; stroke-linecap: round; transition: rotate .45s var(--spring, ease); }
+.settings-btn:hover .icon, .settings-btn:focus-visible .icon { rotate: 90deg; }
+.nav .settings-btn { margin-right: .15rem; }
+.settings-group { display: flex; flex-direction: column; gap: .55rem; padding: .8rem .9rem; border-radius: var(--r-sm, 16px); background: var(--glass-inner); border: 1px solid var(--glass-line); }
+.settings-group h3 { margin: 0; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.settings-group label { display: flex; flex-direction: column; gap: .3rem; }
+.settings-group label.row { flex-direction: row; align-items: center; gap: .55rem; }
+.settings-group select, .settings-group input[type='range'] { width: 100%; }
