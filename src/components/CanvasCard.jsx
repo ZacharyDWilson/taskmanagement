@@ -124,6 +124,7 @@ export default function CanvasCard({ tasks = [], onAdd }) {
   const canvas = useCanvas()
   const [connect, setConnect] = useState(false)
   const [openWeek, setOpenWeek] = useState(null)           // 0 = this week, 1 = next week, null = closed
+  const [menu, setMenu] = useState(false)                  // the small ... menu (refresh, change link, disconnect)
   const added = useMemo(() => new Set(tasks.map(t => t.canvas_uid).filter(Boolean)), [tasks])
 
   const weeks = [0, 1].map(offset => {
@@ -149,7 +150,22 @@ export default function CanvasCard({ tasks = [], onAdd }) {
 
   return (
     <section className="card canvas-card">
-      <h2>{canvas.connected ? `${canvas.providerName} assignments` : 'Assignments'}</h2>
+      <div className="row between canvas-head">
+        <h2>{canvas.connected ? `${canvas.providerName} assignments` : 'Assignments'}</h2>
+        {canvas.connected && (
+          <div className="canvas-menu">
+            <button type="button" className="secondary canvas-menu-btn" aria-label="More options" aria-expanded={menu}
+              onClick={() => setMenu(m => !m)}>⋯</button>
+            {menu && (
+              <div className="canvas-menu-pop" role="menu" onMouseLeave={() => setMenu(false)}>
+                <button type="button" role="menuitem" disabled={canvas.loading} onClick={() => { setMenu(false); canvas.refresh() }}>{canvas.loading ? 'Refreshing…' : 'Refresh'}</button>
+                <button type="button" role="menuitem" onClick={() => { setMenu(false); setConnect(true) }}>Change link</button>
+                <button type="button" role="menuitem" onClick={() => { setMenu(false); if (confirm(`Disconnect ${canvas.providerName}?`)) canvas.disconnect() }}>Disconnect</button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       {canvas.connected === null && <p className="muted">Checking…</p>}
 
@@ -175,22 +191,15 @@ export default function CanvasCard({ tasks = [], onAdd }) {
                         ? 'Nothing due'
                         : `Found ${w.list.length} assignment${w.list.length === 1 ? '' : 's'}`}
                     </strong>
-                    <small className="muted">
-                      {w.label} · {w.range}
+                    <small className="muted" title={w.range}>
+                      {w.label}
                       {w.list.length > 0 && (waiting === 0 ? ' · all added' : ` · ${waiting} to add`)}
                     </small>
                   </div>
-                  {w.list.length > 0 && <button type="button" onClick={() => setOpenWeek(w.offset)}>Open</button>}
+                  {w.list.length > 0 && <button type="button" className="found-open" onClick={() => setOpenWeek(w.offset)}>Open</button>}
                 </div>
               )
             })}
-          </div>
-          <div className="row between canvas-foot">
-            <button type="button" className="link" onClick={canvas.refresh} disabled={canvas.loading}>{canvas.loading ? 'Refreshing…' : 'Refresh'}</button>
-            <span>
-              <button type="button" className="link" onClick={() => setConnect(true)}>Change link</button>
-              <button type="button" className="link" onClick={() => { if (confirm(`Disconnect ${canvas.providerName}?`)) canvas.disconnect() }}>Disconnect</button>
-            </span>
           </div>
           {canvas.error && <p className="warn">{canvas.error}</p>}
         </>

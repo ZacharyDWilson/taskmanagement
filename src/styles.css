@@ -3688,3 +3688,21 @@ a.mention:hover { text-decoration: underline; }
   .overview > .col:first-child { overflow: visible; }
 }
 .overview .week-card .daybar-value { white-space: nowrap; font-size: .66rem; }
+
+
+/* ---- smaller Canvas summary (2.18) ----------------------------------------------------------------------------------------- */
+.overview .canvas-card { padding: .65rem .85rem; }
+.canvas-head { flex-wrap: nowrap; margin-bottom: .4rem; }
+.canvas-head h2 { margin: 0; font-size: 1rem; }
+.canvas-menu { position: relative; flex: none; }
+.canvas-menu-btn { padding: .1rem .6rem; min-height: 0; font-size: 1.1rem; line-height: 1.2; }
+.canvas-menu-pop { position: absolute; z-index: 20; right: 0; top: 100%; margin-top: .25rem; min-width: 9.5rem; padding: .3rem; display: flex; flex-direction: column;
+  background: var(--glass-strong, #fff); border: 1px solid var(--glass-line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, .18); }
+.canvas-menu-pop button { text-align: left; background: none; border: 0; box-shadow: none; padding: .4rem .6rem; border-radius: 8px; font-weight: 600; color: var(--text); }
+.canvas-menu-pop button:hover { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.overview .found-list { gap: .4rem; }
+.overview .found-row { padding: .4rem .55rem; gap: .6rem; }
+.overview .found-count { width: 1.9rem; height: 1.9rem; font-size: .95rem; }
+.overview .found-text strong { font-size: .92rem; }
+.overview .found-text small { font-size: .74rem; }
+.found-open { padding: .25rem .8rem; min-height: 0; font-size: .85rem; flex: none; }
