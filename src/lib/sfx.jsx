@@ -23,6 +23,7 @@ export const SOUND_PACKS = {
   island: 'zen',        // paper, brush strokes and quiet chimes
   meadow: 'zen',
   tile: 'organic',      // clay and wood
+  handheld: 'soft',     // gentle, rounded blips
   rose: 'soft',         // muted, like felt and paper
 }
 // Only the understated packs are offered. The bright, bleepy ones are left out on purpose.

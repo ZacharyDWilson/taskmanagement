@@ -221,6 +221,24 @@
    "kind": "banner",
    "name": "Strings",
    "min_level": 9999
+  },
+  {
+   "id": "banner-valley",
+   "kind": "banner",
+   "name": "Valley Run",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-pond",
+   "kind": "banner",
+   "name": "Lily Pond",
+   "min_level": 9999
+  },
+  {
+   "id": "banner-glow",
+   "kind": "banner",
+   "name": "Handheld Glow",
+   "min_level": 9999
   }
  ],
  "shop_items": [
@@ -249,7 +267,7 @@
    "id": "island",
    "kind": "theme",
    "name": "Cozy Island",
-   "price": 400,
+   "price": 500,
    "sort": 4
   },
   {
@@ -277,21 +295,21 @@
    "id": "banner-grove",
    "kind": "banner",
    "name": "Sky Grove",
-   "price": 250,
+   "price": 300,
    "sort": 21
   },
   {
    "id": "banner-cabin",
    "kind": "banner",
    "name": "Rainy Cabin",
-   "price": 250,
+   "price": 300,
    "sort": 22
   },
   {
    "id": "banner-orbit",
    "kind": "banner",
    "name": "Orbit",
-   "price": 250,
+   "price": 300,
    "sort": 23
   },
   {
@@ -396,84 +414,84 @@
    "id": "frame-mono",
    "kind": "frame",
    "name": "Mono",
-   "price": 120,
+   "price": 100,
    "sort": 43
   },
   {
    "id": "frame-onyx",
    "kind": "frame",
    "name": "Onyx",
-   "price": 150,
+   "price": 100,
    "sort": 44
   },
   {
    "id": "frame-chrome",
    "kind": "frame",
    "name": "Chrome",
-   "price": 180,
+   "price": 200,
    "sort": 45
   },
   {
    "id": "frame-cat",
    "kind": "frame",
    "name": "Cat ears",
-   "price": 160,
+   "price": 200,
    "sort": 46
   },
   {
    "id": "frame-bunny",
    "kind": "frame",
    "name": "Bunny ears",
-   "price": 160,
+   "price": 200,
    "sort": 47
   },
   {
    "id": "frame-hearts",
    "kind": "frame",
    "name": "Hearts",
-   "price": 160,
+   "price": 200,
    "sort": 48
   },
   {
    "id": "frame-pixel",
    "kind": "frame",
    "name": "Pixel",
-   "price": 180,
+   "price": 200,
    "sort": 49
   },
   {
    "id": "frame-terminal",
    "kind": "frame",
    "name": "Terminal",
-   "price": 180,
+   "price": 200,
    "sort": 50
   },
   {
    "id": "frame-circuit",
    "kind": "frame",
    "name": "Circuit board",
-   "price": 180,
+   "price": 200,
    "sort": 51
   },
   {
    "id": "frame-d20",
    "kind": "frame",
    "name": "Critical roll",
-   "price": 180,
+   "price": 200,
    "sort": 52
   },
   {
    "id": "frame-pulse",
    "kind": "frame",
    "name": "Pulse",
-   "price": 260,
+   "price": 300,
    "sort": 53
   },
   {
    "id": "frame-glitch",
    "kind": "frame",
    "name": "Glitch",
-   "price": 280,
+   "price": 300,
    "sort": 54
   },
   {
@@ -487,7 +505,7 @@
    "id": "frame-sparkle",
    "kind": "frame",
    "name": "Sparkle",
-   "price": 320,
+   "price": 300,
    "sort": 56
   },
   {
@@ -501,21 +519,21 @@
    "id": "banner-route",
    "kind": "banner",
    "name": "Capsule Route",
-   "price": 320,
+   "price": 300,
    "sort": 24
   },
   {
    "id": "banner-sunrise",
    "kind": "banner",
    "name": "Sunrise Hill",
-   "price": 240,
+   "price": 200,
    "sort": 25
   },
   {
    "id": "banner-strings",
    "kind": "banner",
    "name": "Strings",
-   "price": 180,
+   "price": 200,
    "sort": 26
   },
   {
@@ -531,6 +549,34 @@
    "name": "Glazed Tile",
    "price": 400,
    "sort": 12
+  },
+  {
+   "id": "handheld",
+   "kind": "theme",
+   "name": "Handheld Glow",
+   "price": 400,
+   "sort": 13
+  },
+  {
+   "id": "banner-valley",
+   "kind": "banner",
+   "name": "Valley Run",
+   "price": 300,
+   "sort": 27
+  },
+  {
+   "id": "banner-pond",
+   "kind": "banner",
+   "name": "Lily Pond",
+   "price": 300,
+   "sort": 28
+  },
+  {
+   "id": "banner-glow",
+   "kind": "banner",
+   "name": "Handheld Glow",
+   "price": 300,
+   "sort": 29
   }
  ]
 }

@@ -2860,3 +2860,191 @@ html, body { max-width: 100%; overflow-x: clip; }
   :root[data-theme='shore'] .tabbar a:nth-of-type(5) .icon { background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2058%2058'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'0'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23fff1d6'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23f0cf94'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20d%3D'M29%2055L6%2035Q0%2025%207%2017A8%208%200%200%201%2013%209A9%209%200%200%201%2023%203A9%209%200%200%201%2035%203A9%209%200%200%201%2045%209A8%208%200%200%201%2051%2017Q58%2025%2052%2035Z'%20fill%3D'url(%23g)'%20stroke%3D'%23b98d45'%20stroke-width%3D'1.6'%20stroke-linejoin%3D'round'%2F%3E%3Cpath%20d%3D'M29%2055L4%2030'%20stroke%3D'%23b98d45'%20stroke-opacity%3D'.45'%20stroke-width%3D'1.6'%20stroke-linecap%3D'round'%2F%3E%3Cpath%20d%3D'M29%2055L12%2013'%20stroke%3D'%23b98d45'%20stroke-opacity%3D'.45'%20stroke-width%3D'1.6'%20stroke-linecap%3D'round'%2F%3E%3Cpath%20d%3D'M29%2055L21%205'%20stroke%3D'%23b98d45'%20stroke-opacity%3D'.45'%20stroke-width%3D'1.6'%20stroke-linecap%3D'round'%2F%3E%3Cpath%20d%3D'M29%2055L37%205'%20stroke%3D'%23b98d45'%20stroke-opacity%3D'.45'%20stroke-width%3D'1.6'%20stroke-linecap%3D'round'%2F%3E%3Cpath%20d%3D'M29%2055L46%2013'%20stroke%3D'%23b98d45'%20stroke-opacity%3D'.45'%20stroke-width%3D'1.6'%20stroke-linecap%3D'round'%2F%3E%3Cpath%20d%3D'M29%2055L54%2030'%20stroke%3D'%23b98d45'%20stroke-opacity%3D'.45'%20stroke-width%3D'1.6'%20stroke-linecap%3D'round'%2F%3E%3Crect%20x%3D'23'%20y%3D'49'%20width%3D'12'%20height%3D'7'%20rx%3D'3.5'%20fill%3D'%23b98d45'%2F%3E%3Ccircle%20cx%3D'29'%20cy%3D'30'%20r%3D'13.5'%20fill%3D'%23fffaf0'%20stroke%3D'%23fff1d6'%20stroke-width%3D'2'%2F%3E%3C%2Fsvg%3E"); }
 }
 @media (prefers-reduced-motion: reduce) { :root[data-theme='shore'] .dock a { animation: none; } }
+
+/* ---- New banners: Valley Run (paper-cut mountains), Lily Pond (brushwork), Handheld Glow (glossy game icons) ---- */
+.banner-valley { background: #a9c75e url('./assets/banners/valley.webp') center 60% / cover no-repeat; }
+.banner-pond   { background: #2f86b8 url('./assets/banners/pond.webp') center / cover no-repeat; }
+.banner-glow   { background: #b7b8f5 url('./assets/banners/glow.webp') center / cover no-repeat; }
+
+/* ---- Handheld Glow: soft violet and sky glass over a dotted grid, with glossy game-console buttons ------------
+   A premium look at the top of the scale, like Frutiger Aero: the page itself is calm, the buttons are the toys. */
+:root[data-theme='handheld'] {
+  --text: #26224f; --muted: #5f5c92; --accent: #6b4df0; --accent-2: #2fb4e8; --on-accent: #ffffff;
+  --glass: rgba(255, 255, 255, .62); --glass-inner: rgba(255, 255, 255, .5); --glass-field: rgba(255, 255, 255, .88);
+  --glass-strong: rgba(250, 248, 255, .95); --glass-line: rgba(255, 255, 255, .95); --glass-shadow: 0 14px 36px rgba(80, 60, 190, .22);
+  --sky-1: #d6d0fc; --sky-2: #9fb8f7;
+  --font: 'Nunito', 'Quicksand', 'Segoe UI', system-ui, sans-serif;
+  --font-head: 'Nunito', 'Quicksand', 'Segoe UI', system-ui, sans-serif; --head-weight: 800;
+  --blur: 16px; --r: 24px;
+  --card-shape: 26px; --tile-shape: 20px; --btn-shape: 999px; --field-shape: 999px; --dock-shape: 18px;
+}
+:root[data-theme='handheld'] body { font-size: 1.01rem; }
+:root[data-theme='handheld'] .scene { background: linear-gradient(160deg, #f1edff 0%, #c9c8fb 38%, #ab9cf3 72%, #8fc3f8 100%); }
+:root[data-theme='handheld'] .scene::before {        /* the dotted grid */
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 255, 255, .7) 1.6px, transparent 2.2px) 0 0 / 28px 28px;
+}
+:root[data-theme='handheld'] .scene .g1 { width: 60vmax; height: 50vmax; left: -14vmax; top: -18vmax; background: radial-gradient(circle, rgba(255, 255, 255, .85), transparent 66%); animation: drift-a 40s ease-in-out infinite alternate; }
+:root[data-theme='handheld'] .scene .g2 { width: 56vmax; height: 46vmax; right: -16vmax; bottom: -14vmax; top: auto; background: radial-gradient(circle, rgba(110, 200, 255, .65), transparent 66%); animation: drift-b 46s ease-in-out infinite alternate; }
+:root[data-theme='handheld'] .scene span {           /* the same faint ghost shapes as the classic look, tinted violet and sky */
+  left: var(--x); top: var(--y); width: calc(8vmax + var(--i) * 1.2vmax); aspect-ratio: 1; opacity: .8;
+  filter: blur(1px); animation: ghost calc(9s + var(--i) * .9s) ease-in-out infinite alternate; animation-delay: calc(var(--i) * -2.3s);
+}
+:root[data-theme='handheld'] .scene span:nth-of-type(4n + 1) {      /* ring */
+  border-radius: 50%; border: calc(1.1vmax + var(--i) * .08vmax) solid rgba(255, 255, 255, .5);
+}
+:root[data-theme='handheld'] .scene span:nth-of-type(4n + 2) {      /* glossy rounded tile */
+  border-radius: 26%; border: 2px solid rgba(255, 255, 255, .95);
+  background: linear-gradient(160deg, rgba(255, 255, 255, .9), rgba(160, 140, 255, .34) 55%, rgba(120, 200, 255, .4));
+  box-shadow: 0 1.4vmax 3vmax rgba(80, 60, 190, .2), inset 0 0 0 .6vmax rgba(255, 255, 255, .35);
+}
+:root[data-theme='handheld'] .scene span:nth-of-type(4n + 3) {      /* chevron / arrow */
+  width: calc(7vmax + var(--i) * .9vmax); aspect-ratio: .8;
+  background: linear-gradient(120deg, rgba(255, 255, 255, .95), rgba(120, 190, 255, .5));
+  clip-path: polygon(0 0, 100% 50%, 0 100%, 26% 50%); filter: blur(.6px) drop-shadow(0 6px 10px rgba(80, 60, 190, .22));
+}
+:root[data-theme='handheld'] .scene span:nth-of-type(4n) {          /* disc with a dot */
+  border-radius: 50%; border: .7vmax solid rgba(255, 255, 255, .55);
+  background: radial-gradient(circle, rgba(110, 90, 240, .4) 0 11%, rgba(255, 255, 255, .5) 12% 100%);
+}
+:root[data-theme='handheld'] .scene span:nth-of-type(n + 11) { display: none; }
+/* lots of small glossy bubbles in every console-button colour, rising slowly (one repeating tile that scrolls) */
+:root[data-theme='handheld'] .scene::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    radial-gradient(circle 5.6000000000000005px at 63.6px 83.2px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 20px at 70px 90px, rgba(255, 255, 255, .55) 0, rgba(255,90,110, .38) 62%, rgba(255,90,110, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle 3.3600000000000003px at 226.16px 35.92px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 12px at 230px 40px, rgba(255, 255, 255, .55) 0, rgba(39,192,238, .38) 62%, rgba(39,192,238, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle 7.280000000000001px at 411.68px 131.16px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 26px at 420px 140px, rgba(255, 255, 255, .55) 0, rgba(255,207,63, .38) 62%, rgba(255,207,63, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle 3px at 506.8px 56.6px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 10px at 510px 60px, rgba(255, 255, 255, .55) 0, rgba(63,214,155, .38) 62%, rgba(63,214,155, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle 3.9200000000000004px at 145.52px 245.24px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 14px at 150px 250px, rgba(255, 255, 255, .55) 0, rgba(140,110,255, .38) 62%, rgba(140,110,255, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle 5.040000000000001px at 324.24px 293.88px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 18px at 330px 300px, rgba(255, 255, 255, .55) 0, rgba(255,255,255, .38) 62%, rgba(255,255,255, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle 6.720000000000001px at 52.32px 411.84px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 24px at 60px 420px, rgba(255, 255, 255, .55) 0, rgba(63,214,155, .38) 62%, rgba(63,214,155, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle 3px at 246.8px 466.6px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 10px at 250px 470px, rgba(255, 255, 255, .55) 0, rgba(255,90,110, .38) 62%, rgba(255,90,110, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle 4.48px at 444.88px 394.56px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 16px at 450px 400px, rgba(255, 255, 255, .55) 0, rgba(39,192,238, .38) 62%, rgba(39,192,238, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle 6.16px at 512.96px 552.52px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 22px at 520px 560px, rgba(255, 255, 255, .55) 0, rgba(140,110,255, .38) 62%, rgba(140,110,255, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle 3.3600000000000003px at 116.16px 595.92px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 12px at 120px 600px, rgba(255, 255, 255, .55) 0, rgba(255,207,63, .38) 62%, rgba(255,207,63, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle 7.840000000000001px at 331.04px 630.48px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 28px at 340px 640px, rgba(255, 255, 255, .55) 0, rgba(255,255,255, .38) 62%, rgba(255,255,255, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle 4.48px at 204.88px 754.56px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 16px at 210px 760px, rgba(255, 255, 255, .55) 0, rgba(39,192,238, .38) 62%, rgba(39,192,238, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle 3.3600000000000003px at 466.16px 735.92px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 12px at 470px 740px, rgba(255, 255, 255, .55) 0, rgba(63,214,155, .38) 62%, rgba(63,214,155, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%),
+    radial-gradient(circle 5.040000000000001px at 34.24px 753.88px, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+    radial-gradient(circle 18px at 40px 760px, rgba(255, 255, 255, .55) 0, rgba(255,90,110, .38) 62%, rgba(255,90,110, .7) 90%, rgba(255, 255, 255, .9) 94%, rgba(255, 255, 255, 0) 100%);
+  background-size: 560px 820px; background-repeat: repeat;
+  animation: hh-bubbles 70s linear infinite;
+}
+@keyframes hh-bubbles { to { background-position: 0 -820px; } }
+@media (max-width: 700px) { :root[data-theme='handheld'] .scene::after { background-size: 420px 615px; animation-duration: 60s; } }
+
+/* cards: frosted glass with a bright rim and a soft top sheen */
+:root[data-theme='handheld'] .card, :root[data-theme='handheld'] .tile {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .6) 0, rgba(255, 255, 255, .12) 55%, rgba(210, 205, 255, .18) 100%);
+  border: 1.5px solid rgba(255, 255, 255, .95);
+  box-shadow: inset 0 1px 0 #fff, var(--glass-shadow);
+}
+:root[data-theme='handheld'] h1, :root[data-theme='handheld'] h2 { color: #2b2566; }
+:root[data-theme='handheld'] .brand { color: #3a2d9a; text-shadow: 0 1px 0 rgba(255, 255, 255, .9); }
+
+/* buttons: glossy capsules (violet), with white ones for secondary actions */
+:root[data-theme='handheld'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip):not(.secondary):not(.seg-btn),
+:root[data-theme='handheld'] .tabs button.active {
+  background: linear-gradient(180deg, #b6a2ff 0%, #7a5cf2 48%, #5a39dd 52%, #7054ee 100%);
+  border: 1.5px solid rgba(255, 255, 255, .9); color: #fff; text-shadow: 0 1px 2px rgba(40, 20, 130, .5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .8), 0 6px 14px rgba(80, 50, 200, .35);
+}
+:root[data-theme='handheld'] button.secondary, :root[data-theme='handheld'] .tabs button {
+  background: linear-gradient(180deg, #ffffff 0%, #f0ecff 50%, #e2dcfb 100%);
+  border: 1.5px solid rgba(110, 90, 220, .3); color: var(--text); box-shadow: inset 0 1px 0 #fff, 0 3px 8px rgba(80, 60, 190, .15);
+}
+:root[data-theme='handheld'] .seg-btn.on { background: #6b4df0; }
+
+/* the dock: a frosted pill of glossy squircle buttons, each its own colour like console menu icons */
+:root[data-theme='handheld'] .dock {
+  background: rgba(255, 255, 255, .55); border: 1.5px solid rgba(255, 255, 255, .95);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 #fff, 0 12px 30px rgba(80, 60, 190, .25);
+  padding: .55rem .5rem; gap: .75rem; overflow: visible;
+}
+:root[data-theme='handheld'] .dock a {
+  width: 54px; height: 54px; border-radius: 18px; opacity: 1; color: #fff;
+  border: 2px solid rgba(255, 255, 255, .95);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .6) 0, rgba(255, 255, 255, 0) 52%),
+    linear-gradient(180deg, var(--g1), var(--g2));
+  box-shadow: inset 0 -5px 10px rgba(0, 0, 0, .12), 0 8px 16px rgba(60, 40, 170, .3);
+}
+:root[data-theme='handheld'] .dock a .icon { stroke-width: 2.4; filter: drop-shadow(0 1px 1.5px rgba(30, 10, 100, .45)); }
+:root[data-theme='handheld'] .dock a:nth-child(1) { --g1: #b9a3ff; --g2: #5a2fd8; }
+:root[data-theme='handheld'] .dock a:nth-child(2) { --g1: #7beef0; --g2: #1f8fd0; }
+:root[data-theme='handheld'] .dock a:nth-child(3) { --g1: #ffe27a; --g2: #f0a21c; }
+:root[data-theme='handheld'] .dock a:nth-child(4) { --g1: #86f3c0; --g2: #1fa77d; }
+:root[data-theme='handheld'] .dock a:nth-child(5) { --g1: #ffa6cd; --g2: #e04f9a; }
+:root[data-theme='handheld'] .dock a:hover, :root[data-theme='handheld'] .dock a:focus-visible {
+  filter: brightness(1.06) saturate(1.1); box-shadow: inset 0 -5px 10px rgba(0, 0, 0, .1), 0 12px 22px rgba(60, 40, 170, .38);
+}
+:root[data-theme='handheld'] .dock a:active { translate: 0 2px; }
+:root[data-theme='handheld'] .dock a.active {
+  box-shadow: inset 0 -5px 10px rgba(0, 0, 0, .12), 0 0 0 3px rgba(255, 255, 255, .9), 0 0 0 5px color-mix(in srgb, var(--g2) 70%, #fff), 0 8px 18px rgba(60, 40, 170, .35);
+}
+
+@media (max-width: 700px) {
+  :root[data-theme='handheld'] .tabbar a { color: #3a2d9a; font-weight: 800; }
+  :root[data-theme='handheld'] .tabbar a .icon {
+    box-sizing: content-box; width: 22px; height: 22px; padding: 7px; border-radius: 14px; stroke-width: 2.4; color: #fff;
+    border: 1.5px solid rgba(255, 255, 255, .95);
+    background: linear-gradient(180deg, rgba(255, 255, 255, .55) 0, rgba(255, 255, 255, 0) 52%), linear-gradient(180deg, var(--g1), var(--g2));
+    box-shadow: inset 0 -3px 6px rgba(0, 0, 0, .12), 0 4px 8px rgba(60, 40, 170, .3);
+  }
+  :root[data-theme='handheld'] .tabbar a:nth-of-type(1) { --g1: #b9a3ff; --g2: #5a2fd8; }
+  :root[data-theme='handheld'] .tabbar a:nth-of-type(2) { --g1: #7beef0; --g2: #1f8fd0; }
+  :root[data-theme='handheld'] .tabbar a:nth-of-type(3) { --g1: #ffe27a; --g2: #f0a21c; }
+  :root[data-theme='handheld'] .tabbar a:nth-of-type(4) { --g1: #86f3c0; --g2: #1fa77d; }
+  :root[data-theme='handheld'] .tabbar a:nth-of-type(5) { --g1: #ffa6cd; --g2: #e04f9a; }
+  :root[data-theme='handheld'] .tabbar a.active .icon { box-shadow: inset 0 -3px 6px rgba(0, 0, 0, .12), 0 0 0 2px #fff, 0 0 0 3.5px var(--g2), 0 4px 8px rgba(60, 40, 170, .3); }
+  :root[data-theme='handheld'] .tabbar a .avatar { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #a98bff; }
+}
+@media (prefers-reduced-motion: reduce) { :root[data-theme='handheld'] .scene span { animation: none; } }
+.theme-opt[data-t='handheld'] strong { font-family: 'Nunito', sans-serif; font-weight: 900; }
+
+/* ---- Handheld Glow: the weekly ranking gets medals, a trophy and glossy rows ---------------------------------- */
+:root[data-theme='handheld'] .placement {
+  position: relative; padding: .7rem 1rem .7rem 3.2rem; border-radius: 999px; border: 1.5px solid rgba(255, 255, 255, .95);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .85), rgba(190, 180, 255, .35)); box-shadow: inset 0 1px 0 #fff, 0 6px 14px rgba(80, 60, 190, .15);
+}
+:root[data-theme='handheld'] .placement::before {
+  content: ''; position: absolute; left: .55rem; top: 50%; width: 2.1rem; height: 2.1rem; translate: 0 -50%;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23ffe98a'/><stop offset='1' stop-color='%23f0a21c'/></linearGradient></defs><path d='M10 6h20v8c0 7-4.5 11-10 11S10 21 10 14Z' fill='url(%23g)' stroke='%23fff' stroke-width='2.2' stroke-linejoin='round'/><path d='M10 9H5c0 6 2 9 6 10M30 9h5c0 6-2 9-6 10' fill='none' stroke='%23f0a21c' stroke-width='2.4' stroke-linecap='round'/><rect x='17' y='25' width='6' height='6' fill='%23f0a21c'/><rect x='12' y='31' width='16' height='5' rx='2.5' fill='url(%23g)' stroke='%23fff' stroke-width='1.6'/></svg>") center / contain no-repeat;
+  filter: drop-shadow(0 3px 4px rgba(120, 80, 0, .35));
+}
+:root[data-theme='handheld'] .board { display: grid; gap: .4rem; }
+:root[data-theme='handheld'] .board li {
+  border-radius: 20px; padding: .45rem .7rem .45rem .5rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, .35)); border: 1.5px solid rgba(255, 255, 255, .9);
+  box-shadow: 0 3px 8px rgba(80, 60, 190, .1);
+}
+:root[data-theme='handheld'] .board li.me {
+  background: linear-gradient(180deg, #ffffff, #ebe5ff); border-color: #a58cff;
+  box-shadow: 0 0 0 2px rgba(150, 120, 255, .35), 0 6px 14px rgba(80, 60, 190, .2);
+}
+:root[data-theme='handheld'] .rank {
+  display: grid; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 50%; color: #fff; font-weight: 900;
+  background: linear-gradient(180deg, #b6a2ff, #5a39dd); border: 1.5px solid rgba(255, 255, 255, .95); text-shadow: 0 1px 2px rgba(40, 20, 130, .5);
+  box-shadow: inset 0 -3px 5px rgba(0, 0, 0, .12), 0 3px 6px rgba(60, 40, 170, .25);
+}
+:root[data-theme='handheld'] .board li:nth-child(1) .rank { background: linear-gradient(180deg, #ffe98a, #f0a21c); text-shadow: 0 1px 2px rgba(120, 70, 0, .55); }
+:root[data-theme='handheld'] .board li:nth-child(2) .rank { background: linear-gradient(180deg, #f4f6fb, #a6b0c4); text-shadow: 0 1px 2px rgba(60, 70, 100, .5); }
+:root[data-theme='handheld'] .board li:nth-child(3) .rank { background: linear-gradient(180deg, #ffc89a, #c9742f); text-shadow: 0 1px 2px rgba(110, 50, 0, .55); }
+:root[data-theme='handheld'] .board li:nth-child(1) { background: linear-gradient(180deg, rgba(255, 245, 200, .9), rgba(255, 255, 255, .45)); }
+:root[data-theme='handheld'] .board li strong { color: #3a2d9a; }
