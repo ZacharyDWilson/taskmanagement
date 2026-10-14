@@ -7,5 +7,12 @@ export const CUSTOM_SFX = Object.fromEntries(
 )
 export const HAS_CUSTOM_SFX = Object.keys(CUSTOM_SFX).length > 0
 
+// A second, optional set: the "Crisp UI" sound style (src/assets/sfx-crisp/, same naming).
+const crisp = import.meta.glob('../assets/sfx-crisp/*.{mp3,wav,ogg,m4a,webm,aac}', { eager: true, query: '?url', import: 'default' })
+export const CRISP_SFX = Object.fromEntries(
+  Object.entries(crisp).map(([path, url]) => [path.split('/').pop().replace(/.[^.]+$/, '').toLowerCase(), url]),
+)
+export const HAS_CRISP = Object.keys(CRISP_SFX).length > 0
+
 // The moments the app plays sounds for. Name your files after these.
 export const SFX_CUES = ['loading', 'intro', 'celebrate', 'press', 'open', 'close', 'check', 'uncheck', 'success', 'info', 'notification', 'start', 'stop', 'complete']

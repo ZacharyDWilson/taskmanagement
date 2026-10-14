@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { createUISFX, getCue } from 'uisfx'
 import { useTheme } from './theme.jsx'
-import { CUSTOM_SFX, HAS_CUSTOM_SFX } from './customSfx.js'
+import { CUSTOM_SFX, HAS_CUSTOM_SFX, CRISP_SFX, HAS_CRISP } from './customSfx.js'
 import { playAero } from './aeroSound.js'
 
 // Sound effects, from the open-source "UI SFX" library (MIT code, CC0 audio; https://uisfx.com).
@@ -28,7 +28,7 @@ export const SOUND_PACKS = {
   rose: 'soft',         // muted, like felt and paper
 }
 // Only the understated packs are offered. The bright, bleepy ones are left out on purpose.
-export const PACK_LABELS = { aero: 'Aero bubbles', minimal: 'Minimal', soft: 'Soft', studio: 'Studio', zen: 'Zen', organic: 'Organic' }
+export const PACK_LABELS = { ...(HAS_CRISP ? { crisp: 'Crisp UI' } : {}), aero: 'Aero bubbles', minimal: 'Minimal', soft: 'Soft', studio: 'Studio', zen: 'Zen', organic: 'Organic' }
 export const DEFAULT_VOLUME = .85
 
 // '' = the default (your LOCK IN sounds when they exist, otherwise the theme's pack); 'theme' = the theme's pack
@@ -68,7 +68,7 @@ export function SoundProvider({ children }) {
   }, [])
 
   // The theme (or your override) picks the pack.
-  useEffect(() => { try { if (pack !== 'aero') player.current?.setPack(pack) } catch { /* ignore */ } }, [pack])
+  useEffect(() => { try { if (pack !== 'aero') player.current?.setPack(pack === 'crisp' ? 'minimal' : pack) } catch { /* ignore */ } }, [pack])
 
   const volumeRef = useRef(DEFAULT_VOLUME)
   const enabledRef = useRef(true)
@@ -85,6 +85,17 @@ export function SoundProvider({ children }) {
         if (!enabledRef.current) return null
         playAero(cue === 'intro' ? 'intro' : cue, volumeRef.current)
         return { stop() {} }
+      }
+      // "Crisp UI": its own recordings where it has one, trimmed so a long file never rings on, and nudged a touch
+      // in speed each time so the same tap never sounds machine-gunned. Other moments use the Minimal pack.
+      if (packRef.current === 'crisp' && CRISP_SFX[cue]) {
+        if (!enabledRef.current) return null
+        const a = new Audio(CRISP_SFX[cue])
+        a.volume = Math.min(1, Math.max(0, volumeRef.current * 1.3))
+        a.playbackRate = 0.96 + Math.random() * 0.08
+        a.play().catch(() => {})
+        const t = setTimeout(() => a.pause(), 1600)
+        return { stop: () => { clearTimeout(t); a.pause() } }
       }
       const file = signatureRef.current ? CUSTOM_SFX[cue] : null
       if (file) {
