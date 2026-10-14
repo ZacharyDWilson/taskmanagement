@@ -7,6 +7,9 @@ export const CHANGELOG = [
     points: [
       'On a phone the top bar is just Settings, Mail, Help and Log out. Your level and coins are on the Me and Shop pages, and the sound switch lives in Settings.',
       'Your study time chart on the profile page shows its bars on a phone instead of being squashed flat.',
+      'On a phone, tap a day (Mon, Tue ...) in the week planner to open it full screen.',
+      'Tapping a notification in the mail now opens that post in the feed, highlighted at the top.',
+      'Sounds on a phone play when a tap finishes, not while you scroll.',
       'The app icon is fixed (it was a blue square with a stray white blob), so it can be added to your home screen with the right picture.',
     ],
   },

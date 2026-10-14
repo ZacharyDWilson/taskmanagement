@@ -102,10 +102,10 @@ function groupNotifs(notifs) {
     if (n.kind === 'reaction') {
       const g = byPost.get(n.post_id)
       if (g) { g.actors.push(n.actor_id); g.ids.push(n.id); continue }
-      const first = { key: 'r' + n.post_id, kind: 'reaction', actors: [n.actor_id], detail: n.detail, created_at: n.created_at, ids: [n.id] }
+      const first = { key: 'r' + n.post_id, kind: 'reaction', post_id: n.post_id, actors: [n.actor_id], detail: n.detail, created_at: n.created_at, ids: [n.id] }
       byPost.set(n.post_id, first); out.push(first)
     } else {
-      out.push({ key: n.id, kind: n.kind, actors: [n.actor_id], detail: n.detail, created_at: n.created_at, ids: [n.id] })
+      out.push({ key: n.id, kind: n.kind, post_id: n.post_id, actors: [n.actor_id], detail: n.detail, created_at: n.created_at, ids: [n.id] })
     }
   }
   return out
@@ -173,7 +173,7 @@ export default function MailButton() {
                 const d = describe(g, nameOf)
                 const isFresh = g.ids.some(id => fresh.has(id))
                 return (
-                  <Link key={g.key} to="/feed" className={'notif-item' + (isFresh ? ' fresh' : '')} onClick={() => setOpen(false)}>
+                  <Link key={g.key} to={g.post_id ? '/feed?post=' + g.post_id : '/feed'} className={'notif-item' + (isFresh ? ' fresh' : '')} onClick={() => setOpen(false)}>
                     <span className="notif-icon" aria-hidden="true">{d.icon}</span>
                     <span>
                       <p>{d.text}</p>

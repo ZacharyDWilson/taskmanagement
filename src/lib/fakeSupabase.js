@@ -69,6 +69,23 @@ db.user_achievements ??= []
 for (const [id, name, color] of [['demo-m1', 'Priya Shah', 'pink'], ['demo-m2', 'Alex Rivera', 'green']]) {
   if (!db.profiles.some(p => p.id === id)) db.profiles.push({ id, display_name: name, username: null, college: null, bio: '', color, avatar_path: null, frame: 'frame-none', banner: 'banner-solid', theme: 'default', created_at: new Date().toISOString() })
 }
+// the posts those notifications point at, so tapping one in the mail shows a real post
+db.posts ??= []
+for (const r of [
+  { id: 'demo-p1', user_id: ME, body: 'Finished chapter 6 problem set!', kind: 'win', minsAgo: 90 },
+  { id: 'demo-p2', user_id: ME, body: 'Chem notes done', kind: 'study', minsAgo: 150 },
+  { id: 'demo-p3', user_id: 'demo-m2', body: 'Study group at 7, @Preview Admin you in?', kind: 'question', minsAgo: 360, mentions: [ME] },
+]) {
+  if (db.posts.some(x => x.id === r.id)) continue
+  db.posts.push({ id: r.id, user_id: r.user_id, body: r.body, image_path: null, kind: r.kind, edited_at: null, pinned: false, share_kind: null, share_data: null,
+    mentions: r.mentions ?? [], created_at: new Date(Date.now() - r.minsAgo * 60000).toISOString() })
+}
+db.comments ??= []
+if (!db.comments.some(c => c.id === 'demo-c1')) db.comments.push({ id: 'demo-c1', post_id: 'demo-p1', user_id: 'demo-m1', body: 'Great work, which chapter was it?', created_at: new Date(Date.now() - 12 * 60000).toISOString() })
+db.reactions ??= []
+for (const [id, u] of [['demo-r1', 'demo-m1'], ['demo-r2', 'demo-m2']]) {
+  if (!db.reactions.some(x => x.id === id)) db.reactions.push({ id, post_id: 'demo-p2', user_id: u, kind: 'like' })
+}
 db.notifications ??= [
   { id: 'demo-n1', user_id: ME, actor_id: 'demo-m1', kind: 'comment', post_id: 'demo-p1', detail: 'Great work, which chapter was it?', read: false, created_at: new Date(Date.now() - 12 * 60000).toISOString() },
   { id: 'demo-n2', user_id: ME, actor_id: 'demo-m1', kind: 'reaction', post_id: 'demo-p2', detail: 'Chem notes done', read: false, created_at: new Date(Date.now() - 50 * 60000).toISOString() },

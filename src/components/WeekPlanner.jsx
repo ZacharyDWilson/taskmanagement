@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { addDays, DAY_NAMES, fmtDay, isoDate, startOfWeek } from '../lib/dates.js'
 import { classesFrom } from '../lib/tasks.js'
 import { colorHex } from '../lib/colors.js'
@@ -63,7 +64,21 @@ function MonthGrid({ tasks, anchor, onOpenDay, onOpenTask, move }) {
 }
 
 // One column of the planner: a single weekday, or Saturday + Sunday together as "Weekend".
-function Column({ title, dates, tasks, toggle, remove, move, onOpen }) {
+// true on a phone-sized screen, where a tap on a day opens it full screen
+function usePhone() {
+  const q = '(max-width: 700px)'
+  const [on, setOn] = useState(() => typeof matchMedia === 'function' && matchMedia(q).matches)
+  useEffect(() => {
+    if (typeof matchMedia !== 'function') return
+    const m = matchMedia(q)
+    const f = () => setOn(m.matches)
+    m.addEventListener('change', f)
+    return () => m.removeEventListener('change', f)
+  }, [])
+  return on
+}
+
+function Column({ title, dates, tasks, toggle, remove, move, onOpen, onExpand, full }) {
   const [over, setOver] = useState(false)
   const keys = dates.map(isoDate)
   const isWeekend = dates.length > 1
@@ -86,7 +101,9 @@ function Column({ title, dates, tasks, toggle, remove, move, onOpen }) {
       onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget)) setOver(false) }}
       onDrop={drop}
     >
-      <h3>
+      <h3 className={onExpand ? 'day-head tappable' : 'day-head'} onClick={onExpand}
+        role={onExpand ? 'button' : undefined} tabIndex={onExpand ? 0 : undefined}
+        onKeyDown={onExpand ? e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onExpand() } } : undefined}>
         {title}{' '}
         <small>{isWeekend ? `${fmtDay(dates[0])} – ${fmtDay(dates[1])}` : fmtDay(dates[0])}</small>
         {items.length > 0 && <small className="count">{done}/{items.length} done</small>}
@@ -107,6 +124,8 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
   const [mode, setMode] = useState('week')                 // 'day' | 'week' | 'month'
   const [anchor, setAnchor] = useState(() => new Date())    // the day / week / month being looked at
   const [filter, setFilter] = useState(ALL)                 // class filter
+  const phone = usePhone()
+  const [big, setBig] = useState(null)                      // a day opened full screen (phones)
 
   const classes = classesFrom(tasks)
   const hasUnclassed = tasks.some(t => !t.course)
@@ -177,7 +196,7 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
         <div className="week">
           {columns.map(c => (
             <Column key={c.title} {...c} tasks={visible} toggle={toggle} remove={remove}
-              move={move} onOpen={onOpen} />
+              move={move} onOpen={onOpen} onExpand={phone ? () => setBig(c.title) : undefined} />
           ))}
         </div>
       )}
@@ -193,6 +212,21 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
         <MonthGrid tasks={visible} anchor={anchor} move={move} onOpenTask={onOpen}
           onOpenDay={d => { setAnchor(d); setMode('day') }} />
       )}
+      {big && (() => {
+        const c = columns.find(x => x.title === big)
+        if (!c) return null
+        return createPortal(
+          <div className="day-full" role="dialog" aria-modal="true" aria-label={c.title}>
+            <div className="day-full-bar">
+              <button type="button" className="secondary" onClick={() => setBig(null)}>← Back</button>
+              <span>{label}</span>
+            </div>
+            <Column {...c} tasks={visible} toggle={toggle} remove={remove} move={move}
+              onOpen={t => { setBig(null); onOpen(t) }} full />
+          </div>,
+          document.body,
+        )
+      })()}
     </section>
   )
 }

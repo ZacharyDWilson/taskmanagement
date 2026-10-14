@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
 import { publicUrl, removeImage, thumbUrl, uploadImage } from '../lib/storage.js'
@@ -233,7 +233,7 @@ function Lightbox({ src, alt, onClose }) {
   )
 }
 
-function PostCard({ post, onChanged, onEdited, badges, names, isAdmin }) {
+function PostCard({ post, onChanged, onEdited, badges, names, isAdmin, focus }) {
   const { user } = useAuth()
   const toast = useToast()
   const author = post.profiles
@@ -314,7 +314,7 @@ function PostCard({ post, onChanged, onEdited, badges, names, isAdmin }) {
   const tag = kindOf(post.kind)
 
   return (
-    <article className={'card post' + (post.pinned ? ' pinned' : '')}>
+    <article className={'card post' + (post.pinned ? ' pinned' : '') + (focus ? ' focus-post' : '')}>
       {post.pinned && <span className="pin-flag">📌 Pinned</span>}
       <header className="row">
         <Avatar name={author?.display_name} path={author?.avatar_path} color={author?.color}
@@ -460,6 +460,31 @@ export default function Feed() {
   const [busy, setBusy] = useState(false)
   const [names, setNames] = useState(() => new Map())   // user id -> name, for "who reacted"
   const asked = useRef(new Set())
+  const [params, setParams] = useSearchParams()
+  const focusId = params.get('post')
+  const [focusPost, setFocusPost] = useState(null)      // the post a mail notification pointed at
+  const [focusGone, setFocusGone] = useState(false)
+
+  // opened from the mail: fetch that one post and show it first, highlighted
+  useEffect(() => {
+    setFocusPost(null); setFocusGone(false)
+    if (!focusId) return
+    let alive = true
+    ;(async () => {
+      let row = null
+      if (DEMO && focusId.startsWith('demo-')) row = demoPosts().find(p => p.id === focusId) ?? null // DEMO
+      if (!row) {
+        const { data } = await supabase.from('posts').select(POST_COLS).eq('id', focusId).maybeSingle()
+        row = data ?? null
+      }
+      if (!alive) return
+      if (row) { setFocusPost(row); learnNames([row]) } else setFocusGone(true)
+    })()
+    return () => { alive = false }
+  }, [focusId]) // eslint-disable-line
+  useEffect(() => {
+    if (focusPost) setTimeout(() => document.querySelector('.post.focus-post')?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 150)
+  }, [focusPost])
 
   // only names not already known are fetched, then added to what we have
   async function learnNames(rows) {
@@ -523,7 +548,15 @@ export default function Feed() {
           </p>
         </div>
       )}
-      {posts?.map(p => <PostCard key={p.id} post={p} onChanged={reload} onEdited={edited} badges={badges} names={names} isAdmin={isAdmin} />)}
+      {focusId && (
+        <div className="focus-note">
+          <span>{focusGone ? 'That post is gone (posts disappear after 14 days).' : 'The post from your mail'}</span>
+          <button type="button" className="secondary" onClick={() => setParams({}, { replace: true })}>Show the whole feed</button>
+        </div>
+      )}
+      {focusPost && <PostCard key={'f' + focusPost.id} post={focusPost} focus onChanged={() => { setParams({}, { replace: true }); reload() }}
+        onEdited={(id, patch) => setFocusPost(p => (p ? { ...p, ...patch } : p))} badges={badges} names={names} isAdmin={isAdmin} />}
+      {posts?.filter(p => p.id !== focusId).map(p => <PostCard key={p.id} post={p} onChanged={reload} onEdited={edited} badges={badges} names={names} isAdmin={isAdmin} />)}
       {more && (
         <div className="feed-more">
           <button type="button" className="secondary" disabled={busy} onClick={() => load(true, posts.filter(p => !p.demo).length)}>

@@ -3878,3 +3878,23 @@ button.danger { color: #c0392b; border-color: color-mix(in srgb, #c0392b 45%, tr
   .nav .brand { display: inline-flex !important; position: absolute; left: 50%; top: 50%; translate: -50% -50%; margin: 0; z-index: 1; }
   .nav .brand .logo-mark { opacity: 1; }
 }
+
+
+/* ---- Phones: tap a day (Mon, Tue ...) in the week to open it full screen -------------------------------------------- */
+.day-head.tappable { cursor: pointer; }
+.day-head.tappable::after { content: '⤢'; float: right; opacity: .55; font-size: .9em; }
+.day-full { position: fixed; inset: 0; z-index: 80; display: flex; flex-direction: column; gap: .8rem; overflow-y: auto;
+  padding: calc(.8rem + env(safe-area-inset-top)) .9rem calc(1rem + env(safe-area-inset-bottom));
+  background: linear-gradient(165deg, var(--sky-1), var(--sky-2)); color: var(--text); }
+.day-full-bar { display: flex; align-items: center; justify-content: space-between; gap: .8rem; font-weight: 700; }
+.day-full-bar span { text-align: right; font-size: .9rem; color: var(--muted); }
+.day-full .day { flex: 1 1 auto; min-width: 0; width: 100%; }
+.day-full .day h3 { font-size: 1.6rem; }
+.day-full .day h3 small { font-size: .95rem; }
+.day-full .tasks.scroll { max-height: none; overflow: visible; }
+.day-full .task { font-size: 1.05rem; padding: .8rem .9rem; }
+
+
+/* a post opened from the mail */
+.focus-note { display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; margin: .2rem 0 .6rem; font-size: .9rem; font-weight: 600; }
+.post.focus-post { outline: 3px solid var(--accent); outline-offset: 2px; }
