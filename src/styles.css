@@ -3898,3 +3898,32 @@ button.danger { color: #c0392b; border-color: color-mix(in srgb, #c0392b 45%, tr
 /* a post opened from the mail */
 .focus-note { display: flex; align-items: center; justify-content: space-between; gap: .6rem; flex-wrap: wrap; margin: .2rem 0 .6rem; font-size: .9rem; font-weight: 600; }
 .post.focus-post { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+
+/* ---- Find people (Feed) ---------------------------------------------------------------------------------------------- */
+.people-search { position: relative; margin: 0 0 .8rem; }
+.people-search input { width: 100%; }
+.people-results { list-style: none; margin: .35rem 0 0; padding: .35rem; display: flex; flex-direction: column; gap: .15rem;
+  background: var(--glass-strong, var(--glass)); border: 1px solid var(--glass-line); border-radius: var(--r-sm, 14px);
+  box-shadow: var(--glass-shadow); -webkit-backdrop-filter: blur(var(--blur)); backdrop-filter: blur(var(--blur)); }
+.people-results li { padding: 0; }
+.people-results li.muted { padding: .5rem .6rem; }
+.people-results a { display: flex; align-items: center; gap: .6rem; padding: .4rem .5rem; border-radius: 10px; color: var(--text); text-decoration: none; }
+.people-results a:hover, .people-results a:focus-visible { background: color-mix(in srgb, var(--accent) 14%, transparent); outline: none; }
+
+/* ---- Profile: the number tiles never trigger a scrollbar, and they flex with a long bio ------------------------------ */
+.profile-fit .col { overflow-x: clip; }
+.profile-fit .tiles .tile:hover { scale: 1; translate: 0 0; }
+.profile-fit .profile-head p { overflow-wrap: anywhere; }
+.profile-fit > .col > .tiles { min-height: 9.5rem; }
+.profile-fit > .col > .tiles .tile { min-height: 0; padding: .5rem .6rem; overflow: hidden; }
+.profile-fit > .col > .tiles .tile strong { font-size: clamp(1.15rem, 2.6vh, 1.8rem); }
+.profile-fit > .col > .tiles .tile span { font-size: clamp(.7rem, 1.6vh, .82rem); text-align: center; }
+.profile-fit > .col { overflow-y: auto; overflow-x: clip; scrollbar-width: thin; }
+
+/* a long bio: the profile card gives up room by scrolling the bio itself, and the number tiles shrink with what is left */
+.profile-fit > .col > .card.profile-head:not(.fill) { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.profile-fit .profile-head > * { flex: none; }
+.profile-fit .profile-head > .profile-bio { flex: 0 1 auto; min-height: 2.6rem; overflow-y: auto; scrollbar-width: thin; margin-bottom: .8rem; }
+.profile-fit > .col > .tiles { flex: 1 1 0; min-height: 5.5rem; }
+.profile-fit > .col > .tiles .tile { padding: .3rem .5rem; }

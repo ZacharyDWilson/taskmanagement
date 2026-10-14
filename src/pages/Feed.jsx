@@ -12,6 +12,7 @@ import Avatar from '../components/Avatar.jsx'
 import { POST_KINDS } from '../lib/postKinds.js'
 import ShareButton from '../components/ShareButton.jsx'
 import MentionField from '../components/MentionField.jsx'
+import PeopleSearch from '../components/PeopleSearch.jsx'
 import RichText from '../components/RichText.jsx'
 import { mentionedIds, useMembers } from '../lib/members.js'
 import { DEMO, demoComments, demoPosts } from '../lib/demo.js' // DEMO
@@ -524,6 +525,7 @@ export default function Feed() {
   return (
     <div className="narrow">
       <h1>Progress feed</h1>
+      <PeopleSearch />
       <Composer onPosted={() => { if (tab !== 'all' || photoOnly) { setTab('all'); setPhotoOnly(false) } else reload() }} />
       <div className="feed-filters">
         <div className="tabs" role="tablist" aria-label="Show">

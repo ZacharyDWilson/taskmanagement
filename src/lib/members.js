@@ -5,7 +5,7 @@ import { supabase } from './supabase.js'
 let memo = null
 export function loadMembers() {
   if (!supabase) return Promise.resolve([])
-  memo ??= supabase.from('profiles').select('id, display_name, avatar_path, color, frame').order('display_name')
+  memo ??= supabase.from('profiles').select('id, display_name, username, avatar_path, color, frame').order('display_name')
     .then(({ data }) => data ?? [])
   return memo
 }

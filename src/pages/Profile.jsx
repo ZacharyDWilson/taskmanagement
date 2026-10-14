@@ -201,7 +201,7 @@ export default function Profile() {
           </div>
           <LevelCard xp={xp} />
           <BadgeStrip userId={userId} mine={mine} />
-          {profile.bio && <p>{profile.bio}</p>}
+          {profile.bio && <p className="profile-bio">{profile.bio}</p>}
           {!profile.bio && !mine && <p className="muted">No bio yet.</p>}
         </section>
 

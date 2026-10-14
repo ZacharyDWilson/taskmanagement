@@ -1,5 +1,41 @@
 # LOCK IN
 
+> A calm, private place for a group of friends to plan their work, focus together, and keep each other going.
+
+## About the app
+
+LOCK IN is a small study-and-tasks site built for one group of friends (about twenty people), not for the public. It is invite-only, it runs for free, and it is meant to feel more like a shared room than a social network: no ads, no algorithm, nothing to scroll forever.
+
+### What you can do here
+| Page | What it is for |
+|---|---|
+| **Home (Overview)** | Your day at a glance: what is due today, your week so far, your Canvas / Brightspace assignments, and the leaderboard. A single **LOCK IN: Focus** button starts a session. |
+| **To Do** | Plan tasks into days of the week. Drag a task onto a day (or tap a day on a phone to open it full screen). Finished tasks earn XP. |
+| **Feed** | Share what you finished, a question, a win, or a photo of your notes. React, comment, tag friends with @, and look people up to visit their profiles. Posts disappear after 14 days to keep things light. |
+| **Study** | A Pomodoro or count-up timer, plus Study Buddy: open yourself up to study and pair with a friend. |
+| **Me (Profile)** | Your picture, banner, bio, level, badges, posts and a chart of your study time each day. Friends' profiles look the same. |
+| **Shop and Achievements** | Spend coins on themes, frames and banners. Unlock badges for streaks, focus time and helping others. |
+
+### How progress works
+- **XP** comes from focus minutes, finished tasks, posts and reactions you receive; levels follow from XP.
+- **Coins** come from XP and level-ups, and are spent in the Shop. Spending never lowers your level.
+- **Nothing is graded and nothing is public.** The leaderboard is only your friend group.
+
+### House rules (the short version)
+Be kind, don't share anything private about someone else, and keep it useful. You accept the full community rules when you sign up and again when they change. Anyone can report a post or comment; the admin can mute or remove content.
+
+### Your data
+- Posts and photos are deleted automatically after 14 days; finished tasks after 14 days, unfinished ones after 21 days.
+- Old study history is rolled up into totals so your XP and badges stay correct.
+- You can download your own posts from your profile.
+
+### Install it like an app
+On a phone, open the site and use **Add to Home Screen** (iPhone) or **Install app** (Android). On a computer, use the install icon in the address bar.
+
+---
+
+# For the person running it (setup and developer notes)
+
 React + Vite frontend hosted on GitHub Pages, with Supabase as the backend (login, database, file storage).
 
 ## One-time setup
