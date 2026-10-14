@@ -3,6 +3,7 @@ import { createUISFX, getCue } from 'uisfx'
 import { useTheme } from './theme.jsx'
 import { CUSTOM_SFX, HAS_CUSTOM_SFX, CRISP_SFX, HAS_CRISP } from './customSfx.js'
 import { playAero } from './aeroSound.js'
+import STARTUP_SOUND from '../assets/intro/startup.mp3?url'
 
 // Sound effects, from the open-source "UI SFX" library (MIT code, CC0 audio; https://uisfx.com).
 // Every theme gets its own sound personality (a "pack"). Same actions, different feel.
@@ -81,6 +82,15 @@ export function SoundProvider({ children }) {
 
   const play = useCallback((cue, options) => {
     try {
+      // the startup sound that plays when the globe appears, the same in every theme
+      if (cue === 'intro') {
+        if (!enabledRef.current) return null
+        const a = new Audio(STARTUP_SOUND)
+        a.volume = Math.min(1, Math.max(0, volumeRef.current * 1.2))
+        const promise = a.play()
+        promise?.catch?.(() => {})
+        return { stop: () => a.pause(), promise }
+      }
       if (packRef.current === 'aero') {
         if (!enabledRef.current) return null
         playAero(cue === 'intro' ? 'intro' : cue, volumeRef.current)

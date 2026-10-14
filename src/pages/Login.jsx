@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
@@ -33,6 +33,14 @@ function Splash({ onDone, waiting = false }) {
   const music = useMusic()
   const [now, setNow] = useState(() => new Date())
   const [leaving, setLeaving] = useState(false)
+  const startedRef = useRef(false)   // the startup sound has actually begun
+
+  // the startup sound as the globe appears; if the browser blocks sound before a first tap, the tap plays it instead
+  useEffect(() => {
+    if (waiting) return
+    const r = play('intro')
+    r?.promise?.then(() => { startedRef.current = true }).catch(() => {})
+  }, [waiting]) // eslint-disable-line
 
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 15000)
@@ -43,7 +51,7 @@ function Splash({ onDone, waiting = false }) {
     if (waiting || leaving) return
     setLeaving(true)
     music.setPhase('quiet')
-    play('intro')
+    if (!startedRef.current) play('intro')
     setTimeout(onDone, 750)
   }
   // Moves on by itself after a few seconds, or as soon as you tap.
