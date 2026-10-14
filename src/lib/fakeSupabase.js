@@ -243,6 +243,17 @@ const FAKE_PEOPLE = () => [
 const rpcs = {
   is_admin: () => true,
   admin_post_announcement: args => { db.announcements.unshift({ id: 'a-' + Date.now(), title: args?.head, body: args?.msg ?? '', major: !!args?.is_major, created_at: new Date().toISOString(), expires_at: null }); save(); return null },
+  streak_status: args => {
+    const day = args?.local_day ?? new Date().toISOString().slice(0, 10)
+    const week = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(day + 'T00:00:00'); d.setDate(d.getDate() - (6 - i))
+      const done = i !== 2
+      return { day: d.toISOString().slice(0, 10), mins: done ? 25 + i * 5 : 0, done }
+    })
+    const claimed = !!db.streak_claimed_today
+    return { streak: 12, best: 12, today_minutes: 40, today_done: true, claimed_today: claimed, week }
+  },
+  claim_streak_bonus: () => { db.streak_claimed_today = true; save(); return { streak: 12, amount: 30, milestone: 0 } },
   accept_terms: args => { if (db.profiles[0]) db.profiles[0].tos_version = args?.v ?? 1; save(); return null },
   admin_overview: () => ({ users: 3, new_7d: 2, active_7d: 3, focus_hours_7d: 31.5, posts: 6, posts_7d: 4, comments: 15, reports_open: 1, muted: 1, banned: 0, tasks_done_7d: 22 }),
   admin_list_users: () => FAKE_PEOPLE(),

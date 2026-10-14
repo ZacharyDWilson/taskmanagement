@@ -3,6 +3,14 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.30', date: '2026-10-14', title: 'Study streaks',
+    points: [
+      'The Study page has a streak card: a flame with your day count on it that glows brighter and hotter the longer the streak.',
+      'Focus 10 minutes in a day to count it, then press Claim for coins: 3 per streak day, up to 30 a day from day 10, plus +75 at 14 days and +250 at 30 days.',
+      'One missed day in a week is forgiven. Your best streak is kept.',
+    ],
+  },
+  {
     version: '2.29', date: '2026-10-14', title: 'Turn the globe off',
     points: [
       'Settings > Animations has a new switch, "Show the welcome globe when the app opens". Turn it off and the app opens straight to your page. It is saved on that device.',

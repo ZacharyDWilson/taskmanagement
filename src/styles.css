@@ -3977,3 +3977,32 @@ button.feed-section-head .caret { flex: none; }
 
 /* the intro that moves on by itself: a slow 2 second fade instead of the quick zoom */
 .splash.leaving-slow { transform: scale(1.06); opacity: 0; transition: transform 2s ease, opacity 2s ease; }
+
+/* ---- Study streak: a flame graphic with the day count on it, glowing brighter the longer the streak ----------------- */
+.streak-card { display: flex; flex-direction: column; gap: .7rem; }
+.streak-top { display: flex; align-items: center; gap: 1rem; }
+.streak-text h2 { margin: 0 0 .15rem; }
+.flame { position: relative; flex: none; width: 5.2rem; height: 6.5rem; display: grid; place-items: center; }
+.flame svg { width: 100%; height: 100%; overflow: visible; transform-origin: 50% 90%;
+  filter: drop-shadow(0 0 var(--glow, 0) rgba(255, 140, 20, var(--glow-alpha, 0))) drop-shadow(0 0 calc(var(--glow, 0) * .5) rgba(255, 210, 70, var(--glow-alpha, 0))); }
+.flame.lit svg { animation: flame-flicker 1.9s ease-in-out infinite; }
+.flame.hot svg { animation-duration: 1.2s; }
+.flame-num { position: absolute; bottom: 1.05rem; left: 0; right: 0; text-align: center; font-weight: 900; font-size: 1.7rem; line-height: 1;
+  color: #fff; font-family: var(--font-head); pointer-events: none;
+  text-shadow: 0 0 calc(4px + var(--glow, 0) * .35) rgba(255, 245, 190, calc(.5 + var(--heat, 0) * .5)), 0 2px 3px rgba(120, 40, 0, .75); }
+.flame:not(.lit) .flame-num { color: #e5e7eb; text-shadow: 0 1px 2px rgba(0, 0, 0, .35); }
+@keyframes flame-flicker {
+  0%, 100% { transform: scale(1) rotate(-1deg); }
+  35% { transform: scale(1.04, 1.07) rotate(1.2deg); }
+  65% { transform: scale(.985, 1.03) rotate(-.6deg); }
+}
+.streak-week { display: flex; gap: .45rem; }
+.streak-dot { flex: 1; height: .55rem; border-radius: 999px; background: color-mix(in srgb, var(--muted) 28%, transparent); }
+.streak-dot.done { background: linear-gradient(90deg, #ff8a1f, #ffd23f); box-shadow: 0 0 8px rgba(255, 150, 30, .55); }
+.streak-dot.today { outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent); outline-offset: 1px; }
+.streak-claim { width: 100%; }
+.streak-how summary { cursor: pointer; font-size: .85rem; color: var(--muted); }
+.streak-how p { margin: .4rem 0 0; }
+@media (max-width: 700px) { .flame { width: 4.4rem; height: 5.5rem; } .flame-num { font-size: 1.45rem; bottom: .9rem; } }
+@media (prefers-reduced-motion: reduce) { .flame.lit svg { animation: none; } }
+:root[data-motion='reduced'] .flame.lit svg { animation: none; }
