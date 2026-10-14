@@ -3950,3 +3950,11 @@ button.danger { color: #c0392b; border-color: color-mix(in srgb, #c0392b 45%, tr
 }
 .feed-body { display: flex; flex-direction: column; gap: 1.1rem; min-width: 0; }
 .feed-page > h1 { margin-bottom: .8rem; }
+
+
+/* Canvas / Brightspace: choose where an assignment goes */
+.canvas-addall { display: inline-flex; gap: .5rem; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
+.canvas-addall select { max-width: 11.5rem; }
+.canvas-add-btns { display: inline-flex; gap: .4rem; flex-wrap: wrap; justify-content: flex-end; }
+.canvas-add-btns button { padding: .35rem .6rem; font-size: .8rem; white-space: nowrap; }
+@media (max-width: 700px) { .canvas-list li { flex-wrap: wrap; } .canvas-add-btns { width: 100%; justify-content: flex-start; } }

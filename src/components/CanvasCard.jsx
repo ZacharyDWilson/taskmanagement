@@ -78,6 +78,7 @@ function ConnectDialog({ canvas, onClose }) {
 
 // A pop-up with every assignment in one week, grouped by day, each with an Add button (and "Add all").
 function AssignmentsDialog({ title, range, list, added, onAdd, onClose }) {
+  const [where, setWhere] = useState('due')    // 'Add all' goes to: 'due' = each on its due date, 'plan' = the To plan list
   const days = []
   for (const a of list) {
     const k = dayKey(a)
@@ -90,9 +91,15 @@ function AssignmentsDialog({ title, range, list, added, onAdd, onClose }) {
     <PickerModal title={title} hint={range} onClose={onClose}>
       <div className="row between">
         <span className="muted small">{list.length} found · {list.length - todo.length} already on your To Do</span>
-        <button type="button" disabled={todo.length === 0} onClick={() => todo.forEach(onAdd)}>
-          {todo.length === 0 ? 'All added' : `Add all (${todo.length})`}
-        </button>
+        <span className="canvas-addall">
+          <select value={where} onChange={e => setWhere(e.target.value)} aria-label="Where Add all puts them">
+            <option value="due">On their due dates</option>
+            <option value="plan">To plan (unplanned)</option>
+          </select>
+          <button type="button" disabled={todo.length === 0} onClick={() => todo.forEach(a => onAdd(a, where))}>
+            {todo.length === 0 ? 'All added' : `Add all (${todo.length})`}
+          </button>
+        </span>
       </div>
       <div className="canvas-days">
         {days.map(d => (
@@ -107,7 +114,12 @@ function AssignmentsDialog({ title, range, list, added, onAdd, onClose }) {
                   </div>
                   {added.has(a.uid)
                     ? <span className="owned small">✓ Added</span>
-                    : <button type="button" className="secondary" onClick={() => onAdd(a)}>Add</button>}
+                    : (
+                      <span className="canvas-add-btns">
+                        <button type="button" className="secondary" onClick={() => onAdd(a, 'due')} title="Put it on the day it is due">On due date</button>
+                        <button type="button" className="secondary" onClick={() => onAdd(a, 'plan')} title="Put it in the To plan list to schedule later">To plan</button>
+                      </span>
+                    )}
                 </li>
               ))}
             </ul>
@@ -137,9 +149,10 @@ export default function CanvasCard({ tasks = [], onAdd }) {
     return { offset, label: offset === 0 ? 'This week' : 'Next week', range: `${fmtDay(start)} – ${fmtDay(addDays(start, 6))}`, list }
   })
 
-  function add(a) {
+  function add(a, where = 'due') {
     const key = dayKey(a)
-    onAdd?.(a.title, key, 'blue', {                       // planned on the day it is due
+    // 'due': planned on the day it is due. 'plan': goes to the To plan list (no day), still remembering its due date.
+    onAdd?.(a.title, where === 'plan' ? null : key, 'blue', {
       course: a.course, category: 'Homework', due_date: key,
       due_time: a.allDay ? null : new Date(a.due).toTimeString().slice(0, 5),
       notes: a.url ? `From Canvas: ${a.url}` : 'From Canvas', canvas_uid: a.uid,

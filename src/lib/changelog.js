@@ -3,6 +3,13 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.24', date: '2026-10-14', title: 'You choose where Canvas tasks go',
+    points: [
+      'Adding a Canvas / Brightspace assignment now lets you pick: On due date (planned on the day it is due) or To plan (the unplanned list, to schedule later).',
+      'Add all has the same choice, and the due date is kept either way.',
+    ],
+  },
+  {
     version: '2.23', date: '2026-10-14', title: 'Tour first, rules after',
     points: [
       'New accounts now get the welcome tour first. The community rules open right after the tour is finished or skipped, so they no longer sit on top of it.',
