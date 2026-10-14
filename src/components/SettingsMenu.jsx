@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useIsAdmin } from '../lib/moderation.js'
 import { useSound, PACK_LABELS, SOUND_PACKS, SIGNATURE } from '../lib/sfx.jsx'
-import { useMusic } from '../lib/music.jsx'
+import { useMusic, TRACKS } from '../lib/music.jsx'
 import { useNotify } from '../lib/notify.jsx'
 import { useReducedMotion, useDockAnimated } from '../lib/motion.js'
 import { useInstall, platform } from '../lib/install.js'
@@ -56,6 +56,11 @@ export default function SettingsMenu() {
               <input type="checkbox" checked={music.musicOn} disabled={!sound.enabled}
                 onChange={e => music.setMusicOn(e.target.checked)} />
               Quiet background music <span className="muted small">(pauses while the timer runs)</span>
+            </label>
+            <label>Music
+              <select value={music.track} disabled={!sound.enabled || !music.musicOn} onChange={e => music.setTrack(e.target.value)}>
+                {TRACKS.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
+              </select>
             </label>
             <label>Volume
               <input type="range" min="0" max="1" step="0.05" value={sound.volume} disabled={!sound.enabled}

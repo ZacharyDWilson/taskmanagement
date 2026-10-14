@@ -44,6 +44,76 @@ const SoundContext = createContext({
 })
 export const useSound = () => useContext(SoundContext)
 
+// ---- Crisp UI voice -------------------------------------------------------------------------------------------
+// Every recording is levelled to the same loudness when it is decoded (hover a bit softer), only one plays at a time
+// (a new sound fades the old one out in a blink), and a plain press right after a more specific sound (like closing
+// a pop-up) stays quiet, so the two never pile up.
+const CRISP_TARGET_RMS = .11
+const CRISP_WEIGHT = { hover: .55 }
+const crisp = { ctx: null, bufs: {}, loading: {}, voice: null }
+function crispCtx() {
+  if (!crisp.ctx) { const AC = window.AudioContext || window.webkitAudioContext; crisp.ctx = AC ? new AC() : null }
+  return crisp.ctx
+}
+function crispLoad(cue) {
+  const ctx = crispCtx()
+  if (!ctx || !CRISP_SFX[cue]) return Promise.resolve(null)
+  if (crisp.bufs[cue]) return Promise.resolve(crisp.bufs[cue])
+  crisp.loading[cue] ??= fetch(CRISP_SFX[cue]).then(r => r.arrayBuffer()).then(b => ctx.decodeAudioData(b)).then(buf => {
+    // loudness of the part that actually sounds (ignore the silence around short clips)
+    let sum = 0, n = 0, peak = 0
+    for (let c = 0; c < buf.numberOfChannels; c++) {
+      const a = buf.getChannelData(c)
+      for (let i = 0; i < a.length; i++) { const v = a[i], m = v < 0 ? -v : v; if (m > peak) peak = m; if (m > .01) { sum += v * v; n++ } }
+    }
+    const rms = n ? Math.sqrt(sum / n) : 0
+    const gain = rms && peak ? Math.min(CRISP_TARGET_RMS / rms, .95 / peak, 4) : 1
+    crisp.bufs[cue] = { buf, gain }
+    return crisp.bufs[cue]
+  }).catch(() => null)
+  return crisp.loading[cue]
+}
+function playCrisp(cue, volume) {
+  const ctx = crispCtx()
+  if (!ctx) return null
+  const now = performance.now()
+  const v = crisp.voice
+  if (v && v.alive) {
+    const age = now - v.t
+    if (cue === 'press' && age < 350) return null          // a more specific sound just started
+    if (cue === 'hover' && age < 450) return null
+  }
+  const start = entry => {
+    if (!entry) return null
+    if (ctx.state === 'suspended') ctx.resume().catch(() => {})
+    const t = ctx.currentTime
+    if (crisp.voice?.alive) { try { crisp.voice.fade() } catch { /* already gone */ } }
+    const src = ctx.createBufferSource()
+    src.buffer = entry.buf
+    src.playbackRate.value = 0.97 + Math.random() * 0.06       // never the exact same tap twice
+    const g = ctx.createGain()
+    g.gain.value = Math.min(1, volume * 1.3) * entry.gain * (CRISP_WEIGHT[cue] ?? 1)
+    src.connect(g); g.connect(ctx.destination)
+    const voice = { t: performance.now(), alive: true }
+    voice.fade = () => {
+      const n = ctx.currentTime
+      g.gain.cancelScheduledValues(n); g.gain.setValueAtTime(g.gain.value, n); g.gain.linearRampToValueAtTime(0, n + .05)
+      try { src.stop(n + .06) } catch { /* ignore */ }
+      voice.alive = false
+    }
+    src.onended = () => { voice.alive = false }
+    src.start(t)
+    const dur = entry.buf.duration / src.playbackRate.value
+    if (dur > 1.6) { g.gain.setValueAtTime(g.gain.value, t + 1.3); g.gain.linearRampToValueAtTime(0, t + 1.6); src.stop(t + 1.65) }  // long files never ring on
+    crisp.voice = voice
+    return { stop: () => voice.alive && voice.fade() }
+  }
+  const have = crisp.bufs[cue]
+  if (have) return start(have)
+  crispLoad(cue).then(e => { if (e && !(crisp.voice?.alive)) start(e) })
+  return null
+}
+
 export function SoundProvider({ children }) {
   const { theme } = useTheme()
   const player = useRef(null)
@@ -76,6 +146,7 @@ export function SoundProvider({ children }) {
   volumeRef.current = volume
   enabledRef.current = enabled
   const signatureRef = useRef(false)
+  useEffect(() => { if (pack === 'crisp') Object.keys(CRISP_SFX).forEach(c => crispLoad(c)) }, [pack])
   const packRef = useRef('minimal')
   packRef.current = pack
   signatureRef.current = useSignature
@@ -96,16 +167,10 @@ export function SoundProvider({ children }) {
         playAero(cue === 'intro' ? 'intro' : cue, volumeRef.current)
         return { stop() {} }
       }
-      // "Crisp UI": its own recordings where it has one, trimmed so a long file never rings on, and nudged a touch
-      // in speed each time so the same tap never sounds machine-gunned. Other moments use the Minimal pack.
+      // "Crisp UI": its own recordings, one voice at a time (see playCrisp). Other moments use the Minimal pack.
       if (packRef.current === 'crisp' && CRISP_SFX[cue]) {
         if (!enabledRef.current) return null
-        const a = new Audio(CRISP_SFX[cue])
-        a.volume = Math.min(1, Math.max(0, volumeRef.current * 1.3))
-        a.playbackRate = 0.96 + Math.random() * 0.08
-        a.play().catch(() => {})
-        const t = setTimeout(() => a.pause(), 1600)
-        return { stop: () => { clearTimeout(t); a.pause() } }
+        return playCrisp(cue, volumeRef.current)
       }
       const file = signatureRef.current ? CUSTOM_SFX[cue] : null
       if (file) {

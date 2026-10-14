@@ -1,6 +1,6 @@
 "Crisp UI" sound style. Files here are named after the moment they play (.mp3 .wav .ogg .m4a work):
 
-  press.mp3          every button press
+  (press.mp3 removed: button presses use the Minimal pack)
   hover.mp3          pointing at something clickable (mouse only)
   uncheck.mp3        switching something off
   close.mp3          closing a pop-up / going back

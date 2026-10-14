@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import ambientUrl from '../assets/music/ambient.mp3'
+import coffeeUrl from '../assets/music/coffee-morning.mp3'
+import slowBurnUrl from '../assets/music/slow-burn.mp3'
 import { useSound } from './sfx.jsx'
 import { usePomodoro } from './pomodoro.jsx'
 
@@ -8,13 +10,35 @@ import { usePomodoro } from './pomodoro.jsx'
 //  - drops to a very quiet bed once you're past it (and stays there while you use the app),
 //  - switches off while the focus timer is running, and comes back when it stops,
 //  - loops with no gap: each pass is cross-faded into the next, so there is never a seam.
-const SPLASH_LEVEL = 1.2    // × your volume setting
-const QUIET_LEVEL = .3      // × your volume setting
+const SPLASH_LEVEL = 1.7    // × your volume setting
+const QUIET_LEVEL = .43     // × your volume setting
+const TARGET_RMS = .1       // every track is evened out to this loudness, so switching tracks never jumps in volume
+
+// The tracks you can pick in Settings. Each is only downloaded when it is the one playing.
+export const TRACKS = [
+  { id: 'ambient', label: 'Ambient', url: ambientUrl },
+  { id: 'coffee', label: 'Coffee morning', url: coffeeUrl },
+  { id: 'lofi', label: 'Slow burn (lofi)', url: slowBurnUrl },
+]
+const TRACK_KEY = 'lock-in-music-track'
+const readTrack = () => { try { const t = localStorage.getItem(TRACK_KEY); return TRACKS.some(x => x.id === t) ? t : 'ambient' } catch { return 'ambient' } }
+
+// how much to scale a decoded track so its average loudness hits TARGET_RMS without its peaks clipping
+function loudnessGain(buf) {
+  let sum = 0, n = 0, peak = 0
+  for (let c = 0; c < buf.numberOfChannels; c++) {
+    const a = buf.getChannelData(c)
+    for (let i = 0; i < a.length; i += 3) { const v = a[i]; sum += v * v; n++; const m = v < 0 ? -v : v; if (m > peak) peak = m }
+  }
+  const rms = Math.sqrt(sum / Math.max(1, n))
+  if (!rms || !peak) return 1
+  return Math.min(TARGET_RMS / rms, .95 / peak, 4)
+}
 const XFADE = 5             // seconds of overlap between passes
 
 function createLoop(url) {
   let ctx = null, master = null, buffer = null, loading = null
-  let timer = 0, nextAt = 0, running = false, epoch = 0
+  let timer = 0, nextAt = 0, running = false, epoch = 0, norm = 1
   let sources = []
 
   async function prepare() {
@@ -28,6 +52,7 @@ function createLoop(url) {
     if (!buffer) {
       loading ??= fetch(url).then(r => r.arrayBuffer()).then(b => ctx.decodeAudioData(b))
       buffer = await loading
+      norm = loudnessGain(buffer)
     }
   }
 
@@ -39,8 +64,8 @@ function createLoop(url) {
     const g = ctx.createGain()
     src.connect(g); g.connect(master)
     g.gain.setValueAtTime(first ? .001 : 0, at)
-    g.gain.linearRampToValueAtTime(1, at + (first ? 1.2 : fade))
-    g.gain.setValueAtTime(1, at + d - fade)
+    g.gain.linearRampToValueAtTime(norm, at + (first ? 1.2 : fade))
+    g.gain.setValueAtTime(norm, at + d - fade)
     g.gain.linearRampToValueAtTime(0, at + d)
     src.start(at)
     src.stop(at + d + .1)
@@ -90,7 +115,7 @@ function createLoop(url) {
 const KEY = 'lock-in-music'
 const readOn = () => { try { return localStorage.getItem(KEY) !== '0' } catch { return true } }
 
-const MusicContext = createContext({ setPhase: () => {}, musicOn: true, setMusicOn: () => {} })
+const MusicContext = createContext({ setPhase: () => {}, musicOn: true, setMusicOn: () => {}, track: 'ambient', setTrack: () => {} })
 export const useMusic = () => useContext(MusicContext)
 
 export function MusicProvider({ children }) {
@@ -98,9 +123,25 @@ export function MusicProvider({ children }) {
   const pomodoro = usePomodoro()
   const [musicOn, setMusicOnState] = useState(readOn)
   const [phase, setPhase] = useState('quiet')    // 'splash' | 'quiet'
+  const [track, setTrackState] = useState(readTrack)
+  const loops = useRef({})
   const loop = useRef(null)
-  if (!loop.current && typeof window !== 'undefined') loop.current = createLoop(ambientUrl)
+  const getLoop = id => {
+    if (typeof window === 'undefined') return null
+    loops.current[id] ??= createLoop(TRACKS.find(t => t.id === id).url)
+    return loops.current[id]
+  }
+  loop.current = getLoop(track)
   if (import.meta.env.DEV) window.__music = loop.current
+  const setTrack = useCallback(id => {
+    setTrackState(id)
+    try { localStorage.setItem(TRACK_KEY, id) } catch { /* ignore */ }
+  }, [])
+  // leaving a track fades it out before the next one comes in
+  useEffect(() => {
+    const old = loop.current
+    return () => { old?.level(0, .6); old?.stop(.7) }
+  }, [track])
 
   const setMusicOn = useCallback(on => {
     setMusicOnState(on)
@@ -123,7 +164,7 @@ export function MusicProvider({ children }) {
       l.stop(1)
     }
     return () => { cancelled = true }
-  }, [wanted]) // eslint-disable-line
+  }, [wanted, track]) // eslint-disable-line
 
   useEffect(() => { if (wanted && loop.current?.running) loop.current.level(level) }, [level, wanted])
 
@@ -135,8 +176,8 @@ export function MusicProvider({ children }) {
     window.addEventListener('pointerdown', go)
     window.addEventListener('keydown', go)
     return () => { window.removeEventListener('pointerdown', go); window.removeEventListener('keydown', go) }
-  }, [wanted, level])
+  }, [wanted, level, track])
 
-  const value = useMemo(() => ({ setPhase, musicOn, setMusicOn }), [musicOn, setMusicOn])
+  const value = useMemo(() => ({ setPhase, musicOn, setMusicOn, track, setTrack }), [musicOn, setMusicOn, track, setTrack])
   return <MusicContext.Provider value={value}>{children}</MusicContext.Provider>
 }
