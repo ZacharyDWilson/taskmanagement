@@ -135,6 +135,7 @@ export default function Study() {
           </>)}
         </div>
       </section>
+      <StreakCard />
 
       </div>
 
@@ -159,7 +160,6 @@ export default function Study() {
 
 
       <div className="col">
-        <StreakCard />
         <section className="card focus-time-card">
           <h2>Your focus time</h2>
           <div className="stats">

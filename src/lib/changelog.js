@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.31', date: '2026-10-14', title: 'A fuller Study page',
+    points: [
+      'The streak card now sits under the timer and fills the left side, so both sides of the Study page are filled and the friends panel has more room.',
+    ],
+  },
+  {
     version: '2.30', date: '2026-10-14', title: 'Study streaks',
     points: [
       'The Study page has a streak card: a flame with your day count on it that glows brighter and hotter the longer the streak.',
