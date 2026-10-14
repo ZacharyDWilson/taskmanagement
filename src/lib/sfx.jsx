@@ -121,8 +121,7 @@ export function SoundProvider({ children }) {
     if (!p) return
     const unlock = () => { p.unlock?.().catch?.(() => {}) }
 
-    const onPointerDown = e => {
-      unlock()
+    const pressSound = e => {
       const t = e.target instanceof Element ? e.target : null
       if (!t) return
       if (t.closest('input[type="checkbox"]')) return                 // handled on change
@@ -132,11 +131,19 @@ export function SoundProvider({ children }) {
       if (btn.matches('.danger, [aria-label*="elete" i]')) { play('delete'); return }
       play('press')
     }
+    // A mouse sounds the moment it is pressed. A finger sounds only when the tap completes (the click),
+    // so scrolling or swiping across buttons stays silent.
+    const onPointerDown = e => {
+      unlock()
+      if (e.pointerType && e.pointerType !== 'mouse') return
+      pressSound(e)
+    }
     const onClick = e => {
       const t = e.target instanceof Element ? e.target : null
       if (!t) return
       const nav = t.closest('.dock a, .tabbar a')
       if (nav) { play('open'); return }
+      if (e.pointerType === 'touch' || e.pointerType === 'pen') { pressSound(e); return }
       const btn = t.closest('button')
       if (btn && btn.type === 'submit' && !btn.disabled) play('press')
     }
