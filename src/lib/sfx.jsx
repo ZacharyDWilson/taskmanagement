@@ -3,7 +3,7 @@ import { createUISFX, getCue } from 'uisfx'
 import { useTheme } from './theme.jsx'
 import { CUSTOM_SFX, HAS_CUSTOM_SFX, CRISP_SFX, HAS_CRISP } from './customSfx.js'
 import { playAero } from './aeroSound.js'
-import STARTUP_SOUND from '../assets/intro/startup.mp3?url'
+import STARTUP_SOUND from '../assets/intro/startup.webm?url'
 
 // Sound effects, from the open-source "UI SFX" library (MIT code, CC0 audio; https://uisfx.com).
 // Every theme gets its own sound personality (a "pack"). Same actions, different feel.
