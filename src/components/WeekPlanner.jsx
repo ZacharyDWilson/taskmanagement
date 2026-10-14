@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { usePhone } from '../lib/phone.js'
 import { createPortal } from 'react-dom'
 import { addDays, DAY_NAMES, fmtDay, isoDate, startOfWeek } from '../lib/dates.js'
 import { classesFrom } from '../lib/tasks.js'
@@ -64,20 +65,6 @@ function MonthGrid({ tasks, anchor, onOpenDay, onOpenTask, move }) {
 }
 
 // One column of the planner: a single weekday, or Saturday + Sunday together as "Weekend".
-// true on a phone-sized screen, where a tap on a day opens it full screen
-function usePhone() {
-  const q = '(max-width: 700px)'
-  const [on, setOn] = useState(() => typeof matchMedia === 'function' && matchMedia(q).matches)
-  useEffect(() => {
-    if (typeof matchMedia !== 'function') return
-    const m = matchMedia(q)
-    const f = () => setOn(m.matches)
-    m.addEventListener('change', f)
-    return () => m.removeEventListener('change', f)
-  }, [])
-  return on
-}
-
 function Column({ title, dates, tasks, toggle, remove, move, onOpen, onExpand, full }) {
   const [over, setOver] = useState(false)
   const keys = dates.map(isoDate)

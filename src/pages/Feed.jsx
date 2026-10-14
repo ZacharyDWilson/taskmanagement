@@ -13,6 +13,7 @@ import { POST_KINDS } from '../lib/postKinds.js'
 import ShareButton from '../components/ShareButton.jsx'
 import MentionField from '../components/MentionField.jsx'
 import PeopleSearch from '../components/PeopleSearch.jsx'
+import { usePhone } from '../lib/phone.js'
 import RichText from '../components/RichText.jsx'
 import { mentionedIds, useMembers } from '../lib/members.js'
 import { DEMO, demoComments, demoPosts } from '../lib/demo.js' // DEMO
@@ -462,6 +463,9 @@ export default function Feed() {
   const [names, setNames] = useState(() => new Map())   // user id -> name, for "who reacted"
   const asked = useRef(new Set())
   const [params, setParams] = useSearchParams()
+  const phone = usePhone()
+  const [peopleOpen, setPeopleOpen] = useState(false)   // phones: two dropdowns, people closed, posts open
+  const [postsOpen, setPostsOpen] = useState(true)
   const focusId = params.get('post')
   const [focusPost, setFocusPost] = useState(null)      // the post a mail notification pointed at
   const [focusGone, setFocusGone] = useState(false)
@@ -523,49 +527,67 @@ export default function Feed() {
   const isAdmin = useIsAdmin()
 
   return (
-    <div className="narrow">
+    <div className="feed-page">
       <h1>Progress feed</h1>
-      <PeopleSearch />
-      <Composer onPosted={() => { if (tab !== 'all' || photoOnly) { setTab('all'); setPhotoOnly(false) } else reload() }} />
-      <div className="feed-filters">
-        <div className="tabs" role="tablist" aria-label="Show">
-          {TABS.map(t => (
-            <button key={t.id} type="button" role="tab" aria-selected={tab === t.id}
-              className={tab === t.id ? 'active' : ''} onClick={() => setTab(t.id)}>{t.label}</button>
-          ))}
-        </div>
-        <label className="feed-photo-toggle">
-          <input type="checkbox" checked={photoOnly} onChange={e => setPhotoOnly(e.target.checked)} /> Has photo
-        </label>
-      </div>
-      {error && <p className="warn">{error}</p>}
-      {posts === null && !error && <Skeletons />}
-      {posts?.length === 0 && !error && (
-        <div className="card empty-feed">
-          <p><strong>{tab === 'all' && !photoOnly ? 'Nothing here yet' : 'No posts match'}</strong></p>
-          <p className="muted small">
-            {tab === 'all' && !photoOnly
-              ? 'Be the first: share what you finished, a question, or a photo of your notes.'
-              : 'Try another tab, or turn off the photo filter.'}
-          </p>
-        </div>
-      )}
-      {focusId && (
-        <div className="focus-note">
-          <span>{focusGone ? 'That post is gone (posts disappear after 14 days).' : 'The post from your mail'}</span>
-          <button type="button" className="secondary" onClick={() => setParams({}, { replace: true })}>Show the whole feed</button>
-        </div>
-      )}
-      {focusPost && <PostCard key={'f' + focusPost.id} post={focusPost} focus onChanged={() => { setParams({}, { replace: true }); reload() }}
-        onEdited={(id, patch) => setFocusPost(p => (p ? { ...p, ...patch } : p))} badges={badges} names={names} isAdmin={isAdmin} />}
-      {posts?.filter(p => p.id !== focusId).map(p => <PostCard key={p.id} post={p} onChanged={reload} onEdited={edited} badges={badges} names={names} isAdmin={isAdmin} />)}
-      {more && (
-        <div className="feed-more">
-          <button type="button" className="secondary" disabled={busy} onClick={() => load(true, posts.filter(p => !p.demo).length)}>
-            {busy ? 'Loading…' : 'Load more'}
+      <div className="feed-grid">
+        <section className={'feed-section feed-people card' + (phone && !peopleOpen ? ' closed' : '')}>
+          <button type="button" className="feed-section-head" aria-expanded={!phone || peopleOpen}
+            onClick={() => phone && setPeopleOpen(o => !o)}>
+            <span>Find people</span>{phone && <span className="caret" aria-hidden="true">{peopleOpen ? '▴' : '▾'}</span>}
           </button>
-        </div>
-      )}
+          {(!phone || peopleOpen) && <PeopleSearch />}
+        </section>
+        <section className={'feed-section feed-main' + (phone && !postsOpen ? ' closed' : '')}>
+          <button type="button" className="feed-section-head" aria-expanded={!phone || postsOpen}
+            onClick={() => phone && setPostsOpen(o => !o)}>
+            <span>Posts</span>{phone && <span className="caret" aria-hidden="true">{postsOpen ? '▴' : '▾'}</span>}
+          </button>
+          {(!phone || postsOpen) && (
+            <div className="feed-body">
+          <Composer onPosted={() => { if (tab !== 'all' || photoOnly) { setTab('all'); setPhotoOnly(false) } else reload() }} />
+          <div className="feed-filters">
+            <div className="tabs" role="tablist" aria-label="Show">
+              {TABS.map(t => (
+                <button key={t.id} type="button" role="tab" aria-selected={tab === t.id}
+                  className={tab === t.id ? 'active' : ''} onClick={() => setTab(t.id)}>{t.label}</button>
+              ))}
+            </div>
+            <label className="feed-photo-toggle">
+              <input type="checkbox" checked={photoOnly} onChange={e => setPhotoOnly(e.target.checked)} /> Has photo
+            </label>
+          </div>
+          {error && <p className="warn">{error}</p>}
+          {posts === null && !error && <Skeletons />}
+          {posts?.length === 0 && !error && (
+            <div className="card empty-feed">
+              <p><strong>{tab === 'all' && !photoOnly ? 'Nothing here yet' : 'No posts match'}</strong></p>
+              <p className="muted small">
+                {tab === 'all' && !photoOnly
+                  ? 'Be the first: share what you finished, a question, or a photo of your notes.'
+                  : 'Try another tab, or turn off the photo filter.'}
+              </p>
+            </div>
+          )}
+          {focusId && (
+            <div className="focus-note">
+              <span>{focusGone ? 'That post is gone (posts disappear after 14 days).' : 'The post from your mail'}</span>
+              <button type="button" className="secondary" onClick={() => setParams({}, { replace: true })}>Show the whole feed</button>
+            </div>
+          )}
+          {focusPost && <PostCard key={'f' + focusPost.id} post={focusPost} focus onChanged={() => { setParams({}, { replace: true }); reload() }}
+            onEdited={(id, patch) => setFocusPost(p => (p ? { ...p, ...patch } : p))} badges={badges} names={names} isAdmin={isAdmin} />}
+          {posts?.filter(p => p.id !== focusId).map(p => <PostCard key={p.id} post={p} onChanged={reload} onEdited={edited} badges={badges} names={names} isAdmin={isAdmin} />)}
+          {more && (
+            <div className="feed-more">
+              <button type="button" className="secondary" disabled={busy} onClick={() => load(true, posts.filter(p => !p.demo).length)}>
+                {busy ? 'Loading…' : 'Load more'}
+              </button>
+            </div>
+          )}
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   )
 }

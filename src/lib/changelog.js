@@ -5,7 +5,7 @@ export const CHANGELOG = [
   {
     version: '2.22', date: '2026-10-14', title: 'Find people, steadier profile',
     points: [
-      'The Feed has a Find people box: type a name or @username and jump to their profile.',
+      'The Feed is two sections: your posts on the left, and a Find people panel on the right that lists everyone and narrows as you type a name or @username. On a phone they are two dropdowns (Find people, Posts).',
       'The number tiles on your profile no longer show a scrollbar when you hover them.',
       'A long bio scrolls inside its own card and the four number tiles resize to fit, so nothing gets pushed off the page.',
     ],
