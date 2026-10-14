@@ -1,0 +1,45 @@
+name: Weekly data backup
+
+# Exports your Supabase data every Sunday and keeps it for 90 days as a workflow artifact. The files are
+# ENCRYPTED (AES-256) with BACKUP_PASSPHRASE before upload, so they stay private even if this repository is
+# public. Without the passphrase the artifact is unreadable.
+#
+# Secrets needed (Settings > Secrets and variables > Actions):
+#   VITE_SUPABASE_URL      (already added for the deploy)
+#   SUPABASE_SERVICE_KEY   Supabase > Project Settings > API > service_role key. Powerful: keep it ONLY here.
+#   BACKUP_PASSPHRASE      a long random phrase you save in your password manager (needed to restore)
+on:
+  schedule:
+    - cron: '23 6 * * 0'     # Sundays 06:23 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Export the data
+        run: node scripts/backup.mjs
+        env:
+          SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      - name: Encrypt it
+        run: |
+          tar -czf backup.tar.gz backup
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$BACKUP_PASSPHRASE" \
+              --symmetric --cipher-algo AES256 -o "lock-in-backup-$(date +%F).tar.gz.gpg" backup.tar.gz
+          rm -rf backup backup.tar.gz
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lock-in-backup
+          path: lock-in-backup-*.tar.gz.gpg
+          retention-days: 90
+          if-no-files-found: error
