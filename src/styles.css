@@ -3865,3 +3865,9 @@ button.danger { color: #c0392b; border-color: color-mix(in srgb, #c0392b 45%, tr
   .nav .me-chip { flex: 0 1 auto; min-width: 0; }
   .nav .sound-chip { padding: .3rem .4rem; }
 }
+
+/* ---- Phones, top bar: only settings, mail, help and Log out (the level/coins card, logo and sound button step aside) ------- */
+@media (max-width: 700px) {
+  .nav .me-chip, .nav .sound-chip, .nav .brand, .nav .mode-chip, .nav .demo-chip, .nav .install-btn, .nav .timer-chip { display: none !important; }
+  .nav > .spacer { flex: 1 1 0; }
+}

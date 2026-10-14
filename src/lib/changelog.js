@@ -5,7 +5,7 @@ export const CHANGELOG = [
   {
     version: '2.21', date: '2026-10-14', title: 'Phone fixes',
     points: [
-      'The top bar fits on a phone: the level and coins no longer sit on top of the logo, and Log out is no longer cut off.',
+      'On a phone the top bar is just Settings, Mail, Help and Log out. Your level and coins are on the Me and Shop pages, and the sound switch lives in Settings.',
       'Your study time chart on the profile page shows its bars on a phone instead of being squashed flat.',
       'The app icon is fixed (it was a blue square with a stray white blob), so it can be added to your home screen with the right picture.',
     ],
