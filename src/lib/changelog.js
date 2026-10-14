@@ -3,6 +3,13 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.35', date: '2026-10-14', title: 'A tour that points at the right things',
+    points: [
+      'The welcome tour spotlights the correct area on every step again: the whole Home page, the whole To Do page, the Feed post box, the study timer and the profile edit panel (two steps used to highlight nothing).',
+      'Two new steps: Find people on the Feed, and your study streak.',
+    ],
+  },
+  {
     version: '2.34', date: '2026-10-14', title: 'Your colour on your banner',
     points: [
       'The default banner now uses the colour you picked for yourself ("My color") as two slightly different shades, so it looks like yours instead of plain grey. Friends see their own colour on their profile.',

@@ -111,7 +111,7 @@ function Composer({ onPosted }) {
   }
 
   return (
-    <form className="card stack" onSubmit={submit}>
+    <form className="card stack composer" onSubmit={submit}>
       <div className="row between">
         <h2>Share your progress</h2>
         <button type="button" className="link" onClick={() => setOpen(false)}>Close</button>

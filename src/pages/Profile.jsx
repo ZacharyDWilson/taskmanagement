@@ -253,7 +253,7 @@ export default function Profile() {
       </div>
 
       {mine && (
-        <form className="card stack" onSubmit={save}>
+        <form className="card stack profile-edit" onSubmit={save}>
           <h2>Edit your profile</h2>
           <div className="tabs" role="tablist">
             {[['details', 'You'], ['style', 'Style']].map(([id, label]) => (
