@@ -8,6 +8,7 @@ import { useReducedMotion, useDockAnimated } from '../lib/motion.js'
 import { useInstall, platform } from '../lib/install.js'
 import { useTheme } from '../lib/theme.jsx'
 import { replayTour } from './Tour.jsx'
+import { introEnabled, setIntroEnabled } from '../lib/introPref.js'
 import PickerModal from './PickerModal.jsx'
 import { VERSION_LABEL } from '../lib/version.js'
 
@@ -23,6 +24,7 @@ export default function SettingsMenu() {
   const inst = useInstall()
   const isAdmin = useIsAdmin()
   const [installMsg, setInstallMsg] = useState('')
+  const [intro, setIntro] = useState(introEnabled)
   const os = platform()
   const mac = /Mac/.test(navigator.platform)
   const ua = navigator.userAgent || ''
@@ -85,6 +87,10 @@ export default function SettingsMenu() {
             <label className="row">
               <input type="checkbox" checked={dockOn} onChange={e => setDockOn(e.target.checked)} />
               Animate the side bar <span className="muted small">(the bobbing, swaying and glowing buttons on the left, and the liquid on the phone tab bar)</span>
+            </label>
+            <label className="row">
+              <input type="checkbox" checked={intro} onChange={e => { setIntro(e.target.checked); setIntroEnabled(e.target.checked) }} />
+              Show the welcome globe when the app opens <span className="muted small">(on this device. Turn it off if it gets in the way.)</span>
             </label>
           </section>
 

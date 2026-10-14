@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { useSound } from '../lib/sfx.jsx'
+import { introEnabled } from '../lib/introPref.js'
 import { useMusic } from '../lib/music.jsx'
 import { usernameProblem } from '../lib/username.js'
 import { COLLEGES, collegeFromEmail } from '../lib/colleges.js'
@@ -111,7 +112,7 @@ export function AuthSplash() { return <Splash waiting /> }
 // lives in memory, so an app that was only sent to the background and brought back keeps it and does not replay.
 let startupIntroDone = false
 export function StartupIntro() {
-  const [show, setShow] = useState(() => !startupIntroDone)
+  const [show, setShow] = useState(() => !startupIntroDone && introEnabled())   // off in Settings: never shown
   if (!show) return null
   return <Splash onDone={() => { startupIntroDone = true; setShow(false) }} />
 }
@@ -126,7 +127,7 @@ export default function Login({ preview = false }) {
   const [inviteCode, setInviteCode] = useState('')
   const [mode, setMode] = useState('login')
   const [msg, setMsg] = useState('')
-  const [splash, setSplash] = useState(true)
+  const [splash, setSplash] = useState(() => introEnabled())   // the globe, unless it was switched off in Settings
   const [busy, setBusy] = useState(false)       // waiting for a log-in or sign-up to go through
   const navigate = useNavigate()
 

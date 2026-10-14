@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.29', date: '2026-10-14', title: 'Turn the globe off',
+    points: [
+      'Settings > Animations has a new switch, "Show the welcome globe when the app opens". Turn it off and the app opens straight to your page. It is saved on that device.',
+    ],
+  },
+  {
     version: '2.28', date: '2026-10-14', title: 'A calmer intro',
     points: [
       'The globe now stays for about 1.5 seconds, then fades out slowly over 2 seconds by itself. Tap or press a key to skip it.',
