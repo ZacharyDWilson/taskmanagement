@@ -91,9 +91,19 @@ Deno.serve(async req => {
   if (!feedOk(feed.url)) return json({ error: 'That does not look like a calendar feed link.' }, 400)
 
   try {
-    const res = await fetch(feed.url, { signal: AbortSignal.timeout(12000), headers: { 'User-Agent': 'LOCK-IN' } })
+    // Follow up to 3 redirects by hand so every hop is checked like the first address (a redirect must not lead
+    // to an internal address), and never read more than 2 MB.
+    let target = feed.url
+    let res = await fetch(target, { redirect: 'manual', signal: AbortSignal.timeout(12000), headers: { 'User-Agent': 'LOCK-IN' } })
+    for (let hop = 0; hop < 3 && res.status >= 300 && res.status < 400; hop++) {
+      const next = res.headers.get('location')
+      if (!next) break
+      target = new URL(next, target).toString()
+      if (!feedOk(target)) return json({ error: 'That calendar link redirects somewhere that is not allowed.' }, 400)
+      res = await fetch(target, { redirect: 'manual', signal: AbortSignal.timeout(12000), headers: { 'User-Agent': 'LOCK-IN' } })
+    }
     if (!res.ok) return json({ error: `${name} answered ${res.status}. The link may have changed.` }, 502)
-    const assignments = parseIcs(await res.text(), provider)
+    const assignments = parseIcs((await res.text()).slice(0, 2_000_000), provider)
       .sort((a, b) => String(a.due).localeCompare(String(b.due)))
     return json({ assignments, connected: true, provider })
   } catch {
