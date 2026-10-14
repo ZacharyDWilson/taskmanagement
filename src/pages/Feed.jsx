@@ -176,6 +176,13 @@ function Comments({ post, onCount }) {
   }, [post.id, post.demo])
 
   useEffect(() => { load() }, [load])
+  // new comments show up on their own while this box is open (every 15 s, and when you come back to the tab)
+  useEffect(() => {
+    const tick = () => { if (document.visibilityState === 'visible') load() }
+    const id = setInterval(tick, 15000)
+    document.addEventListener('visibilitychange', tick)
+    return () => { clearInterval(id); document.removeEventListener('visibilitychange', tick) }
+  }, [load])
   useEffect(() => { if (items) onCount(items.length) }, [items]) // eslint-disable-line
 
   async function add(e) {
@@ -542,6 +549,45 @@ export default function Feed() {
   useEffect(() => { setPosts(null); load() }, [load])
 
   const reload = () => load()
+
+  // The feed keeps itself fresh: every 20 seconds (and when you come back to the tab) it quietly fetches the newest
+  // posts. Posts that arrive while you are scrolled down wait behind a "New posts" button instead of shoving the page.
+  const [fresh, setFresh] = useState(null)
+  const postsRef = useRef(null)
+  postsRef.current = posts
+  const mergeFirstPage = (prev, rows) => {
+    const oldest = rows.reduce((m, r) => (m === null || r.created_at < m ? r.created_at : m), null)
+    const ids = new Set(rows.map(r => r.id))
+    const kept = (prev ?? []).filter(p => !ids.has(p.id) && (oldest === null || p.created_at < oldest))
+    return [...rows, ...kept]
+  }
+  const quiet = useCallback(async () => {
+    if (document.visibilityState !== 'visible' || !postsRef.current) return
+    let q = supabase.from('posts').select(POST_COLS).order('pinned', { ascending: false }).order('created_at', { ascending: false }).range(0, PAGE - 1)
+    if (tab === 'mine') q = q.eq('user_id', user.id)
+    if (tab === 'question' || tab === 'win') q = q.eq('kind', tab)
+    if (photoOnly) q = q.not('image_path', 'is', null)
+    const { data, error } = await q
+    if (error || !data) return
+    const rows = [...data].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0))
+    const known = new Set((postsRef.current ?? []).map(p => p.id))
+    const added = rows.filter(r => !known.has(r.id))
+    if (added.length && window.scrollY > 240) { setFresh(rows); return }   // wait behind the button
+    setFresh(null)
+    setPosts(p => mergeFirstPage(p, rows))
+    learnNames(rows)
+  }, [tab, photoOnly, user.id]) // eslint-disable-line
+  useEffect(() => {
+    const id = setInterval(quiet, 20000)
+    document.addEventListener('visibilitychange', quiet)
+    return () => { clearInterval(id); document.removeEventListener('visibilitychange', quiet) }
+  }, [quiet])
+  const showFresh = () => {
+    setPosts(p => mergeFirstPage(p, fresh ?? []))
+    learnNames(fresh ?? [])
+    setFresh(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
   const edited = (id, patch) => setPosts(list => list.map(p => (p.id === id ? { ...p, ...patch } : p)))
   const badges = useTopBadges((posts ?? []).map(p => p.user_id))
   const isAdmin = useIsAdmin()
@@ -584,6 +630,9 @@ export default function Feed() {
               <input type="checkbox" checked={photoOnly} onChange={e => setPhotoOnly(e.target.checked)} /> Has photo
             </label>
           </div>
+          {fresh && (
+            <button type="button" className="new-posts-pill" onClick={showFresh}>↑ New posts</button>
+          )}
           {error && <p className="warn">{error}</p>}
           {posts === null && !error && <Skeletons />}
           {posts?.length === 0 && !error && (

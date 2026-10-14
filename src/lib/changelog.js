@@ -3,6 +3,13 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.40', date: '2026-10-14', title: 'No more refreshing',
+    points: [
+      'The Feed updates itself: new posts, reactions and comments appear within about 20 seconds without refreshing. If you are scrolled down, a "New posts" button waits at the top instead of moving the page.',
+      'Open comment boxes and the leaderboard refresh on their own too.',
+    ],
+  },
+  {
     version: '2.39', date: '2026-10-14', title: 'Post, then double coins',
     points: [
       'Post to the Feed and your next focus session earns double coins: the session coins are added again, up to +30. It can happen once a day.',

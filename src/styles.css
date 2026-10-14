@@ -4102,3 +4102,7 @@ button.feed-section-head .caret { flex: none; }
 /* post boost note on the Study page */
 .boost-chip { margin: 0; padding: .55rem .8rem; border-radius: var(--r-sm, 12px); font-size: .86rem; background: color-mix(in srgb, var(--accent) 14%, var(--glass-strong, #fff)); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
 .study > .col:first-child > .boost-chip { flex: none; }
+
+/* Feed: the "New posts" button */
+.new-posts-pill { position: sticky; top: 4.2rem; z-index: 5; align-self: center; padding: .45rem 1rem; border-radius: 999px; font-weight: 700;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .22); }

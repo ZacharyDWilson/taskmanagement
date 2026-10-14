@@ -17,6 +17,13 @@ export default function Leaderboard({ version }) {
   const { user } = useAuth()
   const [rows, setRows] = useState([])
   const [winners, setWinners] = useState([])   // last week's top three
+  const [tick, setTick] = useState(0)          // bumps every minute so the board stays current
+  useEffect(() => {
+    const bump = () => { if (document.visibilityState === 'visible') setTick(t => t + 1) }
+    const id = setInterval(bump, 60000)
+    document.addEventListener('visibilitychange', bump)
+    return () => { clearInterval(id); document.removeEventListener('visibilitychange', bump) }
+  }, [])
 
   useEffect(() => {
     supabase.rpc('weekly_winners').then(({ data }) => setWinners(data ?? []))
@@ -42,7 +49,7 @@ export default function Leaderboard({ version }) {
       }
       setRows(list)
     })
-  }, [version, user.id])
+  }, [version, user.id, tick])
 
   const rank = rows.findIndex(r => r.user_id === user.id)
   const badges = useTopBadges(rows.map(r => r.user_id))
