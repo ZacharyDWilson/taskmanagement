@@ -3,6 +3,13 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.26', date: '2026-10-14', title: 'Take a photo or choose a file',
+    points: [
+      'Posting to the Feed has two photo buttons: Take a photo (phones and tablets) and Choose a file (everywhere). You can also remove a chosen photo before posting.',
+      'The Feed titles are tidier: plain headings on a computer, proper dropdowns on a phone.',
+    ],
+  },
+  {
     version: '2.25', date: '2026-10-14', title: 'Daily bonus',
     points: [
       'Finish every task you planned for a day (at least 3) and earn a bonus: 5 XP per task, up to 50 XP. It turns into coins like any other XP.',

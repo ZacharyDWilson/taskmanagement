@@ -3970,3 +3970,7 @@ button.feed-section-head { display: flex; align-items: center; justify-content: 
 button.feed-section-head > span { min-width: 0; }
 button.feed-section-head .caret { flex: none; }
 .feed-people.closed button.feed-section-head { margin-bottom: 0; }
+
+/* Feed composer: photo buttons */
+.photo-actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.photo-actions button { padding: .45rem .8rem; font-size: .88rem; }

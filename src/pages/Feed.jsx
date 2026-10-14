@@ -63,6 +63,16 @@ function Composer({ onPosted }) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const input = useRef()
+  const cameraInput = useRef()
+  // only a touch device (phone or tablet) offers "Take a photo"; a computer just has "Choose a file"
+  const hasCamera = typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches
+  const pickPhoto = e => {
+    const f = e.target.files[0] ?? null
+    if (!f) return
+    setFile(f)
+    toast(`📷 Photo chosen: ${f.name}`, 'info', { silent: true })
+    e.target.value = ''
+  }
   const [preview, setPreview] = useState(null)
   useEffect(() => {
     if (!file) { setPreview(null); return }
@@ -118,11 +128,16 @@ function Composer({ onPosted }) {
           </button>
         ))}
       </div>
-      <input ref={input} type="file" accept="image/*" aria-label="Photo (optional)" onChange={e => {
-        const f = e.target.files[0] ?? null
-        setFile(f)
-        if (f) toast(`📷 Photo chosen: ${f.name}`, 'info', { silent: true })
-      }} />
+      {/* a photo is optional: take one (phones and tablets only) or choose a file */}
+      <input ref={cameraInput} type="file" accept="image/*" capture="environment" hidden aria-label="Take a photo" onChange={pickPhoto} />
+      <input ref={input} type="file" accept="image/*" hidden aria-label="Choose a photo file" onChange={pickPhoto} />
+      <div className="photo-actions">
+        {hasCamera && (
+          <button type="button" className="secondary" onClick={() => cameraInput.current?.click()}>📷 Take a photo</button>
+        )}
+        <button type="button" className="secondary" onClick={() => input.current?.click()}>🖼️ Choose a file</button>
+        {file && <button type="button" className="secondary" onClick={() => { setFile(null); if (input.current) input.current.value = ''; if (cameraInput.current) cameraInput.current.value = '' }}>Remove photo</button>}
+      </div>
       {preview && <img className="preview" src={preview} alt="Preview" />}
       <div className="row between">
         <small className="muted">{caption.length}/{MAX_CAPTION} · Posts disappear after {KEEP_DAYS} days · <Link to="/terms">Community rules</Link></small>
