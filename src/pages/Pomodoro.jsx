@@ -18,6 +18,27 @@ import { useStudyBuddy } from '../lib/studyBuddy.js'
 
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, Number(n) || lo))
 
+// A minutes box you can actually type in: the field may be empty (or part-way, like "4" on the way to "45") while you
+// type, and the value is only tidied up when you leave it. (Clamping on every key turned an emptied box straight
+// back into "1", so on a phone you could only ever reach 1x or 1xx.)
+function MinutesInput({ value, min, max, onCommit, disabled, label }) {
+  const [draft, setDraft] = useState(String(value))
+  useEffect(() => { setDraft(String(value)) }, [value])
+  const finish = () => { const n = clamp(draft, min, max); setDraft(String(n)); onCommit(n) }
+  return (
+    <input type="text" inputMode="numeric" pattern="[0-9]*" aria-label={label} value={draft} disabled={disabled}
+      onFocus={e => e.target.select()}
+      onChange={e => {
+        const v = e.target.value.replace(/D/g, '').slice(0, 3)
+        setDraft(v)
+        const n = Number(v)
+        if (v !== '' && n >= min && n <= max) onCommit(n)
+      }}
+      onBlur={finish}
+      onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur() }} />
+  )
+}
+
 export default function Study() {
   const { user } = useAuth()
   const p = usePomodoro()
@@ -126,10 +147,10 @@ export default function Study() {
             )}
           </div>
           <div className="row small">
-            <label>Focus <input type="number" min="1" max="120" value={p.focusMin} disabled={p.running}
-              onChange={e => p.setFocusMin(clamp(e.target.value, 1, 120))} /> min</label>
-            <label>Break <input type="number" min="1" max="60" value={p.breakMin} disabled={p.running}
-              onChange={e => p.setBreakMin(clamp(e.target.value, 1, 60))} /> min</label>
+            <label>Focus <MinutesInput label="Focus minutes" min={1} max={120} value={p.focusMin} disabled={p.running}
+              onCommit={p.setFocusMin} /> min</label>
+            <label>Break <MinutesInput label="Break minutes" min={1} max={60} value={p.breakMin} disabled={p.running}
+              onCommit={p.setBreakMin} /> min</label>
           </div>
           {p.msg && <p className="muted">{p.msg}</p>}
           </>)}

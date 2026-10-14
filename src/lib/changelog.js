@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.38', date: '2026-10-14', title: 'Typing minutes on the timer',
+    points: [
+      'The Focus and Break minute boxes can be typed into normally, so you can enter 45 or 25 on a phone. Before, the box refused to go empty and stuck on 1, so only 10 to 19 or 100+ were possible.',
+    ],
+  },
+  {
     version: '2.37', date: '2026-10-14', title: 'Weekly leaderboard prizes',
     points: [
       'The study leaderboard now pays out every week: 1st place wins 150 coins, 2nd 100 and 3rd 50. You need at least 30 focus minutes that week to qualify.',
