@@ -3958,3 +3958,8 @@ button.danger { color: #c0392b; border-color: color-mix(in srgb, #c0392b 45%, tr
 .canvas-add-btns { display: inline-flex; gap: .4rem; flex-wrap: wrap; justify-content: flex-end; }
 .canvas-add-btns button { padding: .35rem .6rem; font-size: .8rem; white-space: nowrap; }
 @media (max-width: 700px) { .canvas-list li { flex-wrap: wrap; } .canvas-add-btns { width: 100%; justify-content: flex-start; } }
+
+
+/* daily bonus line on Due today */
+.day-bonus { margin: .1rem 0 .5rem; font-size: .85rem; font-weight: 600; color: var(--muted); }
+.day-bonus.earned { color: var(--accent-ink, var(--accent)); }

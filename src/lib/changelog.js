@@ -3,6 +3,14 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.25', date: '2026-10-14', title: 'Daily bonus',
+    points: [
+      'Finish every task you planned for a day (at least 3) and earn a bonus: 5 XP per task, up to 50 XP. It turns into coins like any other XP.',
+      'Due today shows how many are left to unlock it. Un-tick a task and the bonus is recalculated.',
+      'Only tasks that have existed for 30 minutes count, so a bunch of just-made tasks can not be ticked off at once.',
+    ],
+  },
+  {
     version: '2.24', date: '2026-10-14', title: 'You choose where Canvas tasks go',
     points: [
       'Adding a Canvas / Brightspace assignment now lets you pick: On due date (planned on the day it is due) or To plan (the unplanned list, to schedule later).',

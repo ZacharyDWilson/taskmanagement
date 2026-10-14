@@ -5,6 +5,7 @@ import { useMyXp } from '../lib/xp.jsx'
 import { useToast } from '../lib/toast.jsx'
 import { isDemoId } from '../lib/demo.js' // DEMO
 import { fmtDay } from '../lib/dates.js'
+import { supabase } from '../lib/supabase.js'
 import Inbox from '../components/Inbox.jsx'
 import WeekPlanner from '../components/WeekPlanner.jsx'
 import TaskModal from '../components/TaskModal.jsx'
@@ -39,7 +40,16 @@ export default function Todo() {
     }
   }
 
-  const toggleTask = task => withXp(task, !task.done, () => toggle(task))
+  // Ticking the last planned task of a day (3 or more) earns the daily bonus; say so when it really was granted.
+  const toggleTask = async task => {
+    const planned = tasks.filter(t => t.day && t.day === task.day)
+    const completesDay = !task.done && !isDemoId(task.id) && planned.length >= 3 && planned.every(t => t.id === task.id || t.done)
+    await withXp(task, !task.done, () => toggle(task))
+    if (completesDay) {
+      const { data } = await supabase.from('xp_log').select('amount').eq('earned_on', task.day).eq('kind', 'day_bonus').maybeSingle()
+      if (data?.amount) toast(`🎉 Every task for the day done! +${data.amount} bonus XP`, 'xp')
+    }
+  }
   const saveTask = (task, patch) => {
     if (patch.done === task.done) toast(`✓ Saved "${task.title}"`, 'info', { silent: true })
     return withXp(task, patch.done !== task.done ? patch.done : null, () => update(task, patch))

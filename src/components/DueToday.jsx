@@ -19,6 +19,10 @@ export default function DueToday({ tasks }) {
       String(a.created_at).localeCompare(String(b.created_at)))
 
   const left = items.filter(t => !t.done).length
+  // the daily bonus: every task planned for today done (3 or more), 5 XP each, up to 10
+  const planned = tasks.filter(t => t.day === today)
+  const bonusXp = 5 * Math.min(planned.length, 10)
+  const plannedLeft = planned.filter(t => !t.done).length
   const heading = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
 
   return (
@@ -33,6 +37,13 @@ export default function DueToday({ tasks }) {
         <p className="muted small due-summary">
           {left === 0 ? 'All done for today. Nice work!' : `${left} left`}
           {' · '}{items.length - left} done
+        </p>
+      )}
+      {planned.length >= 3 && (
+        <p className={'day-bonus' + (plannedLeft === 0 ? ' earned' : '')}>
+          {plannedLeft === 0
+            ? `🎉 Day complete! +${bonusXp} bonus XP`
+            : `Finish all ${planned.length} planned tasks for +${bonusXp} bonus XP (${plannedLeft} to go)`}
         </p>
       )}
       {items.length === 0 && <p className="muted">Nothing due today.</p>}
