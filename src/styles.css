@@ -4030,3 +4030,21 @@ button.feed-section-head .caret { flex: none; }
 }
 .study > .col:first-child > .card.streak-card:not(.fill) { flex: 1 0 auto; }   /* never squeezed: the column scrolls on a very short screen instead */
 @media (min-width: 1001px) { .study > .col:first-child { overflow-y: auto; overflow-x: clip; scrollbar-width: thin; } }
+/* very short screens: the streak card becomes one slim row (flame, text, claim button) so nothing needs to scroll */
+@media (max-height: 800px) and (min-width: 1001px) {
+  .study > .col:first-child > .card.streak-card:not(.fill) { flex: 1 0 auto; flex-direction: row; align-items: center; gap: .8rem; }
+  .study > .col:first-child > .streak-card .streak-week,
+  .study > .col:first-child > .streak-card .streak-text small { display: none; }
+  .study > .col:first-child > .streak-card .streak-top { flex: 1 1 auto; min-width: 0; }
+  .study > .col:first-child > .streak-card .streak-claim { width: auto; flex: none; white-space: nowrap; }
+  .study > .col:first-child > .streak-card .flame { width: 3rem; height: 3.8rem; }
+  .study > .col:first-child > .streak-card .flame-num { font-size: 1rem; bottom: .6rem; }
+  .study > .col:first-child > .streak-card .streak-text h2 { font-size: 1.05rem; }
+  .study > .col:first-child > .streak-card .streak-text p { font-size: .78rem; margin: 0; }
+}
+.study > .col:first-child { justify-content: flex-start; }
+@media (max-height: 800px) and (min-width: 1001px) {
+  .study > .col:first-child > .card.streak-card:not(.fill) { flex: 0 0 auto; padding: .45rem .9rem; }
+  .study > .col:first-child > .streak-card .flame { width: 2.6rem; height: 3.2rem; }
+  .study > .col:first-child > .streak-card .flame-num { font-size: .9rem; bottom: .5rem; }
+}
