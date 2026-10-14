@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
+import { badgeIcon } from '../lib/badgeIcon.js'
 import { useAuth } from '../lib/auth.jsx'
 import { useAchievements } from '../lib/achievements.jsx'
 import { useShop } from '../lib/shop.jsx'
@@ -115,7 +116,7 @@ export default function Achievements() {
           const pct = Math.round((value / a.goal) * 100)
           return (
             <article key={a.id} className={'card ach-card tier-' + a.tier + (row ? ' earned' : '')}>
-              <span className="ach-medal" aria-hidden="true">{a.icon}</span>
+              <span className="ach-medal" aria-hidden="true">{badgeIcon(a.icon)}</span>
               <div className="ach-body">
                 <h3>{a.name} <small className="ach-tier">{a.tier}</small></h3>
                 <p className="muted small">{a.description}</p>
@@ -134,7 +135,7 @@ export default function Achievements() {
               </div>
               {mine && row && (
                 <div className="ach-actions">
-                <ShareButton card="achievement" refId={a.id} preview={`${a.icon} Badge unlocked: ${a.name}`} className="secondary ach-share" title="Post this badge to the feed">📣 Share</ShareButton>
+                <ShareButton card="achievement" refId={a.id} preview={`${badgeIcon(a.icon)} Badge unlocked: ${a.name}`} className="secondary ach-share" title="Post this badge to the feed">📣 Share</ShareButton>
                 <button type="button" className={'secondary ach-pin' + (row.pinned ? ' on' : '')}
                   onClick={() => togglePin(a.id)} aria-pressed={!!row.pinned}
                   title={row.pinned ? 'Shown first on your profile' : 'Show this first on your profile'}>

@@ -13,6 +13,7 @@ import { POST_KINDS } from '../lib/postKinds.js'
 import ShareButton from '../components/ShareButton.jsx'
 import MentionField from '../components/MentionField.jsx'
 import PeopleSearch from '../components/PeopleSearch.jsx'
+import { badgeIcon } from '../lib/badgeIcon.js'
 import { usePhone } from '../lib/phone.js'
 import RichText from '../components/RichText.jsx'
 import { mentionedIds, useMembers } from '../lib/members.js'
@@ -424,7 +425,7 @@ function ShareCard({ post }) {
   if (post.share_kind === 'achievement') {
     return (
       <div className={'share-card ach tier-' + (d.tier ?? 'bronze')}>
-        <span className="share-medal" aria-hidden="true">{d.icon ?? '🏆'}</span>
+        <span className="share-medal" aria-hidden="true">{badgeIcon(d.icon) || '🏆'}</span>
         <div>
           <small className="muted">Badge unlocked</small>
           <h3>{d.name}</h3>

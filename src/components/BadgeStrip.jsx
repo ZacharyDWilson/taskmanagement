@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { useAchievements } from '../lib/achievements.jsx'
+import { badgeIcon } from '../lib/badgeIcon.js'
 
 // A row of earned badges on a profile: the ones you pinned first, then the most recent. Works for anyone's profile.
 export default function BadgeStrip({ userId, mine = false, max = 6 }) {
@@ -33,7 +34,7 @@ export default function BadgeStrip({ userId, mine = false, max = 6 }) {
         const a = byId.get(r.achievement_id)
         return (
           <span key={a.id} className={'badge tier-' + a.tier} title={`${a.name}: ${a.description}`}>
-            <span aria-hidden="true">{a.icon}</span>
+            <span aria-hidden="true">{badgeIcon(a.icon)}</span>
           </span>
         )
       })}

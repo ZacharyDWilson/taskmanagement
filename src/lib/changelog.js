@@ -3,6 +3,13 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.36', date: '2026-10-14', title: 'Badge fix for Windows 10',
+    points: [
+      'The "All Set Up" badge no longer breaks apart on older computers (Windows 10 drew a person and a graduation cap side by side, spilling out of the badge). It now shows a graduation cap everywhere.',
+      'Badges can no longer be squeezed or overlap the "All achievements" link.',
+    ],
+  },
+  {
     version: '2.35', date: '2026-10-14', title: 'A tour that points at the right things',
     points: [
       'The welcome tour spotlights the correct area on every step again: the whole Home page, the whole To Do page, the Feed post box, the study timer and the profile edit panel (two steps used to highlight nothing).',
