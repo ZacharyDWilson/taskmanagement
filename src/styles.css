@@ -4080,3 +4080,6 @@ button.feed-section-head .caret { flex: none; }
   border-bottom: 3px solid #001f40; font-weight: 700;
 }
 :root[data-theme='umaine'] .brand { color: #003263; }
+
+/* due-date reminders */
+.toast.reminder { background: var(--accent); color: var(--on-accent); border-color: transparent; font-weight: 700; text-align: left; box-shadow: 0 8px 26px rgba(0, 0, 0, .25); }

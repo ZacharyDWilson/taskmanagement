@@ -3,6 +3,14 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.33', date: '2026-10-14', title: 'Due-date reminders',
+    points: [
+      'Tasks with a due date now remind you with a sound and a pop-up: the day before, the day of, an hour before, 10 minutes before and when it is due, plus a nudge about anything overdue.',
+      'If you allowed notifications, a reminder also shows as a system notification when the app is in the background.',
+      'Turn it off any time in Settings under Notifications.',
+    ],
+  },
+  {
     version: '2.32', date: '2026-10-14', title: 'University of Maine theme',
     points: [
       'A new free base theme for University of Maine: Black Bear navy and ice blue, a bluer winter sky with snow and pine trees. Simple and static, like the other college themes. Find it in the Shop under the free themes.',

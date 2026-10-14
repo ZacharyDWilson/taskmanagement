@@ -9,6 +9,7 @@ import { useInstall, platform } from '../lib/install.js'
 import { useTheme } from '../lib/theme.jsx'
 import { replayTour } from './Tour.jsx'
 import { introEnabled, setIntroEnabled } from '../lib/introPref.js'
+import { remindersOn, setRemindersOn } from '../lib/dueReminders.js'
 import PickerModal from './PickerModal.jsx'
 import { VERSION_LABEL } from '../lib/version.js'
 
@@ -25,6 +26,7 @@ export default function SettingsMenu() {
   const isAdmin = useIsAdmin()
   const [installMsg, setInstallMsg] = useState('')
   const [intro, setIntro] = useState(introEnabled)
+  const [remind, setRemind] = useState(remindersOn)
   const os = platform()
   const mac = /Mac/.test(navigator.platform)
   const ua = navigator.userAgent || ''
@@ -96,6 +98,10 @@ export default function SettingsMenu() {
 
           <section className="settings-group">
             <h3>Notifications</h3>
+            <label className="row">
+              <input type="checkbox" checked={remind} onChange={e => { setRemind(e.target.checked); setRemindersOn(e.target.checked) }} />
+              Remind me about tasks that are due <span className="muted small">(a sound and a pop-up the day before, the day of, an hour before and when it is due. On this device.)</span>
+            </label>
             {!notify.supported && (
               <p className="muted small">This browser can't show notifications. On iPhone, add LOCK IN to your Home Screen first.</p>
             )}

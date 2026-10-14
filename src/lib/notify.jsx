@@ -11,7 +11,7 @@ const fmtTime = iso =>
 
 // Shows a system notification: through the service worker where there is one (needed on Android
 // and for the installed app), otherwise a plain browser notification (desktop).
-async function systemNotify(title, body) {
+export async function systemNotify(title, body) {
   try {
     const reg = 'serviceWorker' in navigator ? await navigator.serviceWorker.getRegistration() : null
     if (reg) {

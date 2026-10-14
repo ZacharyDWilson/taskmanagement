@@ -17,6 +17,7 @@ import Admin from './pages/Admin.jsx'
 import TermsGate from './components/TermsGate.jsx'
 import MailButton from './components/MailButton.jsx'
 import Login, { AuthSplash, StartupIntro } from './pages/Login.jsx'
+import DueReminders from './components/DueReminders.jsx'
 import Logo from './components/Logo.jsx'
 import SettingsMenu from './components/SettingsMenu.jsx'
 import PageHelp from './components/PageHelp.jsx'
@@ -106,6 +107,7 @@ export default function App() {
       <Scene />
       {user && <LookPicker />}
       {user && pathname !== '/login' && <StartupIntro />}
+      {user && <DueReminders />}
       {user && <Tour />}
       {user && <TermsGate />}
       {user && <InstallPrompt />}
