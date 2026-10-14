@@ -98,7 +98,7 @@ select * from public.make_invite_code(60);    -- 60 minutes
 The permanent code is switched off by that migration.
 
 ## Backups (the free Supabase plan has none)
-A GitHub Action (`.github/workflows/backup.yml`) exports your data every Sunday and keeps it 90 days as a workflow artifact. The file is **encrypted** with a passphrase, so it is private even if the repository is public.
+A GitHub Action (`.github/workflows/backup.yml`) exports your data every Sunday and keeps it 14 days as a workflow artifact. The file is **encrypted** with a passphrase, so it is private even if the repository is public.
 - **Set up once** (repo Settings > Secrets and variables > Actions): add `SUPABASE_SERVICE_KEY` (Supabase > Project Settings > API > service_role) and `BACKUP_PASSPHRASE` (a long random phrase; keep it in a password manager).
 - **Run one now:** Actions tab > "Weekly data backup" > Run workflow. Download the `lock-in-backup` artifact from the finished run.
 - **Open one:** `gpg --decrypt lock-in-backup-DATE.tar.gz.gpg > backup.tar.gz`, then `tar -xzf backup.tar.gz`. You get one JSON file per table plus `manifest.json` (row counts and any problems).
