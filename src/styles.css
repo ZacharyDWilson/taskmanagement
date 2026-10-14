@@ -3943,9 +3943,6 @@ button.danger { color: #c0392b; border-color: color-mix(in srgb, #c0392b 45%, tr
   .feed-grid { grid-template-columns: minmax(0, 1fr); gap: .8rem; }
   .feed-people { order: 1; position: static; padding: .8rem 1rem; }
   .feed-main { order: 2; }
-  .feed-section-head { cursor: pointer; padding: .3rem 0; font-size: 1.1rem; }
-  .feed-main > .feed-section-head { padding: .8rem 1rem; background: var(--glass); border: 1px solid var(--glass-line); border-radius: var(--r-md, 18px); margin-bottom: .6rem; width: 100%; }
-  .feed-people.closed .feed-section-head { padding-bottom: .3rem; }
   .caret { opacity: .7; }
 }
 .feed-body { display: flex; flex-direction: column; gap: 1.1rem; min-width: 0; }
@@ -3963,3 +3960,13 @@ button.danger { color: #c0392b; border-color: color-mix(in srgb, #c0392b 45%, tr
 /* daily bonus line on Due today */
 .day-bonus { margin: .1rem 0 .5rem; font-size: .85rem; font-weight: 600; color: var(--muted); }
 .day-bonus.earned { color: var(--accent-ink, var(--accent)); }
+
+/* Feed section titles: plain headings on a computer (they were turning into big glossy buttons in some themes),
+   real dropdown buttons with the text inside them and even padding on a phone. */
+.feed-section-title { margin: 0 0 .6rem; font-size: 1.15rem; line-height: 1.25; }
+.feed-main > .feed-section-title { margin-bottom: .8rem; }
+button.feed-section-head { display: flex; align-items: center; justify-content: space-between; gap: .6rem; width: 100%;
+  padding: .7rem 1rem; margin: 0 0 .6rem; line-height: 1.2; font-size: 1.05rem; text-align: left; box-sizing: border-box; }
+button.feed-section-head > span { min-width: 0; }
+button.feed-section-head .caret { flex: none; }
+.feed-people.closed button.feed-section-head { margin-bottom: 0; }

@@ -531,17 +531,25 @@ export default function Feed() {
       <h1>Progress feed</h1>
       <div className="feed-grid">
         <section className={'feed-section feed-people card' + (phone && !peopleOpen ? ' closed' : '')}>
-          <button type="button" className="feed-section-head" aria-expanded={!phone || peopleOpen}
-            onClick={() => phone && setPeopleOpen(o => !o)}>
-            <span>Find people</span>{phone && <span className="caret" aria-hidden="true">{peopleOpen ? '▴' : '▾'}</span>}
-          </button>
+          {phone
+            ? (
+              <button type="button" className="feed-section-head secondary" aria-expanded={peopleOpen}
+                onClick={() => setPeopleOpen(o => !o)}>
+                <span>Find people</span><span className="caret" aria-hidden="true">{peopleOpen ? '▴' : '▾'}</span>
+              </button>
+            )
+            : <h2 className="feed-section-title">Find people</h2>}
           {(!phone || peopleOpen) && <PeopleSearch />}
         </section>
         <section className={'feed-section feed-main' + (phone && !postsOpen ? ' closed' : '')}>
-          <button type="button" className="feed-section-head" aria-expanded={!phone || postsOpen}
-            onClick={() => phone && setPostsOpen(o => !o)}>
-            <span>Posts</span>{phone && <span className="caret" aria-hidden="true">{postsOpen ? '▴' : '▾'}</span>}
-          </button>
+          {phone
+            ? (
+              <button type="button" className="feed-section-head secondary" aria-expanded={postsOpen}
+                onClick={() => setPostsOpen(o => !o)}>
+                <span>Posts</span><span className="caret" aria-hidden="true">{postsOpen ? '▴' : '▾'}</span>
+              </button>
+            )
+            : <h2 className="feed-section-title">Posts</h2>}
           {(!phone || postsOpen) && (
             <div className="feed-body">
           <Composer onPosted={() => { if (tab !== 'all' || photoOnly) { setTab('all'); setPhotoOnly(false) } else reload() }} />
