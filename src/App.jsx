@@ -16,7 +16,7 @@ import Terms from './pages/Terms.jsx'
 import Admin from './pages/Admin.jsx'
 import TermsGate from './components/TermsGate.jsx'
 import MailButton from './components/MailButton.jsx'
-import Login, { AuthSplash } from './pages/Login.jsx'
+import Login, { AuthSplash, StartupIntro } from './pages/Login.jsx'
 import Logo from './components/Logo.jsx'
 import SettingsMenu from './components/SettingsMenu.jsx'
 import PageHelp from './components/PageHelp.jsx'
@@ -105,6 +105,7 @@ export default function App() {
     <div className="shell">
       <Scene />
       {user && <LookPicker />}
+      {user && pathname !== '/login' && <StartupIntro />}
       {user && <Tour />}
       {user && <TermsGate />}
       {user && <InstallPrompt />}

@@ -107,6 +107,15 @@ function Splash({ onDone, waiting = false }) {
 // The same welcome animation, with nothing to tap: it stays up until the app is ready.
 export function AuthSplash() { return <Splash waiting /> }
 
+// The globe plays once each time the app is started fresh (fully closed, then opened; or a page refresh). This flag
+// lives in memory, so an app that was only sent to the background and brought back keeps it and does not replay.
+let startupIntroDone = false
+export function StartupIntro() {
+  const [show, setShow] = useState(() => !startupIntroDone)
+  if (!show) return null
+  return <Splash onDone={() => { startupIntroDone = true; setShow(false) }} />
+}
+
 export default function Login({ preview = false }) {
   const [name, setName] = useState('')          // display name
   const [username, setUsername] = useState('')  // first and last name
@@ -121,7 +130,7 @@ export default function Login({ preview = false }) {
   const [busy, setBusy] = useState(false)       // waiting for a log-in or sign-up to go through
   const navigate = useNavigate()
 
-  const finishSplash = () => setSplash(false)
+  const finishSplash = () => { startupIntroDone = true; setSplash(false) }   // logging in right after must not replay it
 
   async function submit(e) {
     e.preventDefault()

@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.27', date: '2026-10-14', title: 'The globe on every fresh start',
+    points: [
+      'The globe intro now plays each time you fully close and reopen the app, even when you are already logged in. Switching back to the app from the background does not replay it.',
+    ],
+  },
+  {
     version: '2.26', date: '2026-10-14', title: 'Take a photo or choose a file',
     points: [
       'Posting to the Feed has two photo buttons: Take a photo (phones and tablets) and Choose a file (everywhere). You can also remove a chosen photo before posting.',
