@@ -7,6 +7,7 @@ import { levelFromXp, useCosmetics, useXp } from '../lib/levels.js'
 import { publicUrl, removeImage, thumbUrl, uploadImage } from '../lib/storage.js'
 import { downloadMyPosts } from '../lib/exportPosts.js'
 import { DEMO, demoProfile, isDemoId } from '../lib/demo.js' // DEMO
+import { colorHex } from '../lib/colors.js'
 import Avatar, { FramePreview } from '../components/Avatar.jsx'
 import FancyName from '../components/FancyName.jsx'
 import PickerModal from '../components/PickerModal.jsx'
@@ -183,7 +184,7 @@ export default function Profile() {
       <div className="col">
         {/* Who this is */}
         <section className="card profile-head">
-          <div className={'banner ' + profile.banner} />
+          <div className={'banner ' + profile.banner} style={{ '--mc': colorHex(profile.color) }} />
           <div className="profile-id">
             <Avatar name={profile.display_name} path={profile.avatar_path} color={profile.color}
               frame={profile.frame} size={88} />
@@ -303,7 +304,7 @@ export default function Profile() {
               preview={<FramePreview id={profile.frame} size={42} />} />
             <CustomizeRow label="Banner" name={cosmetics.find(c => c.id === profile.banner)?.name ?? 'Checker'}
               onClick={() => setPicker('banner')}
-              preview={<span className={'swatch-preview ' + profile.banner} aria-hidden="true" />} />
+              preview={<span className={'swatch-preview ' + profile.banner} style={{ '--mc': colorHex(profile.color) }} aria-hidden="true" />} />
           </div>
           )}
           {picker === 'theme' && (

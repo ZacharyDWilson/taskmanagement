@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.34', date: '2026-10-14', title: 'Your colour on your banner',
+    points: [
+      'The default banner now uses the colour you picked for yourself ("My color") as two slightly different shades, so it looks like yours instead of plain grey. Friends see their own colour on their profile.',
+    ],
+  },
+  {
     version: '2.33', date: '2026-10-14', title: 'Due-date reminders',
     points: [
       'Tasks with a due date now remind you with a sound and a pop-up: the day before, the day of, an hour before, 10 minutes before and when it is due, plus a nudge about anything overdue.',

@@ -18,6 +18,7 @@ import TermsGate from './components/TermsGate.jsx'
 import MailButton from './components/MailButton.jsx'
 import Login, { AuthSplash, StartupIntro } from './pages/Login.jsx'
 import DueReminders from './components/DueReminders.jsx'
+import { colorHex } from './lib/colors.js'
 import Logo from './components/Logo.jsx'
 import SettingsMenu from './components/SettingsMenu.jsx'
 import PageHelp from './components/PageHelp.jsx'
@@ -75,6 +76,11 @@ export default function App() {
     supabase.from('profiles').select('display_name, avatar_path, color, frame, banner').eq('id', user.id).maybeSingle()
       .then(({ data }) => setMe(data))
   }, [user?.id, pathname, profileTick]) // eslint-disable-line
+
+  // your chosen colour tints the default banner everywhere (the top bar card, your profile, the banner picker)
+  useEffect(() => {
+    document.documentElement.style.setProperty('--my-color', colorHex(me?.color))
+  }, [me?.color])
 
   // about once a day per device: ask the server to tidy away what has expired (old posts and their photo files).
   // Harmless if it is not set up yet, and it only ever removes what was already due.

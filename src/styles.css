@@ -167,8 +167,9 @@ button.link:active { transform: none; }
 .frame-royal { background: conic-gradient(#a855f7, #f59e0b, #a855f7, #f59e0b, #a855f7); box-shadow: 0 0 10px #a855f788; }
 
 /* the default banner ("Checker"): a very light grey and white checkerboard turned 45 degrees, in large squares */
-.banner { height: 120px; background: conic-gradient(from 45deg, #eef0f3 25%, #fafbfc 0 50%, #eef0f3 0 75%, #fafbfc 0) 0 0 / 84px 84px; }
-.banner-solid { background: conic-gradient(from 45deg, #eef0f3 25%, #fafbfc 0 50%, #eef0f3 0 75%, #fafbfc 0) 0 0 / 84px 84px; }
+.banner { height: 120px; background: conic-gradient(from 45deg, color-mix(in srgb, var(--mc, var(--my-color, #94a3b8)) 62%, #fff) 25%, color-mix(in srgb, var(--mc, var(--my-color, #94a3b8)) 44%, #fff) 0 50%, color-mix(in srgb, var(--mc, var(--my-color, #94a3b8)) 62%, #fff) 0 75%, color-mix(in srgb, var(--mc, var(--my-color, #94a3b8)) 44%, #fff) 0) 0 0 / 84px 84px; }
+/* the default banner now takes the colour you chose for yourself ("My color"), as two slightly different shades */
+.banner-solid { background: conic-gradient(from 45deg, color-mix(in srgb, var(--mc, var(--my-color, #94a3b8)) 62%, #fff) 25%, color-mix(in srgb, var(--mc, var(--my-color, #94a3b8)) 44%, #fff) 0 50%, color-mix(in srgb, var(--mc, var(--my-color, #94a3b8)) 62%, #fff) 0 75%, color-mix(in srgb, var(--mc, var(--my-color, #94a3b8)) 44%, #fff) 0) 0 0 / 84px 84px; }
 .banner-sunset { background: linear-gradient(120deg, #f59e0b, #ef4444 55%, #a855f7); }
 .banner-ocean { background: linear-gradient(120deg, #0ea5e9, #2563eb 55%, #1e1b4b); }
 .banner-aurora { background: linear-gradient(120deg, #10b981, #06b6d4 40%, #8b5cf6 75%, #ec4899); }
