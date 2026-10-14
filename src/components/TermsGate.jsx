@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
 import { TERMS, TERMS_VERSION } from '../lib/terms.js'
+import { tourPending, TOUR_CLOSED_EVENT } from './Tour.jsx'
 
 // Asks everyone to accept the community rules, one rule at a time. Each rule has to be read (a short pause) and agreed
 // to on its own before the next one opens, and only then can the whole set be accepted. It shows after sign-in, and again
@@ -18,6 +19,14 @@ export default function TermsGate() {
   const [step, setStep] = useState(0)                 // 0..TERMS.length-1 are the rules; TERMS.length is the final step
   const [agreed, setAgreed] = useState(() => TERMS.map(() => false))
   const [wait, setWait] = useState(0)                 // seconds left before this rule can be agreed to
+  // a new account does the tour first; the rules open once it is finished or skipped
+  const [tourDone, setTourDone] = useState(() => !tourPending(user))
+  useEffect(() => {
+    setTourDone(!tourPending(user))
+    const done = () => setTourDone(true)
+    window.addEventListener(TOUR_CLOSED_EVENT, done)
+    return () => window.removeEventListener(TOUR_CLOSED_EVENT, done)
+  }, [user?.id]) // eslint-disable-line
 
   const last = step === TERMS.length
   const section = TERMS[step]
@@ -35,16 +44,16 @@ export default function TermsGate() {
 
   // every new rule starts with a short pause so it actually gets read
   useEffect(() => {
-    if (!needs || last) return
+    if (!needs || !tourDone || last) return
     setWait(agreed[step] ? 0 : secs)
-  }, [needs, step]) // eslint-disable-line
+  }, [needs, tourDone, step]) // eslint-disable-line
   useEffect(() => {
     if (wait <= 0) return
     const id = setTimeout(() => setWait(w => w - 1), 1000)
     return () => clearTimeout(id)
   }, [wait])
 
-  if (!needs) return null
+  if (!needs || !tourDone) return null
 
   const allAgreed = agreed.every(Boolean)
   const setOne = (i, v) => setAgreed(a => a.map((x, n) => (n === i ? v : x)))

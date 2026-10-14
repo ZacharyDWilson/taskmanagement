@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.23', date: '2026-10-14', title: 'Tour first, rules after',
+    points: [
+      'New accounts now get the welcome tour first. The community rules open right after the tour is finished or skipped, so they no longer sit on top of it.',
+    ],
+  },
+  {
     version: '2.22', date: '2026-10-14', title: 'Find people, steadier profile',
     points: [
       'The Feed is two sections: your posts on the left, and a Find people panel on the right that lists everyone and narrows as you type a name or @username. On a phone they are two dropdowns (Find people, Posts).',

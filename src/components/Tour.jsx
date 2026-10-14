@@ -41,6 +41,14 @@ const markSeen = id => { try { localStorage.setItem(keyFor(id), '1') } catch { /
 
 export const replayTour = () => window.dispatchEvent(new Event('lock-in:tour'))
 
+// True while a brand-new account still has its first tour ahead of it (or is in it). The community rules wait for this.
+export const tourPending = user => {
+  if (!user) return false
+  const ageDays = (Date.now() - new Date(user.created_at ?? 0).getTime()) / 86400000
+  return !seen(user.id) && ageDays < 7
+}
+export const TOUR_CLOSED_EVENT = 'lock-in:tour-closed'
+
 const PAD = 8
 // the first matching element that is actually on screen (the left toolbar and the phone tab bar are never both shown)
 const pickVisible = sels => sels.map(s => document.querySelector(s)).find(el => el && el.getBoundingClientRect().width > 0)
@@ -121,7 +129,11 @@ export default function Tour({ preview = false }) {
 
   if (!open || !user) return null
   const last = i === STEPS.length - 1
-  const close = () => { if (!preview) markSeen(user.id); setOpen(false) }
+  const close = () => {
+    if (!preview) markSeen(user.id)
+    setOpen(false)
+    window.dispatchEvent(new Event(TOUR_CLOSED_EVENT))
+  }
   const go = n => setI(Math.max(0, Math.min(STEPS.length - 1, n)))
 
   const vw = window.innerWidth, vh = window.innerHeight
