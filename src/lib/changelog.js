@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.32', date: '2026-10-14', title: 'University of Maine theme',
+    points: [
+      'A new free base theme for University of Maine: Black Bear navy and ice blue under a still winter sky, with a little snow. Simple and static, like the other college themes. Find it in the Shop under the free themes.',
+    ],
+  },
+  {
     version: '2.31', date: '2026-10-14', title: 'A fuller Study page',
     points: [
       'The streak card now sits under the timer and fills the left side, so both sides of the Study page are filled and the friends panel has more room.',

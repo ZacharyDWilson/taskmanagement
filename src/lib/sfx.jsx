@@ -14,6 +14,7 @@ export const SOUND_PACKS = {
   aero: 'aero',          // the Frutiger Aero look brings its own bubbly sounds
   gordon: 'soft',
   stonybrook: 'studio',
+  umaine: 'minimal',
   console: 'minimal',
   capsule: 'minimal',
   arcade: 'studio',     // deliberately NOT the chiptune pack

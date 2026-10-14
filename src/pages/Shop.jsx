@@ -85,7 +85,7 @@ export default function Shop() {
               : <button className="secondary" onClick={() => setTheme('dark')}>Equip</button>}
           </div>
 
-          {['gordon', 'stonybrook'].map(id => (
+          {['gordon', 'stonybrook', 'umaine'].map(id => (
             <div key={id} className={'theme-opt shop-card' + (theme === id ? ' on' : '')} data-t={id}>
               <Swatch id={id} colors={themeById[id].preview} />
               <strong>{themeById[id].name}</strong>

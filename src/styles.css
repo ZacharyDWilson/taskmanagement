@@ -4048,3 +4048,34 @@ button.feed-section-head .caret { flex: none; }
   .study > .col:first-child > .streak-card .flame { width: 2.6rem; height: 3.2rem; }
   .study > .col:first-child > .streak-card .flame-num { font-size: .9rem; bottom: .5rem; }
 }
+
+
+/* ---- University of Maine: Black Bear navy and ice blue, a still winter sky. Simple and static (no animation). ---------- */
+:root[data-theme='umaine'] {
+  --text: #0b2440; --muted: #52698a; --accent: #003263; --accent-2: #7fb8ee; --on-accent: #ffffff;
+  --glass: rgba(255, 255, 255, .88); --glass-inner: rgba(238, 246, 253, .8); --glass-field: rgba(255, 255, 255, .96);
+  --glass-strong: rgba(255, 255, 255, .98); --glass-line: rgba(0, 50, 99, .15); --glass-shadow: 0 10px 28px rgba(0, 50, 99, .15);
+  --sky-1: #f7fbff; --sky-2: #cfe3f5;
+  --font: 'Barlow', 'Segoe UI', system-ui, sans-serif;
+  --font-head: 'Montserrat', 'Barlow', system-ui, sans-serif; --head-weight: 700;
+  --r: 14px; --card-shape: 14px; --tile-shape: 10px; --btn-shape: 9px; --field-shape: 9px; --dock-shape: 12px;
+}
+:root[data-theme='umaine'] .scene { background: linear-gradient(180deg, #ffffff 0%, #e8f2fb 45%, #bcd8f1 100%); }
+:root[data-theme='umaine'] .scene::before {            /* still snow: scattered flakes, and pale snowy hills along the bottom */
+  content: ''; position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, .95) 0 2px, transparent 3px),
+    radial-gradient(circle, rgba(255, 255, 255, .75) 0 1.5px, transparent 2.5px),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'><path d='M0 170C200 120 380 190 600 150S980 110 1200 170V300H0Z' fill='%23ffffff' opacity='.85'/><path d='M0 230C240 190 420 250 640 215S1000 190 1200 235V300H0Z' fill='%23d7e8f7'/></svg>");
+  background-size: 140px 140px, 90px 90px, 100% 30vh;
+  background-position: 0 0, 45px 60px, bottom;
+  background-repeat: repeat, repeat, no-repeat;
+}
+:root[data-theme='umaine'] .scene::after { content: none; }
+:root[data-theme='umaine'] .scene .g1, :root[data-theme='umaine'] .scene .g2, :root[data-theme='umaine'] .scene span { display: none; }
+:root[data-theme='umaine'] .card, :root[data-theme='umaine'] .profile-head { border-top: 3px solid #003263; }
+:root[data-theme='umaine'] h1, :root[data-theme='umaine'] h2 { letter-spacing: .01em; }
+:root[data-theme='umaine'] button:not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.link):not(.sound-chip):not(.secondary) {
+  border-bottom: 3px solid #001f40; font-weight: 700;
+}
+:root[data-theme='umaine'] .brand { color: #003263; }
