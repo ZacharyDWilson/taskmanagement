@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.28', date: '2026-10-14', title: 'A calmer intro',
+    points: [
+      'The globe now stays for about 1.5 seconds, then fades out slowly over 2 seconds by itself. Tap or press a key to skip it.',
+    ],
+  },
+  {
     version: '2.27', date: '2026-10-14', title: 'The globe on every fresh start',
     points: [
       'The globe intro now plays each time you fully close and reopen the app, even when you are already logged in. Switching back to the app from the background does not replay it.',

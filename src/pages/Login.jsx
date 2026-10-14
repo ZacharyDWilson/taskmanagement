@@ -32,7 +32,7 @@ function Splash({ onDone, waiting = false }) {
   const { play } = sound
   const music = useMusic()
   const [now, setNow] = useState(() => new Date())
-  const [leaving, setLeaving] = useState(false)
+  const [leaving, setLeaving] = useState(false)    // false | 'fast' (you tapped) | 'slow' (it moved on by itself)
   const startedRef = useRef(false)   // the startup sound has actually begun
 
   // the startup sound as the globe appears; if the browser blocks sound before a first tap, the tap plays it instead
@@ -47,18 +47,18 @@ function Splash({ onDone, waiting = false }) {
     return () => clearInterval(id)
   }, [])
 
-  const enter = () => {
+  const enter = (how = 'fast') => {
     if (waiting || leaving) return
-    setLeaving(true)
+    setLeaving(how)
     music.setPhase('quiet')
     if (!startedRef.current) play('intro')
-    setTimeout(onDone, 750)
+    setTimeout(onDone, how === 'slow' ? 2000 : 750)
   }
-  // Moves on by itself after a few seconds, or as soon as you tap.
+  // Shows for 1.5 seconds, then fades out slowly over 2 seconds by itself. A tap or key press skips ahead.
   useEffect(() => {
     if (waiting) return
-    const t = setTimeout(enter, 6500)
-    const key = e => { if (e.key === 'Enter' || e.key === ' ') enter() }
+    const t = setTimeout(() => enter('slow'), 1500)
+    const key = e => { if (e.key === 'Enter' || e.key === ' ') enter('fast') }
     window.addEventListener('keydown', key)
     return () => { clearTimeout(t); window.removeEventListener('keydown', key) }
   }, []) // eslint-disable-line
@@ -74,7 +74,7 @@ function Splash({ onDone, waiting = false }) {
   })), [])
 
   return createPortal(
-    <div className={'splash' + (leaving ? ' leaving' : '')} onClick={enter} role={waiting ? 'status' : 'button'} tabIndex={0}
+    <div className={'splash' + (leaving ? ' leaving' : '') + (leaving === 'slow' ? ' leaving-slow' : '')} onClick={() => enter('fast')} role={waiting ? 'status' : 'button'} tabIndex={0}
       aria-label={waiting ? 'Loading LOCK IN' : 'Enter LOCK IN'}>
       {stars.map((s, i) => (
         <span key={i} className="splash-star" style={{ left: s.left, top: s.top, width: s.size, height: s.size, animationDelay: `${s.delay}s`, animationDuration: `${s.dur}s` }} />
@@ -98,7 +98,7 @@ function Splash({ onDone, waiting = false }) {
           )
         })}
       </div>
-      <div className="splash-hint">{waiting ? 'Loading…' : 'Tap to enter'}</div>
+      <div className="splash-hint">{waiting ? 'Loading…' : 'Tap to skip'}</div>
     </div>,
     document.body,
   )

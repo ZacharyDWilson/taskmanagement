@@ -3974,3 +3974,6 @@ button.feed-section-head .caret { flex: none; }
 /* Feed composer: photo buttons */
 .photo-actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
 .photo-actions button { padding: .45rem .8rem; font-size: .88rem; }
+
+/* the intro that moves on by itself: a slow 2 second fade instead of the quick zoom */
+.splash.leaving-slow { transform: scale(1.06); opacity: 0; transition: transform 2s ease, opacity 2s ease; }
