@@ -3871,3 +3871,10 @@ button.danger { color: #c0392b; border-color: color-mix(in srgb, #c0392b 45%, tr
   .nav .me-chip, .nav .sound-chip, .nav .brand, .nav .mode-chip, .nav .demo-chip, .nav .install-btn, .nav .timer-chip { display: none !important; }
   .nav > .spacer { flex: 1 1 0; }
 }
+
+/* the logo stays front and centre on a phone */
+@media (max-width: 700px) {
+  .nav { position: relative; }
+  .nav .brand { display: inline-flex !important; position: absolute; left: 50%; top: 50%; translate: -50% -50%; margin: 0; z-index: 1; }
+  .nav .brand .logo-mark { opacity: 1; }
+}
