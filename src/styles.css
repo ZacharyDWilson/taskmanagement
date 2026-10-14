@@ -4089,3 +4089,12 @@ button.feed-section-head .caret { flex: none; }
 .badge-strip > .badge { flex: 0 0 auto; min-width: 2.1rem; min-height: 2.1rem; }
 .badge-strip > .badge-more { flex: 0 0 auto; white-space: nowrap; margin-left: .35rem; }
 .badge-strip { row-gap: .35rem; column-gap: .45rem; }
+
+/* weekly leaderboard prizes */
+.lb-prizes { margin: -.2rem 0 .5rem; }
+.lb-prizes span { opacity: .8; }
+.lb-prize { display: block; font-weight: 700; color: var(--accent-ink, var(--accent)); font-size: .78rem; margin-top: -.1rem; }
+.lb-last { margin-top: .6rem; font-size: .88rem; }
+.lb-last summary { cursor: pointer; color: var(--muted); font-weight: 600; }
+.lb-last ol { list-style: none; margin: .4rem 0 0; padding: 0; display: grid; gap: .3rem; }
+.lb-last li { display: flex; align-items: center; gap: .5rem; }

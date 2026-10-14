@@ -254,6 +254,11 @@ const rpcs = {
     return { streak: 12, best: 12, today_minutes: 40, today_done: true, claimed_today: claimed, week }
   },
   claim_streak_bonus: () => { db.streak_claimed_today = true; save(); return { streak: 12, amount: 30, milestone: 0 } },
+  weekly_winners: () => [
+    { week_start: '2026-10-05', rank: 1, user_id: 'demo-m1', display_name: 'Priya Shah', avatar_path: null, color: 'pink', frame: 'frame-none', minutes: 410, coins: 150 },
+    { week_start: '2026-10-05', rank: 2, user_id: 'demo-m2', display_name: 'Alex Rivera', avatar_path: null, color: 'green', frame: 'frame-none', minutes: 305, coins: 100 },
+  ],
+  my_new_prizes: () => [],
   accept_terms: args => { if (db.profiles[0]) db.profiles[0].tos_version = args?.v ?? 1; save(); return null },
   admin_overview: () => ({ users: 3, new_7d: 2, active_7d: 3, focus_hours_7d: 31.5, posts: 6, posts_7d: 4, comments: 15, reports_open: 1, muted: 1, banned: 0, tasks_done_7d: 22 }),
   admin_list_users: () => FAKE_PEOPLE(),

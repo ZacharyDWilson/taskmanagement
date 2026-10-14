@@ -9,12 +9,18 @@ import MiniBadges from './MiniBadges.jsx'
 import { useTopBadges } from '../lib/achievements.jsx'
 
 const MEDAL = ['🥇', '🥈', '🥉']
+const PRIZE = [150, 100, 50]          // coins for 1st, 2nd and 3rd place when the week ends (matches award_weekly_prizes)
 
 // Weekly study ranking: your own place on top with how far the next person is, a podium for the top three, and
 // everyone else below with a bar showing how they compare to the leader.
 export default function Leaderboard({ version }) {
   const { user } = useAuth()
   const [rows, setRows] = useState([])
+  const [winners, setWinners] = useState([])   // last week's top three
+
+  useEffect(() => {
+    supabase.rpc('weekly_winners').then(({ data }) => setWinners(data ?? []))
+  }, [])
 
   useEffect(() => {
     const since = startOfWeek()
@@ -53,7 +59,10 @@ export default function Leaderboard({ version }) {
 
   return (
     <section className="card fill lb-card">
-      <h2>Study leaderboard <small>this week</small></h2>
+      <h2>Study leaderboard <small>this week, resets Sunday night</small></h2>
+      <p className="lb-prizes small muted">
+        Top 3 win coins when the week ends: 🥇 {PRIZE[0]} · 🥈 {PRIZE[1]} · 🥉 {PRIZE[2]} <span>(30 focus minutes to qualify)</span>
+      </p>
 
       {mine ? (
         <div className="lb-me">
@@ -88,6 +97,7 @@ export default function Leaderboard({ version }) {
             return (
               <Link key={r.user_id} to={`/profile/${r.user_id}`} className={'lb-spot place-' + (i + 1) + (r.user_id === user.id ? ' me' : '')}>
                 <span className="lb-medal" aria-hidden="true">{MEDAL[i]}</span>
+                {r.minutes >= 30 && <small className="lb-prize">+{PRIZE[i]} coins</small>}
                 <Avatar name={r.display_name} path={r.avatar_path} color={r.color} frame={r.frame} size={i === 0 ? 56 : 46} />
                 <span className="lb-name">{r.display_name}{r.user_id === user.id ? ' (you)' : ''}</span>
                 <strong>{fmtMinutes(r.minutes)}</strong>
@@ -116,6 +126,22 @@ export default function Leaderboard({ version }) {
             </li>
           ))}
         </ol>
+      )}
+
+      {winners.length > 0 && (
+        <details className="lb-last">
+          <summary>Last week's winners</summary>
+          <ol>
+            {winners.map(w => (
+              <li key={w.user_id}>
+                <span aria-hidden="true">{MEDAL[w.rank - 1]}</span>
+                <Link to={`/profile/${w.user_id}`}>{w.display_name}{w.user_id === user.id ? ' (you)' : ''}</Link>
+                <span className="spacer" />
+                <small className="muted">{fmtMinutes(w.minutes)} · +{w.coins} coins</small>
+              </li>
+            ))}
+          </ol>
+        </details>
       )}
     </section>
   )

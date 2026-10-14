@@ -3,6 +3,13 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.37', date: '2026-10-14', title: 'Weekly leaderboard prizes',
+    points: [
+      'The study leaderboard now pays out every week: 1st place wins 150 coins, 2nd 100 and 3rd 50. You need at least 30 focus minutes that week to qualify.',
+      'The week runs Monday to Sunday and resets Sunday night. Winners get a pop-up the next time they open the app, and last week's winners are listed on the leaderboard.',
+    ],
+  },
+  {
     version: '2.36', date: '2026-10-14', title: 'Badge fix for Windows 10',
     points: [
       'The "All Set Up" badge no longer breaks apart on older computers (Windows 10 drew a person and a graduation cap side by side, spilling out of the badge). It now shows a graduation cap everywhere.',

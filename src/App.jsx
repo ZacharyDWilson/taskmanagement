@@ -18,6 +18,7 @@ import TermsGate from './components/TermsGate.jsx'
 import MailButton from './components/MailButton.jsx'
 import Login, { AuthSplash, StartupIntro } from './pages/Login.jsx'
 import DueReminders from './components/DueReminders.jsx'
+import PrizeNews from './components/PrizeNews.jsx'
 import { colorHex } from './lib/colors.js'
 import Logo from './components/Logo.jsx'
 import SettingsMenu from './components/SettingsMenu.jsx'
@@ -114,6 +115,7 @@ export default function App() {
       {user && <LookPicker />}
       {user && pathname !== '/login' && <StartupIntro />}
       {user && <DueReminders />}
+      {user && <PrizeNews />}
       {user && <Tour />}
       {user && <TermsGate />}
       {user && <InstallPrompt />}
