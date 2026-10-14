@@ -5,7 +5,7 @@ export const CHANGELOG = [
   {
     version: '2.32', date: '2026-10-14', title: 'University of Maine theme',
     points: [
-      'A new free base theme for University of Maine: Black Bear navy and ice blue under a still winter sky, with a little snow. Simple and static, like the other college themes. Find it in the Shop under the free themes.',
+      'A new free base theme for University of Maine: Black Bear navy and ice blue, a bluer winter sky with snow and pine trees. Simple and static, like the other college themes. Find it in the Shop under the free themes.',
     ],
   },
   {
