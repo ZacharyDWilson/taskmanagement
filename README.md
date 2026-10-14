@@ -85,18 +85,24 @@ Notes:
 - To force everyone onto a new build after big changes, bump `CACHE` in `public/sw.js`.
 - Icons live in `public/icons/` and the name/colors in `public/manifest.webmanifest`.
 
-## Invite-only sign-ups
-New accounts need an invite code, checked inside the database (`supabase/005_invite_code.sql`), so it can't be skipped by calling Supabase directly.
-- Friends enter the code in the **Invite code** box at the bottom of the sign-up form.
-- To change the code, run this in the Supabase SQL Editor:
-  `update public.app_settings set value = 'new-code-here' where key = 'invite_code';`
-- Changing the code does not affect people who already have accounts.
-- Supabase's own rate limits and email confirmation still apply on top of this.
 
-## Demo / filler data (test version)
-Set `VITE_DEMO_DATA=true` in `.env` and restart `npm run dev` to show fake friends, posts, tasks, leaderboard entries, and Study Buddy queue entries. A "Demo data" badge appears in the top bar. It never writes to the database.
-- For the final site, set it to `false` (or leave it out). The GitHub deploy only turns it on if you add a repository *variable* named `VITE_DEMO_DATA` set to `true`.
-- To remove it permanently: delete `src/lib/demo.js`, then delete every line marked `// DEMO` (search for "DEMO").
+## Test data
+The filler ("demo") data has been removed: `src/lib/demo.js` is now a set of empty stubs, and the live build contains no test accounts, no fake backend and no preview login. The fake backend (`src/lib/fakeSupabase.js`) is only bundled for the local phone preview (`npm run dev:phone` / `--mode wip`).
+
+## Invite codes
+Sign-ups need a **temporary** invite code that stops working after 15 minutes (`supabase/034_temp_invite_codes.sql`). Make one with:
+```sql
+select * from public.make_invite_code();      -- 15 minutes
+select * from public.make_invite_code(60);    -- 60 minutes
+```
+The permanent code is switched off by that migration.
+
+## Backups (the free Supabase plan has none)
+A GitHub Action (`.github/workflows/backup.yml`) exports your data every Sunday and keeps it 90 days as a workflow artifact. The file is **encrypted** with a passphrase, so it is private even if the repository is public.
+- **Set up once** (repo Settings > Secrets and variables > Actions): add `SUPABASE_SERVICE_KEY` (Supabase > Project Settings > API > service_role) and `BACKUP_PASSPHRASE` (a long random phrase; keep it in a password manager).
+- **Run one now:** Actions tab > "Weekly data backup" > Run workflow. Download the `lock-in-backup` artifact from the finished run.
+- **Open one:** `gpg --decrypt lock-in-backup-DATE.tar.gz.gpg > backup.tar.gz`, then `tar -xzf backup.tar.gz`. You get one JSON file per table plus `manifest.json` (row counts and any problems).
+- **Not included:** `canvas_feeds` (private calendar links) and the photos in Storage.
 
 ## XP, themes and Study Buddy alerts
 - **XP:** 1 per focus minute, 10 per finished task (max 10 tasks/day), 25 per post (max 3/day), 2 per reaction received. Task XP is kept in a ledger (`xp_log`), so deleting a finished task does not lower your level; marking a task "not done" takes its XP back.
