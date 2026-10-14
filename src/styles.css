@@ -3851,3 +3851,17 @@ button.danger { color: #c0392b; border-color: color-mix(in srgb, #c0392b 45%, tr
 }
 .profile-fit > .col > .card.week-bars-card:not(.fill) { flex: 1 1 0; min-height: 0; }
 @media (max-width: 1000px) { .profile-fit > .col > .card.week-bars-card:not(.fill) { flex: none; } }
+
+/* ---- Phones: the profile's study chart keeps its height, and the top bar stops colliding (2.21) -------------------------- */
+@media (max-width: 1000px) {
+  .profile-fit > .col > .week-bars-card .daybars, .profile-fit .week-bars-card .daybars { flex: none; min-height: 150px; height: auto; }
+  .profile-fit .week-bars-card .daybar { height: auto; }
+  .profile-fit .week-bars-card h2 small { display: block; }
+}
+@media (max-width: 520px) {
+  .nav .brand, .nav .mode-chip, .nav .demo-chip, .nav .install-btn { display: none !important; }
+  .nav > .spacer { flex: 1 1 0; min-width: 0; }
+  .nav > button, .nav > a, .nav .help-btn, .nav .sound-chip, .nav .settings-btn, .nav .mail-btn { flex: none; }
+  .nav .me-chip { flex: 0 1 auto; min-width: 0; }
+  .nav .sound-chip { padding: .3rem .4rem; }
+}

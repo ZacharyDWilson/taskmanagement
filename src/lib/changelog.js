@@ -3,6 +3,14 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.21', date: '2026-10-14', title: 'Phone fixes',
+    points: [
+      'The top bar fits on a phone: the level and coins no longer sit on top of the logo, and Log out is no longer cut off.',
+      'Your study time chart on the profile page shows its bars on a phone instead of being squashed flat.',
+      'The app icon is fixed (it was a blue square with a stray white blob), so it can be added to your home screen with the right picture.',
+    ],
+  },
+  {
     version: '2.20', date: '2026-10-14', title: 'A roomier profile',
     points: [
       'The profile page uses its space better: who you are and your four numbers on the left, posts and a much bigger study-time chart in the middle, editing on the right.',
