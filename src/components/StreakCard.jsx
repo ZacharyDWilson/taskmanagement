@@ -49,6 +49,9 @@ export default function StreakCard() {
   const canClaim = s?.today_done && !s?.claimed_today
   const nextCoins = streakCoins(s?.today_done ? streak : streak + 1)
 
+  // the database part (migration 037) is not there yet: show nothing rather than an error
+  if (!s && /streak_status|schema cache|Could not find/i.test(error)) return null
+
   async function doClaim() {
     const r = await claim()
     if (r) toast(`🔥 ${r.streak}-day streak! +${r.amount} coins${r.milestone ? ' (milestone bonus!)' : ''}`, 'level')
