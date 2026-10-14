@@ -259,6 +259,8 @@ const rpcs = {
     { week_start: '2026-10-05', rank: 2, user_id: 'demo-m2', display_name: 'Alex Rivera', avatar_path: null, color: 'green', frame: 'frame-none', minutes: 305, coins: 100 },
   ],
   my_new_prizes: () => [],
+  boost_status: () => ({ ready: true }),
+  boost_news: () => [],
   accept_terms: args => { if (db.profiles[0]) db.profiles[0].tos_version = args?.v ?? 1; save(); return null },
   admin_overview: () => ({ users: 3, new_7d: 2, active_7d: 3, focus_hours_7d: 31.5, posts: 6, posts_7d: 4, comments: 15, reports_open: 1, muted: 1, banned: 0, tasks_done_7d: 22 }),
   admin_list_users: () => FAKE_PEOPLE(),

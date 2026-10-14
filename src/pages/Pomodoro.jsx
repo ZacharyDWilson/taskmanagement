@@ -14,6 +14,7 @@ import BuddyPanel, { Person } from '../components/BuddyPanel.jsx'
 import ShareButton from '../components/ShareButton.jsx'
 import FancyName from '../components/FancyName.jsx'
 import StreakCard from '../components/StreakCard.jsx'
+import { PostBoostChip } from '../components/PostBoost.jsx'
 import { useStudyBuddy } from '../lib/studyBuddy.js'
 
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, Number(n) || lo))
@@ -156,6 +157,7 @@ export default function Study() {
           </>)}
         </div>
       </section>
+      <PostBoostChip />
       <StreakCard />
 
       </div>

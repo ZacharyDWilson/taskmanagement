@@ -95,6 +95,10 @@ function Composer({ onPosted }) {
       setFile(null); setCaption(''); setKind(null); setTagged([]); if (input.current) input.current.value = ''
       setOpen(false)
       toast('✓ Posted to your feed')
+      // the post boost (once a day): say so only when it really is ready
+      supabase.rpc('boost_status').then(({ data }) => {
+        if (data?.ready) setTimeout(() => toast('✨ Post boost: your next focus session earns double coins', 'xp'), 900)
+      })
       onPosted()
     } catch (err) {
       setError(err.message)

@@ -3,6 +3,13 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.39', date: '2026-10-14', title: 'Post, then double coins',
+    points: [
+      'Post to the Feed and your next focus session earns double coins: the session coins are added again, up to +30. It can happen once a day.',
+      'The Study page shows a "Post boost ready" note when one is waiting, and a pop-up tells you when the bonus lands.',
+    ],
+  },
+  {
     version: '2.38', date: '2026-10-14', title: 'Typing minutes on the timer',
     points: [
       'The Focus and Break minute boxes can be typed into normally, so you can enter 45 or 25 on a phone. Before, the box refused to go empty and stuck on 1, so only 10 to 19 or 100+ were possible.',
