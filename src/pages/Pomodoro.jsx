@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Coin from '../components/Coin.jsx'
 import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
 import { usePomodoro, mmss, hms } from '../lib/pomodoro.jsx'
@@ -173,7 +174,7 @@ export default function Study() {
                   onClick={() => (open ? (timerStyle.choose(s.id), setPickStyle(false)) : buyStyle(s))}>
                   <span className="timer-thumb"><TimerFace styleId={s.id} left={p.total * 0.4} total={p.total} mode="focus" running={false} small /></span>
                   <span>{s.name}</span>
-                  <small>{open ? s.blurb : priceOf(s) == null ? 'In the Shop' : `Buy · 🪙 ${priceOf(s)}`}</small>
+                  <small>{open ? s.blurb : priceOf(s) == null ? 'In the Shop' : <>Buy · <Coin /> {priceOf(s)}</>}</small>
                 </button>
               )
             })}

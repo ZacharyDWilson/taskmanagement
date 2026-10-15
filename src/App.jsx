@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Coin from './components/Coin.jsx'
 import { Link, NavLink, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useAuth } from './lib/auth.jsx'
 import { usePomodoro, mmss } from './lib/pomodoro.jsx'
@@ -34,6 +35,7 @@ import LookPicker from './components/LookPicker.jsx'
 import InstallPrompt from './components/InstallPrompt.jsx'
 import { useSound } from './lib/sfx.jsx'
 import DevPanel from './components/DevPanel.jsx'
+import TimerOverlay from './components/TimerOverlay.jsx'
 import { APP_TITLE, IS_ADMIN, IS_DEV_BUILD, IS_FAKE } from './lib/env.js'
 import { DEMO } from './lib/demo.js' // DEMO
 
@@ -116,6 +118,7 @@ export default function App() {
       {user && <LookPicker />}
       {user && pathname !== '/login' && <StartupIntro />}
       {user && <DueReminders />}
+      {user && <TimerOverlay />}
       {user && <PrizeNews />}
       {user && <PostBoostWatcher />}
       {user && <Tour />}
@@ -155,7 +158,7 @@ export default function App() {
                 <Avatar name={me?.display_name ?? 'Me'} path={me?.avatar_path} color={me?.color} frame={me?.frame} size={26} />
                 <span className="me-plate">Lv {xp !== null ? level : '–'}</span>
               </Link>
-              <Link to="/shop" title="Your coins. Spend them in the Shop."><span className="me-plate">🪙 {balance.toLocaleString()}</span></Link>
+              <Link to="/shop" title="Your coins. Spend them in the Shop."><span className="me-plate"><Coin /> {balance.toLocaleString()}</span></Link>
               {xp !== null && (
                 <span className="me-xp" aria-hidden="true"
                   style={{ width: `${Math.round(Math.min(1, Math.max(0, (xp - xpForLevel(level)) / Math.max(1, xpForLevel(level + 1) - xpForLevel(level)))) * 100)}%` }} />

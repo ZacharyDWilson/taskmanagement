@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import Coin from '../components/Coin.jsx'
 import { Link, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { badgeIcon } from '../lib/badgeIcon.js'
@@ -83,7 +84,7 @@ export default function Achievements() {
         </div>
         <div className="ach-summary" aria-label="Progress">
           <strong>{done}<small> / {catalog.length}</small></strong>
-          <span className="muted small">badges{mine ? ` · 🪙 ${coins.toLocaleString()} earned` : ''}</span>
+          <span className="muted small">badges{mine ? <> · <Coin /> {coins.toLocaleString()} earned</> : ''}</span>
         </div>
       </header>
 
@@ -129,7 +130,7 @@ export default function Achievements() {
                   </div>
                 )}
                 <div className="ach-rewards">
-                  {a.reward_coins > 0 && <span className="reward-chip">🪙 {a.reward_coins}</span>}
+                  {a.reward_coins > 0 && <span className="reward-chip"><Coin /> {a.reward_coins}</span>}
                   {a.reward_item && <span className="reward-chip exclusive">✦ {itemName.get(a.reward_item) ?? 'Exclusive style'}</span>}
                 </div>
               </div>

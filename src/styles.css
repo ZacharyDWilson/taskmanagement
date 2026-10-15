@@ -4106,3 +4106,12 @@ button.feed-section-head .caret { flex: none; }
 /* Feed: the "New posts" button */
 .new-posts-pill { position: sticky; top: 4.2rem; z-index: 5; align-self: center; padding: .45rem 1rem; border-radius: 999px; font-weight: 700;
   box-shadow: 0 6px 18px rgba(0, 0, 0, .22); }
+
+/* ---- coin icon + corner timer ---- */
+.coin-svg { vertical-align: -0.16em; flex: none; }
+.timer-overlay {
+  position: fixed; right: 14px; bottom: 14px; z-index: 40; pointer-events: none; user-select: none;
+  padding: .35rem .7rem; border-radius: 999px; font-weight: 700; font-size: .95rem; font-variant-numeric: tabular-nums;
+  color: var(--on-accent, #fff); background: var(--accent); opacity: .55; box-shadow: 0 2px 10px rgba(0,0,0,.2);
+}
+@media (max-width: 520px) { .timer-overlay { right: 10px; bottom: calc(84px + env(safe-area-inset-bottom)); font-size: .82rem; } }

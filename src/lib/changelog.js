@@ -3,6 +3,13 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.41', date: '2026-10-14', title: 'Timer in the corner, coin icon fixed',
+    points: [
+      'While your timer runs, a faint clock sits in the bottom corner of every page so you can move around the app and still see it. You can not click it. Turn it off in Settings under Notifications.',
+      'The coin icon is drawn now, so it no longer shows as a broken box on older Windows.',
+    ],
+  },
+  {
     version: '2.40', date: '2026-10-14', title: 'No more refreshing',
     points: [
       'The Feed updates itself: new posts, reactions and comments appear within about 20 seconds without refreshing. If you are scrolled down, a "New posts" button waits at the top instead of moving the page.',

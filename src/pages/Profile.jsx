@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import Coin from '../components/Coin.jsx'
 import { Link, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
@@ -196,7 +197,7 @@ export default function Profile() {
             </div>
             {mine && (
               <Link to="/shop" className="shop-link">
-                <button type="button">Shop <small>🪙 {shop.balance.toLocaleString()}</small></button>
+                <button type="button">Shop <small><Coin /> {shop.balance.toLocaleString()}</small></button>
               </Link>
             )}
           </div>

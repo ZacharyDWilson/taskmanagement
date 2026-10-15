@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Coin from '../components/Coin.jsx'
 import { Link } from 'react-router-dom'
 import { useShop } from '../lib/shop.jsx'
 import { useTheme, THEMES } from '../lib/theme.jsx'
@@ -58,7 +59,7 @@ export default function Shop() {
           <p className="muted">Spend coins on themes for your page. Coins come from XP, and spending them never lowers your level.</p>
         </div>
         <div className="balance" aria-label={`${balance} coins`}>
-          <span className="balance-coin">🪙</span>
+          <span className="balance-coin"><Coin size="1.4rem" /></span>
           <strong>{balance.toLocaleString()}</strong>
           <small>coins</small>
         </div>
@@ -116,7 +117,7 @@ export default function Shop() {
                 {!has && (
                   <button onClick={() => purchase(item.id)} disabled={short > 0 || !!busy}
                     title={short > 0 ? `You need ${short} more coins` : ''}>
-                    {busy === item.id ? 'Buying…' : `🪙 ${item.price}`}
+                    {busy === item.id ? 'Buying…' : <><Coin /> {item.price}</>}
                     {short > 0 && <small className="need"> need {short} more</small>}
                   </button>
                 )}
@@ -151,10 +152,10 @@ export default function Shop() {
                     ? <span className="owned">✓ You own all of these</span>
                     : (
                       <>
-                        <small className="bundle-save">Separately 🪙 {missing.reduce((n, i) => n + i.price, 0)}, together 🪙 {cost}</small>
+                        <small className="bundle-save">Separately <Coin /> {missing.reduce((n, i) => n + i.price, 0)}, together <Coin /> {cost}</small>
                         <button onClick={() => run(b.id, buyBundle, `You bought the ${b.name}!`)} disabled={short > 0 || !!busy}
                           title={short > 0 ? `You need ${short} more coins` : ''}>
-                          {busy === b.id ? 'Buying…' : `Buy bundle · 🪙 ${cost}`}
+                          {busy === b.id ? 'Buying…' : <>Buy bundle · <Coin /> {cost}</>}
                           {short > 0 && <small className="need"> need {short} more</small>}
                         </button>
                       </>
@@ -187,7 +188,7 @@ export default function Shop() {
                     : (
                       <button onClick={() => purchase(item.id, item.name)} disabled={short > 0 || !!busy}
                         title={short > 0 ? `You need ${short} more coins` : ''}>
-                        {busy === item.id ? 'Buying…' : `🪙 ${item.price}`}
+                        {busy === item.id ? 'Buying…' : <><Coin /> {item.price}</>}
                         {short > 0 && <small className="need"> need {short} more</small>}
                       </button>
                     )}

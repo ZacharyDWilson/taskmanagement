@@ -10,6 +10,7 @@ import { useTheme } from '../lib/theme.jsx'
 import { replayTour } from './Tour.jsx'
 import { introEnabled, setIntroEnabled } from '../lib/introPref.js'
 import { remindersOn, setRemindersOn } from '../lib/dueReminders.js'
+import { overlayOn, setOverlayOn } from './TimerOverlay.jsx'
 import PickerModal from './PickerModal.jsx'
 import { VERSION_LABEL } from '../lib/version.js'
 
@@ -27,6 +28,7 @@ export default function SettingsMenu() {
   const [installMsg, setInstallMsg] = useState('')
   const [intro, setIntro] = useState(introEnabled)
   const [remind, setRemind] = useState(remindersOn)
+  const [overlay, setOverlay] = useState(overlayOn)
   const os = platform()
   const mac = /Mac/.test(navigator.platform)
   const ua = navigator.userAgent || ''
@@ -101,6 +103,10 @@ export default function SettingsMenu() {
             <label className="row">
               <input type="checkbox" checked={remind} onChange={e => { setRemind(e.target.checked); setRemindersOn(e.target.checked) }} />
               Remind me about tasks that are due <span className="muted small">(a sound and a pop-up the day before, the day of, an hour before and when it is due. On this device.)</span>
+            </label>
+            <label className="row">
+              <input type="checkbox" checked={overlay} onChange={e => { setOverlay(e.target.checked); setOverlayOn(e.target.checked) }} />
+              Show the timer in the corner <span className="muted small">(a faint clock on every page while the timer runs, so you can move around and still see it. On this device.)</span>
             </label>
             {!notify.supported && (
               <p className="muted small">This browser can't show notifications. On iPhone, add LOCK IN to your Home Screen first.</p>
