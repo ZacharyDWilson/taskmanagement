@@ -4115,3 +4115,8 @@ button.feed-section-head .caret { flex: none; }
   color: var(--on-accent, #fff); background: var(--accent); opacity: .55; box-shadow: 0 2px 10px rgba(0,0,0,.2);
 }
 @media (max-width: 520px) { .timer-overlay { right: 10px; bottom: calc(84px + env(safe-area-inset-bottom)); font-size: .82rem; } }
+
+/* the digital clock scales to the width of its box, so the h:mm:ss count-up fits on wide, short screens (Chromebook) */
+.study .st-main { container-type: inline-size; }
+.study .st-main .timer-face { max-width: 100%; }
+.study .st-main .timer-face .tf-lcd { max-width: 100%; box-sizing: border-box; padding: .5rem clamp(.5rem, 3cqw, 1.4rem); font-size: clamp(1.5rem, min(9.5cqw, 10vh), 4.6rem); letter-spacing: .03em; }

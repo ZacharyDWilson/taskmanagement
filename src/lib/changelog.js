@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.42', date: '2026-10-15', title: 'Digital clock fits',
+    points: [
+      'The digital timer no longer spills out of its box and over the buttons on wide, short screens like Chromebooks.',
+    ],
+  },
+  {
     version: '2.41', date: '2026-10-14', title: 'Timer in the corner, coin icon fixed',
     points: [
       'Pop out timer (Chrome or Edge on a computer): a small timer window that stays on top of other tabs and apps, with a Start/Pause button. Find it under Timer style on the Study page.',
