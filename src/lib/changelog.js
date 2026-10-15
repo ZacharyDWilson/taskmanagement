@@ -5,6 +5,7 @@ export const CHANGELOG = [
   {
     version: '2.41', date: '2026-10-14', title: 'Timer in the corner, coin icon fixed',
     points: [
+      'Pop out timer (Chrome or Edge on a computer): a small timer window that stays on top of other tabs and apps, with a Start/Pause button. Find it under Timer style on the Study page.',
       'While your timer runs, a faint clock sits in the bottom corner of every page so you can move around the app and still see it. You can not click it. Turn it off in Settings under Notifications.',
       'The coin icon is drawn now, so it no longer shows as a broken box on older Windows.',
     ],

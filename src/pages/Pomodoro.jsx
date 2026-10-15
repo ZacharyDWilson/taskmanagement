@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { pipSupported, openPip } from '../components/PipTimer.jsx'
 import Coin from '../components/Coin.jsx'
 import { supabase } from '../lib/supabase.js'
 import { useAuth } from '../lib/auth.jsx'
@@ -94,6 +95,11 @@ export default function Study() {
         <button type="button" className="secondary timer-style-btn" onClick={() => setPickStyle(true)}>
           Timer style: <strong>{timerStyle.current.name}</strong> ›
         </button>
+        {pipSupported() && (
+          <button type="button" className="secondary timer-style-btn" onClick={openPip} title="A small timer window that stays on top of other tabs and apps">
+            Pop out timer ↗
+          </button>
+        )}
         {locked.length > 0 && <small className="muted">{locked.length} more timer style{locked.length === 1 ? '' : 's'} in the <Link to="/shop">Shop</Link></small>}
         </aside>
         <div className="st-main">

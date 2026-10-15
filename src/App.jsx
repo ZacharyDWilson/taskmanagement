@@ -36,6 +36,7 @@ import InstallPrompt from './components/InstallPrompt.jsx'
 import { useSound } from './lib/sfx.jsx'
 import DevPanel from './components/DevPanel.jsx'
 import TimerOverlay from './components/TimerOverlay.jsx'
+import PipTimer from './components/PipTimer.jsx'
 import { APP_TITLE, IS_ADMIN, IS_DEV_BUILD, IS_FAKE } from './lib/env.js'
 import { DEMO } from './lib/demo.js' // DEMO
 
@@ -119,6 +120,7 @@ export default function App() {
       {user && pathname !== '/login' && <StartupIntro />}
       {user && <DueReminders />}
       {user && <TimerOverlay />}
+      {user && <PipTimer />}
       {user && <PrizeNews />}
       {user && <PostBoostWatcher />}
       {user && <Tour />}
