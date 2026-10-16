@@ -4128,7 +4128,7 @@ button.feed-section-head .caret { flex: none; }
 .sig-chip.style-chip { background: linear-gradient(135deg, #ffe2f0, #dfe9ff); color: #3d2f5c; border-color: #c9b8f0; }
 
 /* ---- Clay Pop: soft, puffy, pastel clay --------------------------------------------------------------------- */
-:root[data-theme='clay'] {
+:is(:root[data-theme='clay'], .sp[data-pack='clay']) {
   --text: #4a3f55; --muted: #7d7088; --accent: #ff7f9e; --accent-2: #ffb199; --on-accent: #ffffff;
   --glass: #fdf0ee; --glass-inner: #f8e4e2; --glass-field: #f1dedb; --glass-strong: #fff6f4; --glass-line: transparent;
   --glass-shadow: 9px 11px 22px rgba(190, 125, 125, .3), -7px -7px 16px rgba(255, 255, 255, .95), inset 2px 3px 5px rgba(255, 255, 255, .95), inset -3px -4px 8px rgba(205, 140, 140, .18);
@@ -4136,30 +4136,30 @@ button.feed-section-head .caret { flex: none; }
   --font: 'Fredoka', 'Nunito', system-ui, sans-serif; --font-head: 'Fredoka', 'Baloo 2', system-ui, sans-serif; --head-weight: 600;
   --card-shape: 30px; --tile-shape: 22px; --btn-shape: 999px; --field-shape: 18px; --dock-shape: 22px;
 }
-:root[data-theme='clay'] .scene { background: linear-gradient(160deg, #fde7e1 0%, #f6dcec 55%, #e1e6fb 100%); }
-:root[data-theme='clay'] .scene::before, :root[data-theme='clay'] .scene::after { content: none; }
-:root[data-theme='clay'] .scene .g1 { background: radial-gradient(circle, rgba(255, 255, 255, .8), transparent 66%); }
-:root[data-theme='clay'] .scene .g2 { background: radial-gradient(circle, rgba(255, 177, 153, .35), transparent 66%); }
-:root[data-theme='clay'] .scene span { display: none; }
-:root[data-theme='clay'] .card, :root[data-theme='clay'] .profile-head { -webkit-backdrop-filter: none; backdrop-filter: none; border: 0; }
-:root[data-theme='clay'] button:not(.link):not(.secondary):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip) {
+:is(:root[data-theme='clay'], .sp[data-pack='clay']) .scene { background: linear-gradient(160deg, #fde7e1 0%, #f6dcec 55%, #e1e6fb 100%); }
+:is(:root[data-theme='clay'], .sp[data-pack='clay']) .scene::before, :is(:root[data-theme='clay'], .sp[data-pack='clay']) .scene::after { content: none; }
+:is(:root[data-theme='clay'], .sp[data-pack='clay']) .scene .g1 { background: radial-gradient(circle, rgba(255, 255, 255, .8), transparent 66%); }
+:is(:root[data-theme='clay'], .sp[data-pack='clay']) .scene .g2 { background: radial-gradient(circle, rgba(255, 177, 153, .35), transparent 66%); }
+:is(:root[data-theme='clay'], .sp[data-pack='clay']) .scene span { display: none; }
+:is(:root[data-theme='clay'], .sp[data-pack='clay']) .card, :is(:root[data-theme='clay'], .sp[data-pack='clay']) .profile-head { -webkit-backdrop-filter: none; backdrop-filter: none; border: 0; }
+:is(:root[data-theme='clay'], .sp[data-pack='clay']) button:not(.link):not(.secondary):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip) {
   border: 0; border-radius: 999px; padding: .7rem 1.3rem;
   background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 80%, #fff), var(--accent));
   box-shadow: 5px 7px 14px rgba(200, 100, 125, .35), -4px -4px 10px rgba(255, 255, 255, .9), inset 3px 4px 7px rgba(255, 255, 255, .5), inset -3px -4px 8px rgba(160, 50, 80, .25);
 }
-:root[data-theme='clay'] button.secondary {
+:is(:root[data-theme='clay'], .sp[data-pack='clay']) button.secondary {
   border: 0; border-radius: 999px; background: var(--glass);
   box-shadow: 4px 5px 11px rgba(190, 125, 125, .28), -4px -4px 9px rgba(255, 255, 255, .95), inset 2px 2px 4px rgba(255, 255, 255, .9), inset -2px -3px 6px rgba(205, 140, 140, .15);
 }
-:root[data-theme='clay'] button:active:not(:disabled) { transform: scale(.97); box-shadow: inset 4px 5px 10px rgba(160, 60, 90, .3), inset -3px -3px 8px rgba(255, 255, 255, .5); }
-:root[data-theme='clay'] input:not([type='checkbox']):not([type='radio']):not([type='file']), :root[data-theme='clay'] textarea, :root[data-theme='clay'] select {
+:is(:root[data-theme='clay'], .sp[data-pack='clay']) button:active:not(:disabled) { transform: scale(.97); box-shadow: inset 4px 5px 10px rgba(160, 60, 90, .3), inset -3px -3px 8px rgba(255, 255, 255, .5); }
+:is(:root[data-theme='clay'], .sp[data-pack='clay']) input:not([type='checkbox']):not([type='radio']):not([type='file']), :is(:root[data-theme='clay'], .sp[data-pack='clay']) textarea, :is(:root[data-theme='clay'], .sp[data-pack='clay']) select {
   border: 0; border-radius: 18px; background: var(--glass-field);
   box-shadow: inset 4px 5px 10px rgba(190, 125, 125, .25), inset -3px -3px 8px rgba(255, 255, 255, .9);
 }
-:root[data-theme='clay'] .me-plate, :root[data-theme='clay'] .timer-chip { box-shadow: 3px 4px 8px rgba(190, 125, 125, .25), inset 1px 1px 3px rgba(255, 255, 255, .8); }
+:is(:root[data-theme='clay'], .sp[data-pack='clay']) .me-plate, :is(:root[data-theme='clay'], .sp[data-pack='clay']) .timer-chip { box-shadow: 3px 4px 8px rgba(190, 125, 125, .25), inset 1px 1px 3px rgba(255, 255, 255, .8); }
 
 /* ---- Neo Brutal: thick outlines, hard shadows, loud flat colour ----------------------------------------------- */
-:root[data-theme='brutal'] {
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) {
   --text: #111111; --muted: #3f3f46; --accent: #ff5c8a; --accent-2: #ffd93d; --on-accent: #111111;
   --glass: #ffffff; --glass-inner: #fff3b8; --glass-field: #ffffff; --glass-strong: #ffffff; --glass-line: #111111;
   --glass-shadow: 6px 6px 0 #111111;
@@ -4167,35 +4167,35 @@ button.feed-section-head .caret { flex: none; }
   --font: 'Rubik', system-ui, sans-serif; --font-head: 'Rubik', system-ui, sans-serif; --head-weight: 800;
   --card-shape: 8px; --tile-shape: 6px; --btn-shape: 8px; --field-shape: 6px; --dock-shape: 8px;
 }
-:root[data-theme='brutal'] .scene { background:
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) .scene { background:
   linear-gradient(90deg, rgba(17, 17, 17, .06) 1px, transparent 1px) 0 0 / 38px 38px,
   linear-gradient(rgba(17, 17, 17, .06) 1px, transparent 1px) 0 0 / 38px 38px,
   #fff6d6; }
-:root[data-theme='brutal'] .scene::before, :root[data-theme='brutal'] .scene::after { content: none; }
-:root[data-theme='brutal'] .scene .g1, :root[data-theme='brutal'] .scene .g2, :root[data-theme='brutal'] .scene span { display: none; }
-:root[data-theme='brutal'] .card, :root[data-theme='brutal'] .profile-head {
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) .scene::before, :is(:root[data-theme='brutal'], .sp[data-pack='brutal']) .scene::after { content: none; }
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) .scene .g1, :is(:root[data-theme='brutal'], .sp[data-pack='brutal']) .scene .g2, :is(:root[data-theme='brutal'], .sp[data-pack='brutal']) .scene span { display: none; }
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) .card, :is(:root[data-theme='brutal'], .sp[data-pack='brutal']) .profile-head {
   -webkit-backdrop-filter: none; backdrop-filter: none; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111;
 }
-:root[data-theme='brutal'] h1, :root[data-theme='brutal'] h2 { text-transform: none; letter-spacing: -.02em; }
-:root[data-theme='brutal'] button:not(.link):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip) {
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) h1, :is(:root[data-theme='brutal'], .sp[data-pack='brutal']) h2 { text-transform: none; letter-spacing: -.02em; }
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) button:not(.link):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip) {
   background: var(--accent-2); color: #111111; border: 3px solid #111111; border-radius: 8px; font-weight: 800;
   box-shadow: 4px 4px 0 #111111; filter: none;
 }
-:root[data-theme='brutal'] button.secondary { background: #ffffff; }
-:root[data-theme='brutal'] button:hover:not(:disabled) { filter: none; background: var(--accent); }
-:root[data-theme='brutal'] button.secondary:hover:not(:disabled) { background: #d9f7f3; }
-:root[data-theme='brutal'] button:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: 0 0 0 #111111; }
-:root[data-theme='brutal'] input:not([type='checkbox']):not([type='radio']):not([type='file']), :root[data-theme='brutal'] textarea, :root[data-theme='brutal'] select {
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) button.secondary { background: #ffffff; }
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) button:hover:not(:disabled) { filter: none; background: var(--accent); }
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) button.secondary:hover:not(:disabled) { background: #d9f7f3; }
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) button:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: 0 0 0 #111111; }
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) input:not([type='checkbox']):not([type='radio']):not([type='file']), :is(:root[data-theme='brutal'], .sp[data-pack='brutal']) textarea, :is(:root[data-theme='brutal'], .sp[data-pack='brutal']) select {
   border: 3px solid #111111; border-radius: 6px; background: #ffffff; box-shadow: 3px 3px 0 #111111;
 }
-:root[data-theme='brutal'] input:focus, :root[data-theme='brutal'] textarea:focus, :root[data-theme='brutal'] select:focus {
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) input:focus, :is(:root[data-theme='brutal'], .sp[data-pack='brutal']) textarea:focus, :is(:root[data-theme='brutal'], .sp[data-pack='brutal']) select:focus {
   border-color: #111111; box-shadow: 3px 3px 0 var(--accent), 0 0 0 3px #111111;
 }
-:root[data-theme='brutal'] .me-plate, :root[data-theme='brutal'] .timer-chip { border: 2px solid #111111; box-shadow: 2px 2px 0 #111111; }
-:root[data-theme='brutal'] .timer-chip { background: var(--accent); color: #111111 !important; }
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) .me-plate, :is(:root[data-theme='brutal'], .sp[data-pack='brutal']) .timer-chip { border: 2px solid #111111; box-shadow: 2px 2px 0 #111111; }
+:is(:root[data-theme='brutal'], .sp[data-pack='brutal']) .timer-chip { background: var(--accent); color: #111111 !important; }
 
 /* ---- Wabi-Sabi: paper, ink and imperfect edges ------------------------------------------------------------------ */
-:root[data-theme='wabi'] {
+:is(:root[data-theme='wabi'], .sp[data-pack='wabi']) {
   --text: #3b342b; --muted: #6f6556; --accent: #b3242b; --accent-2: #a89a82; --on-accent: #fbf6ea;
   --glass: #f6f0e3; --glass-inner: #ece3d0; --glass-field: #fbf7ec; --glass-strong: #fbf7ec; --glass-line: #cfc3ab;
   --glass-shadow: 0 6px 18px rgba(80, 66, 44, .14), 0 1px 0 rgba(255, 255, 255, .7) inset;
@@ -4203,26 +4203,146 @@ button.feed-section-head .caret { flex: none; }
   --font: 'Lora', Georgia, serif; --font-head: 'Lora', Georgia, serif; --head-weight: 600;
   --card-shape: 10px; --tile-shape: 8px; --btn-shape: 8px; --field-shape: 6px; --dock-shape: 10px;
 }
-:root[data-theme='wabi'] .scene { background:
+:is(:root[data-theme='wabi'], .sp[data-pack='wabi']) .scene { background:
   radial-gradient(circle at 18% 22%, rgba(110, 94, 70, .07), transparent 38%),
   radial-gradient(circle at 82% 78%, rgba(110, 94, 70, .09), transparent 42%),
   repeating-linear-gradient(0deg, rgba(110, 94, 70, .035) 0 1px, transparent 1px 5px),
   #efe8da; }
-:root[data-theme='wabi'] .scene::before { content: ''; position: absolute; right: 9vw; top: 14vh; width: clamp(34px, 5vw, 64px); aspect-ratio: 1; border-radius: 50%; background: #b3242b; opacity: .85; }
-:root[data-theme='wabi'] .scene::after { content: none; }
-:root[data-theme='wabi'] .scene .g1, :root[data-theme='wabi'] .scene .g2, :root[data-theme='wabi'] .scene span { display: none; }
-:root[data-theme='wabi'] .card, :root[data-theme='wabi'] .profile-head {
+:is(:root[data-theme='wabi'], .sp[data-pack='wabi']) .scene::before { content: ''; position: absolute; right: 9vw; top: 14vh; width: clamp(34px, 5vw, 64px); aspect-ratio: 1; border-radius: 50%; background: #b3242b; opacity: .85; }
+:is(:root[data-theme='wabi'], .sp[data-pack='wabi']) .scene::after { content: none; }
+:is(:root[data-theme='wabi'], .sp[data-pack='wabi']) .scene .g1, :is(:root[data-theme='wabi'], .sp[data-pack='wabi']) .scene .g2, :is(:root[data-theme='wabi'], .sp[data-pack='wabi']) .scene span { display: none; }
+:is(:root[data-theme='wabi'], .sp[data-pack='wabi']) .card, :is(:root[data-theme='wabi'], .sp[data-pack='wabi']) .profile-head {
   -webkit-backdrop-filter: none; backdrop-filter: none; border: 1px solid #cfc3ab; border-radius: 4px 14px 6px 12px;
 }
-:root[data-theme='wabi'] .card:nth-child(2n), :root[data-theme='wabi'] .col > .card:nth-child(2n) { border-radius: 12px 5px 14px 6px; }
-:root[data-theme='wabi'] .card:nth-child(3n) { border-radius: 6px 12px 4px 15px; }
-:root[data-theme='wabi'] h1, :root[data-theme='wabi'] h2, :root[data-theme='wabi'] h3 { letter-spacing: .01em; }
-:root[data-theme='wabi'] button:not(.link):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip) {
+:is(:root[data-theme='wabi'], .sp[data-pack='wabi']) .card:nth-child(2n), :is(:root[data-theme='wabi'], .sp[data-pack='wabi']) .col > .card:nth-child(2n) { border-radius: 12px 5px 14px 6px; }
+:is(:root[data-theme='wabi'], .sp[data-pack='wabi']) .card:nth-child(3n) { border-radius: 6px 12px 4px 15px; }
+:is(:root[data-theme='wabi'], .sp[data-pack='wabi']) h1, :is(:root[data-theme='wabi'], .sp[data-pack='wabi']) h2, :is(:root[data-theme='wabi'], .sp[data-pack='wabi']) h3 { letter-spacing: .01em; }
+:is(:root[data-theme='wabi'], .sp[data-pack='wabi']) button:not(.link):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip) {
   border-radius: 5px 10px 6px 9px; box-shadow: 0 2px 0 rgba(60, 40, 20, .25); font-weight: 600;
 }
-:root[data-theme='wabi'] button.secondary { box-shadow: none; border: 1px solid #b9ac92; }
-:root[data-theme='wabi'] button:active:not(:disabled) { transform: translateY(1px); box-shadow: none; }
-:root[data-theme='wabi'] input:not([type='checkbox']):not([type='radio']):not([type='file']), :root[data-theme='wabi'] textarea, :root[data-theme='wabi'] select {
+:is(:root[data-theme='wabi'], .sp[data-pack='wabi']) button.secondary { box-shadow: none; border: 1px solid #b9ac92; }
+:is(:root[data-theme='wabi'], .sp[data-pack='wabi']) button:active:not(:disabled) { transform: translateY(1px); box-shadow: none; }
+:is(:root[data-theme='wabi'], .sp[data-pack='wabi']) input:not([type='checkbox']):not([type='radio']):not([type='file']), :is(:root[data-theme='wabi'], .sp[data-pack='wabi']) textarea, :is(:root[data-theme='wabi'], .sp[data-pack='wabi']) select {
   border: 0; border-bottom: 2px solid #8f826a; border-radius: 3px 3px 0 0; background: #fbf7ec;
 }
-:root[data-theme='wabi'] input:focus, :root[data-theme='wabi'] textarea:focus, :root[data-theme='wabi'] select:focus { border-bottom-color: #b3242b; box-shadow: none; }
+:is(:root[data-theme='wabi'], .sp[data-pack='wabi']) input:focus, :is(:root[data-theme='wabi'], .sp[data-pack='wabi']) textarea:focus, :is(:root[data-theme='wabi'], .sp[data-pack='wabi']) select:focus { border-bottom-color: #b3242b; box-shadow: none; }
+
+/* ---- miniature page shown in the Shop / picker for a Style pack: it uses the real pack styles above ---- */
+.sp { display: grid; gap: .55rem; padding: .7rem; border-radius: 14px; pointer-events: none; user-select: none; overflow: hidden;
+  background: linear-gradient(160deg, var(--sky-1), var(--sky-2)); color: var(--text); font-family: var(--font); font-size: .78rem; line-height: 1.35; }
+.sp-bar { display: flex; align-items: center; gap: .35rem; }
+.sp-bar i { width: 20px; height: 20px; border-radius: 50%; background: var(--glass); border: 1px solid var(--glass-line); box-shadow: var(--glass-shadow); }
+.sp-bar b { font-family: var(--font-head); font-weight: var(--head-weight); letter-spacing: .06em; font-size: .8rem; margin-left: .2rem; }
+.sp-bar em { margin-left: auto; font-style: normal; font-weight: 700; padding: .12rem .5rem; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-size: .72rem; }
+.sp .card { padding: .6rem .7rem; display: grid; gap: .4rem; }
+.sp h3 { font-size: .95rem; margin: 0; }
+.sp p { margin: 0; }
+.sp input:not([type='checkbox']) { padding: .3rem .55rem; font-size: .76rem; width: 100%; }
+.sp button { padding: .3rem .8rem; font-size: .76rem; }
+.sp .row { gap: .4rem; flex-wrap: nowrap; }
+.sp-prog { height: 9px; border-radius: 999px; background: var(--glass-inner); border: 1px solid var(--glass-line); overflow: hidden; }
+.sp-prog i { display: block; width: 62%; height: 100%; background: var(--accent); }
+.sp-task { display: flex; align-items: center; gap: .45rem; padding: .25rem .5rem; border-radius: var(--r-sm); background: var(--glass-inner); }
+.sp-task.done span { text-decoration: line-through; opacity: .6; }
+.sp-task input { width: 14px; height: 14px; margin: 0; }
+.sp-chips { display: flex; gap: .35rem; }
+.sp-chips span { padding: .1rem .5rem; border-radius: 999px; background: var(--glass-inner); border: 1px solid var(--glass-line); font-size: .7rem; font-weight: 700; }
+
+/* the miniature keeps its own pack's look even when a different pack is the page's look */
+.sp.sp[data-pack='clay'] {
+  --text: #4a3f55; --muted: #7d7088; --accent: #ff7f9e; --accent-2: #ffb199; --on-accent: #ffffff;
+  --glass: #fdf0ee; --glass-inner: #f8e4e2; --glass-field: #f1dedb; --glass-strong: #fff6f4; --glass-line: transparent;
+  --glass-shadow: 9px 11px 22px rgba(190, 125, 125, .3), -7px -7px 16px rgba(255, 255, 255, .95), inset 2px 3px 5px rgba(255, 255, 255, .95), inset -3px -4px 8px rgba(205, 140, 140, .18);
+  --blur: 0px; --r: 30px; --sky-1: #fde7e1; --sky-2: #f3d6e6;
+  --font: 'Fredoka', 'Nunito', system-ui, sans-serif; --font-head: 'Fredoka', 'Baloo 2', system-ui, sans-serif; --head-weight: 600;
+  --card-shape: 30px; --tile-shape: 22px; --btn-shape: 999px; --field-shape: 18px; --dock-shape: 22px;
+}
+.sp.sp[data-pack='clay'] .scene { background: linear-gradient(160deg, #fde7e1 0%, #f6dcec 55%, #e1e6fb 100%); }
+.sp.sp[data-pack='clay'] .scene::before, .sp.sp[data-pack='clay'] .scene::after { content: none; }
+.sp.sp[data-pack='clay'] .scene .g1 { background: radial-gradient(circle, rgba(255, 255, 255, .8), transparent 66%); }
+.sp.sp[data-pack='clay'] .scene .g2 { background: radial-gradient(circle, rgba(255, 177, 153, .35), transparent 66%); }
+.sp.sp[data-pack='clay'] .scene span { display: none; }
+.sp.sp[data-pack='clay'] .card, .sp.sp[data-pack='clay'] .profile-head { -webkit-backdrop-filter: none; backdrop-filter: none; border: 0; }
+.sp.sp[data-pack='clay'] button:not(.link):not(.secondary):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip) {
+  border: 0; border-radius: 999px; padding: .7rem 1.3rem;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 80%, #fff), var(--accent));
+  box-shadow: 5px 7px 14px rgba(200, 100, 125, .35), -4px -4px 10px rgba(255, 255, 255, .9), inset 3px 4px 7px rgba(255, 255, 255, .5), inset -3px -4px 8px rgba(160, 50, 80, .25);
+}
+.sp.sp[data-pack='clay'] button.secondary {
+  border: 0; border-radius: 999px; background: var(--glass);
+  box-shadow: 4px 5px 11px rgba(190, 125, 125, .28), -4px -4px 9px rgba(255, 255, 255, .95), inset 2px 2px 4px rgba(255, 255, 255, .9), inset -2px -3px 6px rgba(205, 140, 140, .15);
+}
+.sp.sp[data-pack='clay'] button:active:not(:disabled) { transform: scale(.97); box-shadow: inset 4px 5px 10px rgba(160, 60, 90, .3), inset -3px -3px 8px rgba(255, 255, 255, .5); }
+.sp.sp[data-pack='clay'] input:not([type='checkbox']):not([type='radio']):not([type='file']), .sp.sp[data-pack='clay'] textarea, .sp.sp[data-pack='clay'] select {
+  border: 0; border-radius: 18px; background: var(--glass-field);
+  box-shadow: inset 4px 5px 10px rgba(190, 125, 125, .25), inset -3px -3px 8px rgba(255, 255, 255, .9);
+}
+.sp.sp[data-pack='clay'] .me-plate, .sp.sp[data-pack='clay'] .timer-chip { box-shadow: 3px 4px 8px rgba(190, 125, 125, .25), inset 1px 1px 3px rgba(255, 255, 255, .8); }
+
+.sp.sp[data-pack='brutal'] {
+  --text: #111111; --muted: #3f3f46; --accent: #ff5c8a; --accent-2: #ffd93d; --on-accent: #111111;
+  --glass: #ffffff; --glass-inner: #fff3b8; --glass-field: #ffffff; --glass-strong: #ffffff; --glass-line: #111111;
+  --glass-shadow: 6px 6px 0 #111111;
+  --blur: 0px; --r: 8px; --sky-1: #fff6d6; --sky-2: #ffe9a8;
+  --font: 'Rubik', system-ui, sans-serif; --font-head: 'Rubik', system-ui, sans-serif; --head-weight: 800;
+  --card-shape: 8px; --tile-shape: 6px; --btn-shape: 8px; --field-shape: 6px; --dock-shape: 8px;
+}
+.sp.sp[data-pack='brutal'] .scene { background:
+  linear-gradient(90deg, rgba(17, 17, 17, .06) 1px, transparent 1px) 0 0 / 38px 38px,
+  linear-gradient(rgba(17, 17, 17, .06) 1px, transparent 1px) 0 0 / 38px 38px,
+  #fff6d6; }
+.sp.sp[data-pack='brutal'] .scene::before, .sp.sp[data-pack='brutal'] .scene::after { content: none; }
+.sp.sp[data-pack='brutal'] .scene .g1, .sp.sp[data-pack='brutal'] .scene .g2, .sp.sp[data-pack='brutal'] .scene span { display: none; }
+.sp.sp[data-pack='brutal'] .card, .sp.sp[data-pack='brutal'] .profile-head {
+  -webkit-backdrop-filter: none; backdrop-filter: none; border: 3px solid #111111; box-shadow: 6px 6px 0 #111111;
+}
+.sp.sp[data-pack='brutal'] h1, .sp.sp[data-pack='brutal'] h2 { text-transform: none; letter-spacing: -.02em; }
+.sp.sp[data-pack='brutal'] button:not(.link):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip) {
+  background: var(--accent-2); color: #111111; border: 3px solid #111111; border-radius: 8px; font-weight: 800;
+  box-shadow: 4px 4px 0 #111111; filter: none;
+}
+.sp.sp[data-pack='brutal'] button.secondary { background: #ffffff; }
+.sp.sp[data-pack='brutal'] button:hover:not(:disabled) { filter: none; background: var(--accent); }
+.sp.sp[data-pack='brutal'] button.secondary:hover:not(:disabled) { background: #d9f7f3; }
+.sp.sp[data-pack='brutal'] button:active:not(:disabled) { transform: translate(4px, 4px); box-shadow: 0 0 0 #111111; }
+.sp.sp[data-pack='brutal'] input:not([type='checkbox']):not([type='radio']):not([type='file']), .sp.sp[data-pack='brutal'] textarea, .sp.sp[data-pack='brutal'] select {
+  border: 3px solid #111111; border-radius: 6px; background: #ffffff; box-shadow: 3px 3px 0 #111111;
+}
+.sp.sp[data-pack='brutal'] input:focus, .sp.sp[data-pack='brutal'] textarea:focus, .sp.sp[data-pack='brutal'] select:focus {
+  border-color: #111111; box-shadow: 3px 3px 0 var(--accent), 0 0 0 3px #111111;
+}
+.sp.sp[data-pack='brutal'] .me-plate, .sp.sp[data-pack='brutal'] .timer-chip { border: 2px solid #111111; box-shadow: 2px 2px 0 #111111; }
+.sp.sp[data-pack='brutal'] .timer-chip { background: var(--accent); color: #111111 !important; }
+
+.sp.sp[data-pack='wabi'] {
+  --text: #3b342b; --muted: #6f6556; --accent: #b3242b; --accent-2: #a89a82; --on-accent: #fbf6ea;
+  --glass: #f6f0e3; --glass-inner: #ece3d0; --glass-field: #fbf7ec; --glass-strong: #fbf7ec; --glass-line: #cfc3ab;
+  --glass-shadow: 0 6px 18px rgba(80, 66, 44, .14), 0 1px 0 rgba(255, 255, 255, .7) inset;
+  --blur: 0px; --r: 10px; --sky-1: #efe8da; --sky-2: #e2d8c3;
+  --font: 'Lora', Georgia, serif; --font-head: 'Lora', Georgia, serif; --head-weight: 600;
+  --card-shape: 10px; --tile-shape: 8px; --btn-shape: 8px; --field-shape: 6px; --dock-shape: 10px;
+}
+.sp.sp[data-pack='wabi'] .scene { background:
+  radial-gradient(circle at 18% 22%, rgba(110, 94, 70, .07), transparent 38%),
+  radial-gradient(circle at 82% 78%, rgba(110, 94, 70, .09), transparent 42%),
+  repeating-linear-gradient(0deg, rgba(110, 94, 70, .035) 0 1px, transparent 1px 5px),
+  #efe8da; }
+.sp.sp[data-pack='wabi'] .scene::before { content: ''; position: absolute; right: 9vw; top: 14vh; width: clamp(34px, 5vw, 64px); aspect-ratio: 1; border-radius: 50%; background: #b3242b; opacity: .85; }
+.sp.sp[data-pack='wabi'] .scene::after { content: none; }
+.sp.sp[data-pack='wabi'] .scene .g1, .sp.sp[data-pack='wabi'] .scene .g2, .sp.sp[data-pack='wabi'] .scene span { display: none; }
+.sp.sp[data-pack='wabi'] .card, .sp.sp[data-pack='wabi'] .profile-head {
+  -webkit-backdrop-filter: none; backdrop-filter: none; border: 1px solid #cfc3ab; border-radius: 4px 14px 6px 12px;
+}
+.sp.sp[data-pack='wabi'] .card:nth-child(2n), .sp.sp[data-pack='wabi'] .col > .card:nth-child(2n) { border-radius: 12px 5px 14px 6px; }
+.sp.sp[data-pack='wabi'] .card:nth-child(3n) { border-radius: 6px 12px 4px 15px; }
+.sp.sp[data-pack='wabi'] h1, .sp.sp[data-pack='wabi'] h2, .sp.sp[data-pack='wabi'] h3 { letter-spacing: .01em; }
+.sp.sp[data-pack='wabi'] button:not(.link):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip) {
+  border-radius: 5px 10px 6px 9px; box-shadow: 0 2px 0 rgba(60, 40, 20, .25); font-weight: 600;
+}
+.sp.sp[data-pack='wabi'] button.secondary { box-shadow: none; border: 1px solid #b9ac92; }
+.sp.sp[data-pack='wabi'] button:active:not(:disabled) { transform: translateY(1px); box-shadow: none; }
+.sp.sp[data-pack='wabi'] input:not([type='checkbox']):not([type='radio']):not([type='file']), .sp.sp[data-pack='wabi'] textarea, .sp.sp[data-pack='wabi'] select {
+  border: 0; border-bottom: 2px solid #8f826a; border-radius: 3px 3px 0 0; background: #fbf7ec;
+}
+.sp.sp[data-pack='wabi'] input:focus, .sp.sp[data-pack='wabi'] textarea:focus, .sp.sp[data-pack='wabi'] select:focus { border-bottom-color: #b3242b; box-shadow: none; }
+
