@@ -327,6 +327,22 @@
  ],
  "shop_items": [
   {
+   "id": "cyber",
+   "kind": "theme",
+   "name": "Cybercore",
+   "price": 700,
+   "sort": 24,
+   "exclusive": false
+  },
+  {
+   "id": "scrap",
+   "kind": "theme",
+   "name": "Scrapbook",
+   "price": 700,
+   "sort": 25,
+   "exclusive": false
+  },
+  {
    "id": "clay",
    "kind": "theme",
    "name": "Clay Pop",

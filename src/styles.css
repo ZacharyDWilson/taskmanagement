@@ -4368,3 +4368,116 @@ button.feed-section-head .caret { flex: none; }
   .login-brand-form { display: none; }
   .login-split .login-card > button.link { display: block; }
 }
+
+/* ---- Style packs 4 and 5: Cybercore and Scrapbook ---- */
+
+:is(:root[data-theme='cyber'], .sp[data-pack='cyber']) {
+  color-scheme: dark;
+  --text: #eaf6ff; --muted: #8fa6c4; --accent: #00e5ff; --accent-2: #ff2bd6; --on-accent: #04101a; --danger: #ff5d73;
+  --glass: rgba(12, 16, 34, .88); --glass-inner: rgba(0, 229, 255, .07); --glass-field: rgba(4, 6, 16, .85);
+  --glass-strong: rgba(10, 13, 28, .97); --glass-line: rgba(0, 229, 255, .45);
+  --glass-shadow: 0 0 0 1px rgba(0, 229, 255, .12), 0 0 22px rgba(0, 229, 255, .18);
+  --blur: 6px; --r: 6px; --sky-1: #05060d; --sky-2: #0b0f24;
+  --font: 'Space Mono', ui-monospace, monospace; --font-head: 'Orbitron', 'Space Mono', monospace; --head-weight: 700; --head-scale: .92;
+  --card-shape: 6px; --tile-shape: 4px; --btn-shape: 4px; --field-shape: 4px; --dock-shape: 6px;
+}
+:root[data-theme='cyber'] .scene { background:
+  linear-gradient(rgba(0, 229, 255, .07) 1px, transparent 1px) 0 0 / 44px 44px,
+  linear-gradient(90deg, rgba(255, 43, 214, .06) 1px, transparent 1px) 0 0 / 44px 44px,
+  radial-gradient(60vmax 40vmax at 85% 8%, rgba(255, 43, 214, .22), transparent 60%),
+  radial-gradient(60vmax 40vmax at 8% 95%, rgba(0, 229, 255, .2), transparent 60%),
+  #05060d; }
+:root[data-theme='cyber'] .scene::before, :root[data-theme='cyber'] .scene::after { content: none; }
+:root[data-theme='cyber'] .scene .g1, :root[data-theme='cyber'] .scene .g2, :root[data-theme='cyber'] .scene span { display: none; }
+:is(:root[data-theme='cyber'], .sp[data-pack='cyber']) .card, :root[data-theme='cyber'] .profile-head { border: 1px solid rgba(0, 229, 255, .5); box-shadow: 0 0 0 1px rgba(0, 229, 255, .1), 0 0 24px rgba(0, 229, 255, .16), inset 0 0 28px rgba(0, 229, 255, .05); }
+:is(:root[data-theme='cyber'], .sp[data-pack='cyber']) h1, :is(:root[data-theme='cyber'], .sp[data-pack='cyber']) h2, :is(:root[data-theme='cyber'], .sp[data-pack='cyber']) h3 { text-transform: uppercase; letter-spacing: .06em; text-shadow: 0 0 12px rgba(0, 229, 255, .45); }
+:is(:root[data-theme='cyber'], .sp[data-pack='cyber']) button:not(.link):not(.secondary):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip) {
+  background: transparent; color: #00e5ff; border: 1px solid #00e5ff; border-radius: 4px; text-transform: uppercase; letter-spacing: .08em; font-weight: 700;
+  box-shadow: 0 0 14px rgba(0, 229, 255, .45), inset 0 0 12px rgba(0, 229, 255, .15); text-shadow: 0 0 8px rgba(0, 229, 255, .7);
+}
+:is(:root[data-theme='cyber'], .sp[data-pack='cyber']) button:not(.link):not(.secondary):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip):hover:not(:disabled) { filter: none; background: rgba(0, 229, 255, .16); }
+:is(:root[data-theme='cyber'], .sp[data-pack='cyber']) button.secondary { background: transparent; color: #ff6ee7; border: 1px solid rgba(255, 43, 214, .7); box-shadow: 0 0 12px rgba(255, 43, 214, .3); border-radius: 4px; }
+:is(:root[data-theme='cyber'], .sp[data-pack='cyber']) input:not([type='checkbox']):not([type='radio']):not([type='file']), :is(:root[data-theme='cyber'], .sp[data-pack='cyber']) textarea, :is(:root[data-theme='cyber'], .sp[data-pack='cyber']) select { background: rgba(4, 6, 16, .85); border: 1px solid rgba(0, 229, 255, .45); border-radius: 4px; color: var(--text); }
+:root[data-theme='cyber'] input:focus, :root[data-theme='cyber'] textarea:focus, :root[data-theme='cyber'] select:focus { border-color: #00e5ff; box-shadow: 0 0 0 2px rgba(0, 229, 255, .35), 0 0 16px rgba(0, 229, 255, .4); }
+:is(:root[data-theme='cyber'], .sp[data-pack='cyber']) .me-plate, :is(:root[data-theme='cyber'], .sp[data-pack='cyber']) .timer-chip { border: 1px solid rgba(0, 229, 255, .5); }
+
+
+.sp.sp[data-pack='cyber'] {
+  color-scheme: dark;
+  --text: #eaf6ff; --muted: #8fa6c4; --accent: #00e5ff; --accent-2: #ff2bd6; --on-accent: #04101a; --danger: #ff5d73;
+  --glass: rgba(12, 16, 34, .88); --glass-inner: rgba(0, 229, 255, .07); --glass-field: rgba(4, 6, 16, .85);
+  --glass-strong: rgba(10, 13, 28, .97); --glass-line: rgba(0, 229, 255, .45);
+  --glass-shadow: 0 0 0 1px rgba(0, 229, 255, .12), 0 0 22px rgba(0, 229, 255, .18);
+  --blur: 6px; --r: 6px; --sky-1: #05060d; --sky-2: #0b0f24;
+  --font: 'Space Mono', ui-monospace, monospace; --font-head: 'Orbitron', 'Space Mono', monospace; --head-weight: 700; --head-scale: .92;
+  --card-shape: 6px; --tile-shape: 4px; --btn-shape: 4px; --field-shape: 4px; --dock-shape: 6px;
+}
+
+.sp.sp[data-pack='cyber'] .card, :root[data-theme='cyber'] .profile-head { border: 1px solid rgba(0, 229, 255, .5); box-shadow: 0 0 0 1px rgba(0, 229, 255, .1), 0 0 24px rgba(0, 229, 255, .16), inset 0 0 28px rgba(0, 229, 255, .05); }
+.sp.sp[data-pack='cyber'] h1, .sp.sp[data-pack='cyber'] h2, .sp.sp[data-pack='cyber'] h3 { text-transform: uppercase; letter-spacing: .06em; text-shadow: 0 0 12px rgba(0, 229, 255, .45); }
+.sp.sp[data-pack='cyber'] button:not(.link):not(.secondary):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip) {
+  background: transparent; color: #00e5ff; border: 1px solid #00e5ff; border-radius: 4px; text-transform: uppercase; letter-spacing: .08em; font-weight: 700;
+  box-shadow: 0 0 14px rgba(0, 229, 255, .45), inset 0 0 12px rgba(0, 229, 255, .15); text-shadow: 0 0 8px rgba(0, 229, 255, .7);
+}
+.sp.sp[data-pack='cyber'] button:not(.link):not(.secondary):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip):hover:not(:disabled) { filter: none; background: rgba(0, 229, 255, .16); }
+.sp.sp[data-pack='cyber'] button.secondary { background: transparent; color: #ff6ee7; border: 1px solid rgba(255, 43, 214, .7); box-shadow: 0 0 12px rgba(255, 43, 214, .3); border-radius: 4px; }
+.sp.sp[data-pack='cyber'] input:not([type='checkbox']):not([type='radio']):not([type='file']), .sp.sp[data-pack='cyber'] textarea, .sp.sp[data-pack='cyber'] select { background: rgba(4, 6, 16, .85); border: 1px solid rgba(0, 229, 255, .45); border-radius: 4px; color: var(--text); }
+:root[data-theme='cyber'] input:focus, :root[data-theme='cyber'] textarea:focus, :root[data-theme='cyber'] select:focus { border-color: #00e5ff; box-shadow: 0 0 0 2px rgba(0, 229, 255, .35), 0 0 16px rgba(0, 229, 255, .4); }
+.sp.sp[data-pack='cyber'] .me-plate, .sp.sp[data-pack='cyber'] .timer-chip { border: 1px solid rgba(0, 229, 255, .5); }
+
+
+:is(:root[data-theme='scrap'], .sp[data-pack='scrap']) {
+  --text: #3e2f20; --muted: #7a6650; --accent: #e8735a; --accent-2: #ffd966; --on-accent: #ffffff;
+  --glass: #fff8e6; --glass-inner: #f6e9c8; --glass-field: #fffdf4; --glass-strong: #fffdf4; --glass-line: #d9c6a0;
+  --glass-shadow: 3px 4px 0 rgba(120, 90, 50, .22), 0 10px 22px rgba(90, 70, 40, .16);
+  --blur: 0px; --r: 6px; --sky-1: #efe2c8; --sky-2: #e4d3b2;
+  --font: 'Baloo 2', 'Nunito', system-ui, sans-serif; --font-head: 'Pacifico', 'Baloo 2', cursive; --head-weight: 400; --head-scale: 1.02;
+  --card-shape: 6px; --tile-shape: 4px; --btn-shape: 4px; --field-shape: 4px; --dock-shape: 6px;
+}
+:root[data-theme='scrap'] .scene { background:
+  radial-gradient(circle at 20% 20%, rgba(255, 255, 255, .45), transparent 40%),
+  repeating-linear-gradient(45deg, rgba(120, 90, 50, .045) 0 2px, transparent 2px 7px),
+  repeating-linear-gradient(-45deg, rgba(120, 90, 50, .035) 0 2px, transparent 2px 9px),
+  #e9dcc0; }
+:root[data-theme='scrap'] .scene::before, :root[data-theme='scrap'] .scene::after { content: none; }
+:root[data-theme='scrap'] .scene .g1, :root[data-theme='scrap'] .scene .g2, :root[data-theme='scrap'] .scene span { display: none; }
+:is(:root[data-theme='scrap'], .sp[data-pack='scrap']) .card, :root[data-theme='scrap'] .profile-head {
+  -webkit-backdrop-filter: none; backdrop-filter: none; border: 2px dashed #cdb88f; outline: 6px solid #fff8e6; outline-offset: -8px; background-clip: padding-box;
+}
+:is(:root[data-theme='scrap'], .sp[data-pack='scrap']) .card:nth-child(2n) { transform: rotate(.35deg); }
+:is(:root[data-theme='scrap'], .sp[data-pack='scrap']) .card:nth-child(3n) { transform: rotate(-.3deg); }
+:is(:root[data-theme='scrap'], .sp[data-pack='scrap']) h1, :is(:root[data-theme='scrap'], .sp[data-pack='scrap']) h2, :is(:root[data-theme='scrap'], .sp[data-pack='scrap']) h3 { letter-spacing: .01em; }
+:is(:root[data-theme='scrap'], .sp[data-pack='scrap']) button:not(.link):not(.secondary):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip) {
+  background: #ffd966; color: #3e2f20; border: 1px solid #c9a93b; border-radius: 3px; font-weight: 700; transform: rotate(-.8deg);
+  box-shadow: 2px 3px 0 rgba(120, 90, 50, .28);
+}
+:is(:root[data-theme='scrap'], .sp[data-pack='scrap']) button.secondary { background: #fffdf4; color: var(--text); border: 1px dashed #b9a47a; transform: rotate(.6deg); box-shadow: none; }
+:is(:root[data-theme='scrap'], .sp[data-pack='scrap']) button:active:not(:disabled) { transform: translate(1px, 2px); box-shadow: none; }
+:is(:root[data-theme='scrap'], .sp[data-pack='scrap']) input:not([type='checkbox']):not([type='radio']):not([type='file']), :is(:root[data-theme='scrap'], .sp[data-pack='scrap']) textarea, :is(:root[data-theme='scrap'], .sp[data-pack='scrap']) select { background: #fffdf4; border: 1px solid #cdb88f; border-bottom: 2px solid #b39a68; border-radius: 3px; }
+:is(:root[data-theme='scrap'], .sp[data-pack='scrap']) .me-plate, :is(:root[data-theme='scrap'], .sp[data-pack='scrap']) .timer-chip { border: 1px dashed #b9a47a; }
+
+
+.sp.sp[data-pack='scrap'] {
+  --text: #3e2f20; --muted: #7a6650; --accent: #e8735a; --accent-2: #ffd966; --on-accent: #ffffff;
+  --glass: #fff8e6; --glass-inner: #f6e9c8; --glass-field: #fffdf4; --glass-strong: #fffdf4; --glass-line: #d9c6a0;
+  --glass-shadow: 3px 4px 0 rgba(120, 90, 50, .22), 0 10px 22px rgba(90, 70, 40, .16);
+  --blur: 0px; --r: 6px; --sky-1: #efe2c8; --sky-2: #e4d3b2;
+  --font: 'Baloo 2', 'Nunito', system-ui, sans-serif; --font-head: 'Pacifico', 'Baloo 2', cursive; --head-weight: 400; --head-scale: 1.02;
+  --card-shape: 6px; --tile-shape: 4px; --btn-shape: 4px; --field-shape: 4px; --dock-shape: 6px;
+}
+
+.sp.sp[data-pack='scrap'] .card, :root[data-theme='scrap'] .profile-head {
+  -webkit-backdrop-filter: none; backdrop-filter: none; border: 2px dashed #cdb88f; outline: 6px solid #fff8e6; outline-offset: -8px; background-clip: padding-box;
+}
+.sp.sp[data-pack='scrap'] .card:nth-child(2n) { transform: rotate(.35deg); }
+.sp.sp[data-pack='scrap'] .card:nth-child(3n) { transform: rotate(-.3deg); }
+.sp.sp[data-pack='scrap'] h1, .sp.sp[data-pack='scrap'] h2, .sp.sp[data-pack='scrap'] h3 { letter-spacing: .01em; }
+.sp.sp[data-pack='scrap'] button:not(.link):not(.secondary):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip) {
+  background: #ffd966; color: #3e2f20; border: 1px solid #c9a93b; border-radius: 3px; font-weight: 700; transform: rotate(-.8deg);
+  box-shadow: 2px 3px 0 rgba(120, 90, 50, .28);
+}
+.sp.sp[data-pack='scrap'] button.secondary { background: #fffdf4; color: var(--text); border: 1px dashed #b9a47a; transform: rotate(.6deg); box-shadow: none; }
+.sp.sp[data-pack='scrap'] button:active:not(:disabled) { transform: translate(1px, 2px); box-shadow: none; }
+.sp.sp[data-pack='scrap'] input:not([type='checkbox']):not([type='radio']):not([type='file']), .sp.sp[data-pack='scrap'] textarea, .sp.sp[data-pack='scrap'] select { background: #fffdf4; border: 1px solid #cdb88f; border-bottom: 2px solid #b39a68; border-radius: 3px; }
+.sp.sp[data-pack='scrap'] .me-plate, .sp.sp[data-pack='scrap'] .timer-chip { border: 1px dashed #b9a47a; }
+

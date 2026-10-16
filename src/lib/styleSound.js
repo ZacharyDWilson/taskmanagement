@@ -96,7 +96,53 @@ const WABI = {
   delete:       [{ freq: 330, to: 200, dur: .16, gain: .2, ...W }],
 }
 
-const PACKS = { clay: CLAY, brutal: BRUTAL, wabi: WABI }
+// Cyber: bright digital blips and quick arpeggios, a little detuned and cold.
+const C = { type: 'sawtooth', lp: 4200 }
+const CYBER = {
+  hover:        [{ freq: 1800, dur: .025, gain: .035, ...C }],
+  press:        [{ freq: 900, to: 300, dur: .08, gain: .16, ...C }],
+  open:         seq([440, 880], .05, .09, .13, C),
+  close:        seq([880, 440], .05, .09, .13, C),
+  check:        seq([660, 990], .045, .07, .14, C),
+  uncheck:      seq([660, 330], .045, .07, .12, C),
+  success:      seq([523, 659, 784, 1047], .055, .1, .13, C),
+  celebrate:    seq([523, 659, 784, 1047, 1319, 1568], .05, .11, .13, C),
+  achievement:  seq([392, 587, 784, 1175], .06, .12, .13, C),
+  info:         seq([1175, 1568], .06, .09, .11, C),
+  notification: seq([1568, 1175, 1568], .07, .09, .12, C),
+  start:        [{ freq: 220, to: 880, dur: .16, gain: .14, ...C }],
+  stop:         [{ freq: 880, to: 220, dur: .16, gain: .14, ...C }],
+  complete:     seq([659, 784, 988, 1319], .06, .12, .13, C),
+  intro:        seq([220, 330, 440, 660, 880], .08, .18, .12, C),
+  error:        [{ freq: 180, dur: .08, gain: .16, ...C }, { freq: 140, dur: .12, at: .09, gain: .16, ...C }],
+  send:         [{ freq: 500, to: 1500, dur: .09, gain: .14, ...C }],
+  delete:       [{ freq: 700, to: 80, dur: .16, gain: .16, ...C }],
+}
+
+// Scrap: soft paper taps, little pencil ticks and a light "ding", all warm and dry.
+const S = { type: 'triangle', lp: 2200 }
+const SCRAP = {
+  hover:        [{ freq: 1000, dur: .02, gain: .03, ...S }],
+  press:        [{ freq: 700, to: 420, dur: .06, gain: .2, ...S }, { freq: 2400, dur: .012, gain: .05, type: 'square', lp: 3000 }],
+  open:         [{ freq: 480, to: 640, dur: .1, gain: .17, ...S }],
+  close:        [{ freq: 640, to: 440, dur: .1, gain: .16, ...S }],
+  check:        [{ freq: 780, to: 940, dur: .08, gain: .18, ...S }],
+  uncheck:      [{ freq: 600, to: 480, dur: .08, gain: .15, ...S }],
+  success:      seq([523, 659, 784], .09, .16, .16, S),
+  celebrate:    seq([523, 659, 784, 1047, 1319], .08, .2, .16, S),
+  achievement:  seq([440, 554, 659, 880], .09, .2, .16, S),
+  info:         [{ freq: 988, dur: .14, gain: .14, ...S }],
+  notification: seq([880, 1175], .11, .18, .15, S),
+  start:        [{ freq: 400, to: 700, dur: .14, gain: .15, ...S }],
+  stop:         [{ freq: 700, to: 400, dur: .14, gain: .15, ...S }],
+  complete:     seq([523, 659, 880], .09, .18, .15, S),
+  intro:        seq([392, 494, 587, 784], .12, .3, .14, S),
+  error:        [{ freq: 260, to: 200, dur: .14, gain: .18, ...S }],
+  send:         [{ freq: 520, to: 780, dur: .09, gain: .16, ...S }],
+  delete:       [{ freq: 420, to: 180, dur: .14, gain: .17, ...S }],
+}
+
+const PACKS = { clay: CLAY, brutal: BRUTAL, wabi: WABI, cyber: CYBER, scrap: SCRAP }
 export const isStylePack = id => id in PACKS
 
 export function playStyle(pack, cue, volume = .85) {

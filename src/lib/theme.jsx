@@ -52,6 +52,10 @@ export const THEMES = [
     preview: ['#fff6d6', '#ffd93d', '#ff5c8a', '#4dd4c4', '#111111'] },
   { id: 'wabi', name: 'Wabi-Sabi', style: true, music: 'ambient', blurb: 'Quiet paper, ink and imperfect edges, with wooden taps, soft bells and calm ambient music.',
     preview: ['#f3ecdf', '#d9cdb8', '#a89a82', '#5d5243', '#b3242b'] },
+  { id: 'cyber', name: 'Cybercore', style: true, music: 'lofi', blurb: 'Neon on black: glowing outlines, a mono terminal font and digital blips, with a slow lofi beat.',
+    preview: ['#07080f', '#101426', '#00e5ff', '#ff2bd6', '#eaf6ff'] },
+  { id: 'scrap', name: 'Scrapbook', style: true, music: 'coffee', blurb: 'Kraft paper, taped notes and handwritten titles, with soft paper sounds and easy coffee-shop music.',
+    preview: ['#efe2c8', '#fff8e6', '#ffd966', '#e8735a', '#5a4632'] },
   { id: 'twilight', name: 'Twilight Sky', blurb: 'Blush clouds and a crescent moon over indigo mountains and stars.',
     preview: ['#fff1f1', '#a9b4dc', '#7885c6', '#2c3470', '#161b45'] },
 ]

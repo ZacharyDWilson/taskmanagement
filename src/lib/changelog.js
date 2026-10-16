@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.44', date: '2026-10-15', title: 'Two more Style packs',
+    points: [
+      'Cybercore (neon on black, glowing outlines, a terminal font) and Scrapbook (kraft paper, taped notes, handwritten titles) join Clay Pop, Neo Brutal and Wabi-Sabi in the Shop, 700 coins each.',
+    ],
+  },
+  {
     version: '2.43', date: '2026-10-15', title: 'Style packs',
     points: [
       'Three new Style packs in the Shop for 700 coins each: Clay Pop (soft puffy claymorphism), Neo Brutal (thick outlines and hard shadows) and Wabi-Sabi (paper, ink and imperfect edges).',

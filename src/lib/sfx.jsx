@@ -32,6 +32,8 @@ export const SOUND_PACKS = {
   clay: 'clay',         // style packs: their sounds are built in styleSound.js
   brutal: 'brutal',
   wabi: 'wabi',
+  cyber: 'cyber',
+  scrap: 'scrap',
 }
 // Only the understated packs are offered. The bright, bleepy ones are left out on purpose.
 export const PACK_LABELS = { ...(HAS_CRISP ? { crisp: 'Crisp UI' } : {}), aero: 'Aero bubbles', minimal: 'Minimal', soft: 'Soft', studio: 'Studio', zen: 'Zen', organic: 'Organic' }
