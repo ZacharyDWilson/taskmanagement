@@ -170,8 +170,22 @@ export default function Login({ preview = false }) {
   return (
     <>
       {splash ? <Splash onDone={finishSplash} /> : busy && <Splash waiting />}
-      <form onSubmit={submit} className="card narrow stack login-card">
-        <div className="login-brand"><Logo size={22} /><span>LOCK IN</span></div>
+      <div className="login-split">
+        <aside className="card login-pitch">
+          <div className="login-brand"><Logo size={22} /><span>LOCK IN</span></div>
+          <h2>{mode === 'login' ? 'Welcome back!' : 'Welcome to the group!'}</h2>
+          <p className="muted">A calm place to plan your work, focus, and keep up with your friends.</p>
+          <ul className="pitch-list">
+            <li><strong>Plan.</strong> Your to-do list and week in one place, with your Canvas assignments.</li>
+            <li><strong>Focus.</strong> A study timer that earns XP and coins as you go.</li>
+            <li><strong>Share.</strong> Post your wins and study alongside friends.</li>
+          </ul>
+          <button type="button" className="secondary pitch-switch" onClick={() => { setMode(mode === 'login' ? 'signup' : 'login'); setMsg('') }}>
+            {mode === 'login' ? 'New here? Join →' : 'Have an account? Log in →'}
+          </button>
+        </aside>
+      <form onSubmit={submit} className="card stack login-card">
+        <div className="login-brand login-brand-form"><Logo size={22} /><span>LOCK IN</span></div>
         <h1>{mode === 'login' ? 'Log in' : 'Join the group'}</h1>
         {IS_FAKE && (
           <p className="preview-note">
@@ -226,6 +240,7 @@ export default function Login({ preview = false }) {
         </button>
         {msg && <p>{msg}</p>}
       </form>
+      </div>
     </>
   )
 }

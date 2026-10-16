@@ -7,6 +7,7 @@ export const CHANGELOG = [
     points: [
       'Three new Style packs in the Shop for 700 coins each: Clay Pop (soft puffy claymorphism), Neo Brutal (thick outlines and hard shadows) and Wabi-Sabi (paper, ink and imperfect edges).',
       'A Style pack is a step above a theme: it reshapes the boxes, buttons and fields, and brings its own sounds and background music.',
+      'The log in page is split in two: a short welcome that explains the app on one side and the form on the other.',
     ],
   },
   {

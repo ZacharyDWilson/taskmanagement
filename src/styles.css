@@ -4346,3 +4346,25 @@ button.feed-section-head .caret { flex: none; }
 }
 .sp.sp[data-pack='wabi'] input:focus, .sp.sp[data-pack='wabi'] textarea:focus, .sp.sp[data-pack='wabi'] select:focus { border-bottom-color: #b3242b; box-shadow: none; }
 
+
+/* ---- Login: the pitch on one side, the form on the other (same card look as the rest of the app) ---- */
+.login-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.1rem; width: min(940px, 100%); margin: 2rem auto; align-items: stretch; }
+.login-pitch { display: flex; flex-direction: column; justify-content: center; gap: .9rem; padding: 1.8rem 1.8rem; }
+.login-pitch .login-brand { justify-content: flex-start; }
+.login-pitch h2 { font-size: calc(1.9rem * var(--head-scale)); line-height: 1.1; margin: .2rem 0 0; }
+.login-pitch p { margin: 0; }
+.pitch-list { list-style: none; margin: .2rem 0 .4rem; padding: 0; display: grid; gap: .65rem; }
+.pitch-list li { padding-left: 1.1rem; position: relative; }
+.pitch-list li::before { content: ''; position: absolute; left: 0; top: .55em; width: .5rem; height: .5rem; border-radius: 50%; background: var(--accent); }
+.pitch-switch { align-self: flex-start; }
+.login-split .login-card { margin: 0; align-self: stretch; justify-content: center; }
+.login-brand-form { display: none; }
+.login-split .login-card > button.link { display: none; }
+@media (max-width: 760px) {
+  .login-split { grid-template-columns: minmax(0, 1fr); margin: 1rem auto; }
+  .login-pitch { padding: 1.2rem 1.3rem; gap: .6rem; }
+  .login-pitch h2 { font-size: 1.4rem; }
+  .pitch-list, .pitch-switch { display: none; }
+  .login-brand-form { display: none; }
+  .login-split .login-card > button.link { display: block; }
+}
