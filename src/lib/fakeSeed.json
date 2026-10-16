@@ -327,6 +327,30 @@
  ],
  "shop_items": [
   {
+   "id": "clay",
+   "kind": "theme",
+   "name": "Clay Pop",
+   "price": 700,
+   "sort": 21,
+   "exclusive": false
+  },
+  {
+   "id": "brutal",
+   "kind": "theme",
+   "name": "Neo Brutal",
+   "price": 700,
+   "sort": 22,
+   "exclusive": false
+  },
+  {
+   "id": "wabi",
+   "kind": "theme",
+   "name": "Wabi-Sabi",
+   "price": 700,
+   "sort": 23,
+   "exclusive": false
+  },
+  {
    "id": "sprout",
    "kind": "theme",
    "name": "Sprout Squad",

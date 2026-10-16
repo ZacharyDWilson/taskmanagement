@@ -3,6 +3,7 @@ import { createUISFX, getCue } from 'uisfx'
 import { useTheme } from './theme.jsx'
 import { CUSTOM_SFX, HAS_CUSTOM_SFX, CRISP_SFX, HAS_CRISP } from './customSfx.js'
 import { playAero } from './aeroSound.js'
+import { playStyle, isStylePack } from './styleSound.js'
 import STARTUP_SOUND from '../assets/intro/startup.webm?url'
 
 // Sound effects, from the open-source "UI SFX" library (MIT code, CC0 audio; https://uisfx.com).
@@ -28,6 +29,9 @@ export const SOUND_PACKS = {
   golden: 'studio',     // warm and a little ceremonial
   handheld: 'soft',     // gentle, rounded blips
   rose: 'soft',         // muted, like felt and paper
+  clay: 'clay',         // style packs: their sounds are built in styleSound.js
+  brutal: 'brutal',
+  wabi: 'wabi',
 }
 // Only the understated packs are offered. The bright, bleepy ones are left out on purpose.
 export const PACK_LABELS = { ...(HAS_CRISP ? { crisp: 'Crisp UI' } : {}), aero: 'Aero bubbles', minimal: 'Minimal', soft: 'Soft', studio: 'Studio', zen: 'Zen', organic: 'Organic' }
@@ -124,7 +128,7 @@ export function SoundProvider({ children }) {
   const themePack = SOUND_PACKS[theme] || 'minimal'
   const pack = (override && override !== 'theme') ? override : themePack
   // your own files lead, unless the theme brings its own sounds (Aero)
-  const useSignature = SIGNATURE && override === '' && themePack !== 'aero'
+  const useSignature = SIGNATURE && override === '' && themePack !== 'aero' && !isStylePack(themePack)
 
   // One player for the whole app. The audio engine itself only starts after your first tap or key press.
   if (!player.current && typeof window !== 'undefined') {
@@ -140,7 +144,7 @@ export function SoundProvider({ children }) {
   }, [])
 
   // The theme (or your override) picks the pack.
-  useEffect(() => { try { if (pack !== 'aero') player.current?.setPack(pack === 'crisp' ? 'minimal' : pack) } catch { /* ignore */ } }, [pack])
+  useEffect(() => { try { if (pack !== 'aero' && !isStylePack(pack)) player.current?.setPack(pack === 'crisp' ? 'minimal' : pack) } catch { /* ignore */ } }, [pack])
 
   const volumeRef = useRef(DEFAULT_VOLUME)
   const enabledRef = useRef(true)
@@ -162,6 +166,11 @@ export function SoundProvider({ children }) {
         const promise = a.play()
         promise?.catch?.(() => {})
         return { stop: () => a.pause(), promise }
+      }
+      if (isStylePack(packRef.current)) {
+        if (!enabledRef.current) return null
+        playStyle(packRef.current, cue, volumeRef.current)
+        return { stop() {} }
       }
       if (packRef.current === 'aero') {
         if (!enabledRef.current) return null

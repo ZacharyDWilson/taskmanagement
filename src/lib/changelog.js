@@ -3,6 +3,13 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.43', date: '2026-10-15', title: 'Style packs',
+    points: [
+      'Three new Style packs in the Shop for 700 coins each: Clay Pop (soft puffy claymorphism), Neo Brutal (thick outlines and hard shadows) and Wabi-Sabi (paper, ink and imperfect edges).',
+      'A Style pack is a step above a theme: it reshapes the boxes, buttons and fields, and brings its own sounds and background music.',
+    ],
+  },
+  {
     version: '2.42', date: '2026-10-15', title: 'Digital clock fits',
     points: [
       'The digital timer no longer spills out of its box and over the buttons on wide, short screens like Chromebooks.',

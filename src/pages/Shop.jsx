@@ -27,7 +27,7 @@ export default function Shop() {
 
   // earn-only styles (achievement rewards) are never for sale
   const sellable = items.filter(i => !i.exclusive)
-  const themes = sellable.filter(i => i.kind === 'theme')
+  const themes = sellable.filter(i => i.kind === 'theme').sort((a, b) => Number(!!themeById[a.id]?.style) - Number(!!themeById[b.id]?.style))   // Style packs last
   const banners = sellable.filter(i => i.kind === 'banner')
   const frames = sellable.filter(i => i.kind === 'frame')
   const timers = items.filter(i => i.kind === 'timer')
@@ -106,6 +106,7 @@ export default function Shop() {
                 <Swatch id={item.id} colors={t.preview} />
                 <strong>{item.name}</strong>
                 <small>{t.blurb}</small>
+                {t.style && <span className="sig-chip style-chip">✦ Style pack: reshapes the boxes, plus its own sounds and music</span>}
                 {t.signature && <span className="sig-chip">✦ Signature dock: {t.signature}</span>}
                 {has && theme === item.id && <span className="owned">✓ Equipped</span>}
                 {has && theme !== item.id && (

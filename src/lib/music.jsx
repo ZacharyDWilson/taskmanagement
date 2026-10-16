@@ -4,6 +4,7 @@ import coffeeUrl from '../assets/music/coffee-morning.mp3'
 import slowBurnUrl from '../assets/music/slow-burn.mp3'
 import { useSound } from './sfx.jsx'
 import { usePomodoro } from './pomodoro.jsx'
+import { useTheme, THEMES } from './theme.jsx'
 
 // Background music. A calm track that:
 //  - plays a little louder on the login splash,
@@ -21,7 +22,9 @@ export const TRACKS = [
   { id: 'lofi', label: 'Slow burn (lofi)', url: slowBurnUrl },
 ]
 const TRACK_KEY = 'lock-in-music-track'
-const readTrack = () => { try { const t = localStorage.getItem(TRACK_KEY); return TRACKS.some(x => x.id === t) ? t : 'ambient' } catch { return 'ambient' } }
+// A track you picked yourself (with the look it was picked under). A Style pack plays its own track unless you pick another while it is on.
+const TRACK_FOR_KEY = 'lock-in-music-track-for'
+const readPick = () => { try { const t = localStorage.getItem(TRACK_KEY); return TRACKS.some(x => x.id === t) ? { id: t, theme: localStorage.getItem(TRACK_FOR_KEY) || '' } : null } catch { return null } }
 
 // how much to scale a decoded track so its average loudness hits TARGET_RMS without its peaks clipping
 function loudnessGain(buf) {
@@ -123,7 +126,10 @@ export function MusicProvider({ children }) {
   const pomodoro = usePomodoro()
   const [musicOn, setMusicOnState] = useState(readOn)
   const [phase, setPhase] = useState('quiet')    // 'splash' | 'quiet'
-  const [track, setTrackState] = useState(readTrack)
+  const { theme } = useTheme()
+  const [pick, setPick] = useState(readPick)
+  const styleTrack = THEMES.find(t => t.id === theme)?.music ?? null
+  const track = styleTrack ? (pick && pick.theme === theme ? pick.id : styleTrack) : (pick?.id ?? 'ambient')
   const loops = useRef({})
   const loop = useRef(null)
   const getLoop = id => {
@@ -134,9 +140,9 @@ export function MusicProvider({ children }) {
   loop.current = getLoop(track)
   if (import.meta.env.DEV) window.__music = loop.current
   const setTrack = useCallback(id => {
-    setTrackState(id)
-    try { localStorage.setItem(TRACK_KEY, id) } catch { /* ignore */ }
-  }, [])
+    setPick({ id, theme })
+    try { localStorage.setItem(TRACK_KEY, id); localStorage.setItem(TRACK_FOR_KEY, theme) } catch { /* ignore */ }
+  }, [theme])
   // leaving a track fades it out before the next one comes in
   useEffect(() => {
     const old = loop.current

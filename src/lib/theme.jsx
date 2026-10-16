@@ -45,6 +45,13 @@ export const THEMES = [
     preview: ['#5a2fd8', '#b9a3ff', '#1f8fd0', '#f0a21c', '#1fa77d'] },
   { id: 'golden', name: 'Golden Hour', exclusive: true, signature: 'gold coin buttons', blurb: 'Earned, never bought: warm cream and gold glass in low sun, with glossy gold coin buttons.',
     preview: ['#7a4a0a', '#d9a21b', '#ffe08a', '#fff3d0', '#2b1b05'] },
+  // Style packs: a step above a theme. They reshape the boxes and buttons, and bring their own sounds and music.
+  { id: 'clay', name: 'Clay Pop', style: true, music: 'coffee', blurb: 'Claymorphism: soft, puffy, pastel boxes you could squish, with round bloopy sounds and easy coffee-shop music.',
+    preview: ['#fdeee8', '#ffd1c4', '#ff7f9e', '#8fb8ff', '#4a3f55'] },
+  { id: 'brutal', name: 'Neo Brutal', style: true, music: 'lofi', blurb: 'Neo-brutalism: thick black outlines, hard shadows and loud flat colours, with crisp clacks and a slow lofi beat.',
+    preview: ['#fff6d6', '#ffd93d', '#ff5c8a', '#4dd4c4', '#111111'] },
+  { id: 'wabi', name: 'Wabi-Sabi', style: true, music: 'ambient', blurb: 'Quiet paper, ink and imperfect edges, with wooden taps, soft bells and calm ambient music.',
+    preview: ['#f3ecdf', '#d9cdb8', '#a89a82', '#5d5243', '#b3242b'] },
   { id: 'twilight', name: 'Twilight Sky', blurb: 'Blush clouds and a crescent moon over indigo mountains and stars.',
     preview: ['#fff1f1', '#a9b4dc', '#7885c6', '#2c3470', '#161b45'] },
 ]
