@@ -124,7 +124,7 @@ export default function App() {
       {user && <PrizeNews />}
       {user && <PostBoostWatcher />}
       {user && <Tour />}
-      {user && <TermsGate />}
+      {user && !IS_DEV_BUILD && <TermsGate />}   {/* the rules pop-up is skipped on localhost (npm run dev:*) so testing is not interrupted; the live site always shows it */}
       {user && <InstallPrompt />}
       {IS_ADMIN && !IS_FAKE && user && <DevPanel />}   {/* hidden in the shareable preview */}
       {/* PC: icon dock down the side. Icons are dim until you hover them. */}
