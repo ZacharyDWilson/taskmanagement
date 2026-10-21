@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.47', date: '2026-10-21', title: 'Coming up, your way',
+    points: [
+      'Coming up has buttons to only show what is due in the next 1, 3, 7, 14 or 30 days, or all of it. You can also type any number of days. It remembers your choice.',
+    ],
+  },
+  {
     version: '2.46', date: '2026-10-21', title: 'A note for each work day',
     points: [
       'Each work day of a task can have its own note: what exactly you are doing that day. Add them in the task (under the work-day calendar). The note shows under the task in that day\'s pop-up and on the Overview.',

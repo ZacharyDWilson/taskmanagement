@@ -115,13 +115,37 @@ function MonthCalendar({ counts, focus, weekKeys, onOpenDay, large }) {
 }
 
 // What is due soon, next to the month.
+const AHEAD_KEY = 'lock-in-coming-up-days'
+const AHEAD_CHOICES = [1, 3, 7, 14, 30, 0]       // 0 = everything
+const readAhead = () => { try { const n = Number(localStorage.getItem(AHEAD_KEY)); return n >= 0 && n <= 365 && localStorage.getItem(AHEAD_KEY) !== null ? n : 0 } catch { return 0 } }
+
 function Upcoming({ tasks, onOpen }) {
+  const [ahead, setAheadState] = useState(readAhead)         // how many days ahead to show (0 = all)
+  const setAhead = n => { const v = Math.max(0, Math.min(365, Math.round(Number(n) || 0))); setAheadState(v); try { localStorage.setItem(AHEAD_KEY, String(v)) } catch { /* ignore */ } }
   const todayKey = isoDate(new Date())
-  const soon = tasks.filter(t => t.due_date && !t.done && t.due_date >= todayKey).sort((a, b) => a.due_date.localeCompare(b.due_date) || String(a.due_time ?? '').localeCompare(String(b.due_time ?? ''))).slice(0, 12)
+  const lastKey = ahead ? isoDate(addDays(new Date(), ahead - 1)) : '9999-12-31'          // "3 days" = today, tomorrow and the day after
+  const all = tasks.filter(t => t.due_date && !t.done && t.due_date >= todayKey && t.due_date <= lastKey)
+    .sort((a, b) => a.due_date.localeCompare(b.due_date) || String(a.due_time ?? '').localeCompare(String(b.due_time ?? '')))
+  const soon = all.slice(0, 60)
   return (
     <div className="upcoming">
-      <h3>Coming up</h3>
-      {soon.length === 0 ? <p className="muted small">Nothing due soon. Set a due date on a task and it shows up here.</p> : (
+      <div className="upcoming-head">
+        <h3>Coming up <small className="muted">{all.length}</small></h3>
+        <div className="ahead" role="group" aria-label="How far ahead to look">
+          {AHEAD_CHOICES.map(n => (
+            <button key={n} type="button" className={'ahead-btn' + (ahead === n ? ' on' : '')} aria-pressed={ahead === n} onClick={() => setAhead(n)}>
+              {n === 0 ? 'All' : n + (n === 1 ? ' day' : ' days')}
+            </button>
+          ))}
+          <label className="ahead-custom" title="Any number of days">
+            <input type="number" min="1" max="365" inputMode="numeric" placeholder="#" aria-label="Custom number of days ahead"
+              value={AHEAD_CHOICES.includes(ahead) ? '' : ahead}
+              onChange={e => { if (e.target.value === '') setAhead(0); else setAhead(e.target.value) }} />
+            <span>days</span>
+          </label>
+        </div>
+      </div>
+      {soon.length === 0 ? <p className="muted small">{ahead ? (ahead === 1 ? 'Nothing due today.' : `Nothing due in the next ${ahead} days.`) : 'Nothing due soon. Set a due date on a task and it shows up here.'}</p> : (
         <ul>
           {soon.map(t => (
             <li key={t.id}>
