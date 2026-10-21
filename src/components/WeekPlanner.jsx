@@ -1,76 +1,57 @@
-import { useState } from 'react'
-import { usePhone } from '../lib/phone.js'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { addDays, DAY_NAMES, fmtDay, isoDate, startOfWeek } from '../lib/dates.js'
 import { classesFrom } from '../lib/tasks.js'
-import { colorHex } from '../lib/colors.js'
 import { TaskItem } from './TodayList.jsx'
-import DragTray from './DragTray.jsx'
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 const ALL = '__all__'      // class filter: every class
 const NONE = '__none__'    // class filter: tasks with no class set
 
-// A real month: every day is a drop target, shows its tasks, and opens as a day when you tap it.
-function MonthGrid({ tasks, anchor, onOpenDay, onOpenTask, move }) {
-  const first = new Date(anchor.getFullYear(), anchor.getMonth(), 1)
-  const last = new Date(anchor.getFullYear(), anchor.getMonth() + 1, 0)
-  const weeks = []
-  for (let w = startOfWeek(first); w <= last; w = addDays(w, 7)) weeks.push(w)
-  const todayKey = isoDate(new Date())
-  const byDay = {}, dueBy = {}, workBy = {}
+// How many open things each day has: tasks planned for it, tasks due on it, and work days.
+function dayCounts(tasks) {
+  const counts = {}
+  const bump = (key, kind) => { const c = (counts[key] ??= { due: 0, plan: 0, work: 0 }); c[kind]++ }
   for (const t of tasks) {
-    if (t.day) (byDay[t.day] ??= []).push(t)
-    if (t.due_date && !t.done) (dueBy[t.due_date] ??= []).push(t)               // the day it is due
-    for (const k of t.plan_days ?? []) if (k !== t.day && !t.done) (workBy[k] ??= []).push(t)   // extra days to work on it
+    if (t.done) continue
+    if (t.due_date) bump(t.due_date, 'due')
+    if (t.day && t.day !== t.due_date) bump(t.day, 'plan')
+    for (const k of t.plan_days ?? []) if (k !== t.day && k !== t.due_date) bump(k, 'work')
   }
-  const [over, setOver] = useState('')
+  return counts
+}
+const totalOf = c => (c ? c.due + c.plan + c.work : 0)
+const partsOf = c => [c?.due && c.due + ' due', c?.plan && c.plan + ' planned', c?.work && c.work + ' work'].filter(Boolean).join(' · ')
 
+// The week as seven tiles. Each shows how many things that day holds; tap one for the day. Drop a task on a tile to plan it for that day.
+function WeekStrip({ days, counts, onOpenDay, tasks, move }) {
+  const [over, setOver] = useState('')
+  const todayKey = isoDate(new Date())
   function drop(e, key) {
     e.preventDefault()
     setOver('')
     const task = tasks.find(t => t.id === e.dataTransfer.getData('text/task-id'))
     if (task && task.day !== key) move(task, key)
   }
-
   return (
-    <div className="month-grid" role="grid" aria-label={MONTHS[anchor.getMonth()] + ' ' + anchor.getFullYear()}>
-      {DAY_NAMES.map(d => <div key={d} className="mg-dow" role="columnheader">{d}</div>)}
-      {weeks.flatMap(w => Array.from({ length: 7 }, (_, i) => addDays(w, i))).map(d => {
+    <div className="wk-strip" role="list">
+      {days.map((d, i) => {
         const key = isoDate(d)
-        const list = byDay[key] ?? []
-        const due = dueBy[key] ?? []
-        const work = workBy[key] ?? []
-        const open = list.filter(t => !t.done).length + due.length + work.length
-        const shownRows = 4
-        const extraRows = list.length + due.length + work.length - shownRows
+        const c = counts[key]
+        const total = totalOf(c)
         return (
-          <div key={key} role="gridcell" tabIndex={0}
-            className={'mg-cell' + (d.getMonth() !== anchor.getMonth() ? ' out' : '') + (key === todayKey ? ' today' : '') + (over === key ? ' over' : '')}
+          <div key={key} role="listitem" tabIndex={0}
+            className={'wk-tile' + (key === todayKey ? ' today' : '') + (c?.due ? ' has-due' : '') + (over === key ? ' over' : '')}
             onClick={() => onOpenDay(d)}
-            onKeyDown={e => { if (e.key === 'Enter') onOpenDay(d) }}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpenDay(d) } }}
             onDragOver={e => { e.preventDefault(); if (over !== key) setOver(key) }}
             onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget)) setOver(o => (o === key ? '' : o)) }}
-            onDrop={e => drop(e, key)}>
-            <span className="mg-num">{d.getDate()}</span>
-            <ul className="mg-tasks">
-              {[
-                ...due.map(t => ({ t, kind: 'due' })),
-                ...list.map(t => ({ t, kind: 'plan' })),
-                ...work.map(t => ({ t, kind: 'work' })),
-              ].slice(0, shownRows).map(({ t, kind }) => (
-                <li key={kind + t.id} className={'mg-task mg-' + kind + (t.done ? ' done' : '')}
-                  style={kind === 'plan' ? { borderLeftColor: colorHex(t.color) } : undefined}
-                  draggable={kind === 'plan'} title={(kind === 'due' ? 'Due: ' : kind === 'work' ? 'Work on: ' : '') + t.title}
-                  onClick={e => { e.stopPropagation(); onOpenTask(t) }}
-                  onDragStart={kind === 'plan' ? e => { e.stopPropagation(); e.dataTransfer.setData('text/task-id', t.id); e.dataTransfer.effectAllowed = 'move' } : undefined}>
-                  {kind === 'due' && <b>Due</b>}{kind === 'work' && <b>Work</b>}
-                  <span>{t.title}</span>
-                </li>
-              ))}
-            </ul>
-            {extraRows > 0 && <small className="mg-more">+{extraRows} more</small>}
-            {(list.length > 0 || due.length > 0 || work.length > 0) && <i className="mg-count" aria-label={open + ' open'}>{open || '✓'}</i>}
+            onDrop={e => drop(e, key)}
+            title={total ? partsOf(c) : 'Nothing yet. Drop a task here to plan it.'}>
+            <span className="wk-dow">{DAY_NAMES[i]}</span>
+            <span className="wk-date">{fmtDay(d)}</span>
+            <strong className="wk-count">{total || '–'}</strong>
+            <small>{total ? partsOf(c) : 'Free'}</small>
           </div>
         )
       })}
@@ -78,38 +59,33 @@ function MonthGrid({ tasks, anchor, onOpenDay, onOpenTask, move }) {
   )
 }
 
-// A small month for the bottom corner. Each day shows how many things are on it (red when something is due); tap a day to see it.
-function MiniMonth({ tasks, onOpenDay }) {
-  const [month, setMonth] = useState(() => new Date(new Date().getFullYear(), new Date().getMonth(), 1))
-  const first = month
+// The month. Each day shows how many things are on it (red when something is due); tap a day to open it.
+function MonthCalendar({ counts, focus, weekKeys, onOpenDay, large }) {
+  const [month, setMonth] = useState(() => new Date(focus.getFullYear(), focus.getMonth(), 1))
+  const focusKey = focus.getFullYear() * 12 + focus.getMonth()
+  useEffect(() => { setMonth(new Date(focus.getFullYear(), focus.getMonth(), 1)) }, [focusKey]) // eslint-disable-line
   const last = new Date(month.getFullYear(), month.getMonth() + 1, 0)
   const weeks = []
-  for (let w = startOfWeek(first); w <= last; w = addDays(w, 7)) weeks.push(w)
+  for (let w = startOfWeek(month); w <= last; w = addDays(w, 7)) weeks.push(w)
   const todayKey = isoDate(new Date())
-  const counts = {}
-  for (const t of tasks) {
-    if (t.done) continue
-    if (t.due_date) { const c = (counts[t.due_date] ??= { due: 0, plan: 0 }); c.due++ }
-    if (t.day && t.day !== t.due_date) { const c = (counts[t.day] ??= { due: 0, plan: 0 }); c.plan++ }
-  }
   return (
-    <div className="mini-month" aria-label="Month overview">
+    <div className={'mini-month' + (large ? ' large' : '')} aria-label="Month overview">
       <div className="mini-head">
         <button type="button" className="link" onClick={() => setMonth(m => new Date(m.getFullYear(), m.getMonth() - 1, 1))} aria-label="Previous month">‹</button>
-        <strong>{MONTHS[month.getMonth()].slice(0, 3)} {month.getFullYear()}</strong>
+        <strong>{MONTHS[month.getMonth()]} {month.getFullYear()}</strong>
         <button type="button" className="link" onClick={() => setMonth(m => new Date(m.getFullYear(), m.getMonth() + 1, 1))} aria-label="Next month">›</button>
       </div>
-      <div className="mini-grid">
-        {DAY_NAMES.map(d => <span key={d} className="mini-dow">{d[0]}</span>)}
+      <div className="mini-grid" style={{ gridTemplateRows: `auto repeat(${weeks.length}, minmax(0, 1fr))` }}>
+        {DAY_NAMES.map(d => <span key={d} className="mini-dow">{d}</span>)}
         {weeks.flatMap(w => Array.from({ length: 7 }, (_, i) => addDays(w, i))).map(d => {
           const key = isoDate(d)
           const c = counts[key]
-          const total = c ? c.due + c.plan : 0
+          const total = totalOf(c)
           return (
             <button key={key} type="button"
-              className={'mini-day' + (d.getMonth() !== month.getMonth() ? ' out' : '') + (key === todayKey ? ' today' : '') + (c?.due ? ' has-due' : total ? ' has-plan' : '')}
+              className={'mini-day' + (d.getMonth() !== month.getMonth() ? ' out' : '') + (key === todayKey ? ' today' : '') + (weekKeys.has(key) ? ' in-week' : '') + (c?.due ? ' has-due' : total ? ' has-plan' : '')}
               onClick={() => onOpenDay(d)}
-              title={total ? [c.due && c.due + ' due', c.plan && c.plan + ' planned'].filter(Boolean).join(', ') : 'Nothing yet'}>
+              title={total ? partsOf(c) : 'Nothing yet'}>
               <span>{d.getDate()}</span>
               {total > 0 && <i>{total}</i>}
             </button>
@@ -120,10 +96,10 @@ function MiniMonth({ tasks, onOpenDay }) {
   )
 }
 
-// What is due soon, next to the small month.
+// What is due soon, next to the month.
 function Upcoming({ tasks, onOpen }) {
   const todayKey = isoDate(new Date())
-  const soon = tasks.filter(t => t.due_date && !t.done && t.due_date >= todayKey).sort((a, b) => a.due_date.localeCompare(b.due_date) || String(a.due_time ?? '').localeCompare(String(b.due_time ?? ''))).slice(0, 6)
+  const soon = tasks.filter(t => t.due_date && !t.done && t.due_date >= todayKey).sort((a, b) => a.due_date.localeCompare(b.due_date) || String(a.due_time ?? '').localeCompare(String(b.due_time ?? ''))).slice(0, 12)
   return (
     <div className="upcoming">
       <h3>Coming up</h3>
@@ -193,39 +169,28 @@ function Column({ title, dates, tasks, toggle, remove, move, onOpen, onExpand, f
   )
 }
 
-// The planner: Day, Week or Month, with a filter to show one class or subject at a time.
+// The planner: the week as seven count tiles, the month beneath it, and what is due soon. Tasks themselves open in a day pop-up.
 export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
-  const [mode, setMode] = useState('week')                 // 'day' | 'week' | 'month'
-  const [popup, setPopup] = useState(null)                // a day opened as a pop-up (from either calendar)
-  const [anchor, setAnchor] = useState(() => new Date())    // the day / week / month being looked at
+  const [mode, setMode] = useState('week')                 // 'week' | 'month'
+  const [anchor, setAnchor] = useState(() => new Date())    // the week / month being looked at
   const [filter, setFilter] = useState(ALL)                 // class filter
-  const phone = usePhone()
-  const [big, setBig] = useState(null)                      // a day opened full screen (phones)
+  const [popup, setPopup] = useState(null)                  // a day opened as a pop-up
 
   const classes = classesFrom(tasks)
   const hasUnclassed = tasks.some(t => !t.course)
   const visible = tasks.filter(t => (filter === ALL ? true : filter === NONE ? !t.course : t.course === filter))
+  const counts = dayCounts(visible)
 
   const start = startOfWeek(anchor)
-  const columns = [
-    ...[0, 1, 2, 3, 4, 5, 6].map(i => ({ title: DAY_NAMES[i], dates: [addDays(start, i)] })),
-  ]
-  const weekKeys = new Set(columns.flatMap(c => c.dates.map(isoDate)))
+  const days = [0, 1, 2, 3, 4, 5, 6].map(i => addDays(start, i))
+  const weekKeys = new Set(days.map(isoDate))
   const weekTasks = visible.filter(t => weekKeys.has(t.day))
-  const dayTasks = visible.filter(t => t.day === isoDate(anchor))
   const monthTasks = visible.filter(t => t.day && t.day.slice(0, 7) === isoDate(anchor).slice(0, 7))
-  const shown = mode === 'day' ? dayTasks : mode === 'week' ? weekTasks : monthTasks
+  const shown = mode === 'week' ? weekTasks : monthTasks
   const done = shown.filter(t => t.done).length
 
-  const step = dir => setAnchor(a => (
-    mode === 'day' ? addDays(a, dir)
-      : mode === 'week' ? addDays(a, dir * 7)
-        : new Date(a.getFullYear(), a.getMonth() + dir, 1)))
-  const label = mode === 'day'
-    ? anchor.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })
-    : mode === 'week'
-      ? `${fmtDay(start)} – ${fmtDay(addDays(start, 6))}`
-      : `${MONTHS[anchor.getMonth()]} ${anchor.getFullYear()}`
+  const step = dir => setAnchor(a => (mode === 'week' ? addDays(a, dir * 7) : new Date(a.getFullYear(), a.getMonth() + dir, 1)))
+  const label = mode === 'week' ? `${fmtDay(start)} – ${fmtDay(addDays(start, 6))}` : `${MONTHS[anchor.getMonth()]} ${anchor.getFullYear()}`
 
   return (
     <section className="card fill planner">
@@ -236,7 +201,8 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
         </h2>
         <div className="planner-controls">
           <div className="seg" role="tablist" aria-label="Planner view">
-            {['day', 'week', 'month'].map(m => (
+            <button type="button" className="seg-btn" onClick={() => setPopup(new Date())} title="Open today as a day view">Day</button>
+            {['week', 'month'].map(m => (
               <button key={m} type="button" role="tab" aria-selected={mode === m}
                 className={'seg-btn' + (mode === m ? ' on' : '')} onClick={() => setMode(m)}>
                 {m[0].toUpperCase() + m.slice(1)}
@@ -262,43 +228,16 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
             </select>
           </label>
         )}
+        <span className="cal-legend"><span>Numbers are how many things are on a day. <b className="lg-due">Red</b> = something is due. Tap a day to see it.</span></span>
       </div>
 
-      <div className="cal-legend" aria-label="What the calendar marks mean">
-        <span className="lg plan"><i /> Planned (drag to move)</span>
-        <span className="lg due"><i /> Due date</span>
-        <span className="lg work"><i /> Work day</span>
+      {mode === 'week' && <WeekStrip days={days} counts={counts} onOpenDay={setPopup} tasks={visible} move={move} />}
+
+      <div className={'planner-foot' + (mode === 'month' ? ' month-only' : '')}>
+        <MonthCalendar counts={counts} focus={anchor} weekKeys={mode === 'week' ? weekKeys : new Set()} onOpenDay={setPopup} large />
+        <Upcoming tasks={visible} onOpen={onOpen} />
       </div>
 
-      {mode !== 'month' && <DragTray columns={columns} tasks={tasks} move={move} />}
-
-      {mode === 'week' && (
-        <div className="week">
-          {columns.map(c => (
-            <Column key={c.title} {...c} tasks={visible} toggle={toggle} remove={remove}
-              move={move} onOpen={onOpen} onExpand={phone ? () => setBig(c.title) : undefined} />
-          ))}
-        </div>
-      )}
-
-      {mode === 'day' && (
-        <div className="week day-view">
-          <Column title={anchor.toLocaleDateString(undefined, { weekday: 'long' })} dates={[anchor]} tasks={visible}
-            toggle={toggle} remove={remove} move={move} onOpen={onOpen} />
-        </div>
-      )}
-
-      {mode !== 'month' && (
-        <div className="planner-foot">
-          <MiniMonth tasks={visible} onOpenDay={d => setPopup(d)} />
-          <Upcoming tasks={visible} onOpen={onOpen} />
-        </div>
-      )}
-
-      {mode === 'month' && (
-        <MonthGrid tasks={visible} anchor={anchor} move={move} onOpenTask={onOpen}
-          onOpenDay={d => setPopup(d)} />
-      )}
       {popup && createPortal(
         <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setPopup(null) }}>
           <div className="modal day-pop" role="dialog" aria-modal="true" aria-label="Day view">
@@ -316,21 +255,6 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
         </div>,
         document.body,
       )}
-      {big && (() => {
-        const c = columns.find(x => x.title === big)
-        if (!c) return null
-        return createPortal(
-          <div className="day-full" role="dialog" aria-modal="true" aria-label={c.title}>
-            <div className="day-full-bar">
-              <button type="button" className="secondary" onClick={() => setBig(null)}>← Back</button>
-              <span>{label}</span>
-            </div>
-            <Column {...c} tasks={visible} toggle={toggle} remove={remove} move={move}
-              onOpen={t => { setBig(null); onOpen(t) }} full />
-          </div>,
-          document.body,
-        )
-      })()}
     </section>
   )
 }

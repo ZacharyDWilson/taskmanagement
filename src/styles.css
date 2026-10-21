@@ -4542,3 +4542,37 @@ button.feed-section-head .caret { flex: none; }
 .modal.day-pop h2 { margin: 0; font-size: 1.05rem; text-align: center; flex: 1; }
 .modal.day-pop .day { margin-top: .6rem; }
 @media (max-width: 520px) { .planner-foot { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---- Planner v2: week count tiles, a big month that fills the card, and Coming up ---- */
+.wk-strip { flex: none; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .5rem; }
+.wk-tile { display: flex; flex-direction: column; align-items: center; gap: .1rem; padding: .55rem .3rem .5rem; border-radius: var(--r-sm); background: var(--glass-inner); border: 1px solid var(--glass-line); cursor: pointer; text-align: center; min-width: 0; transition: border-color .15s ease, background .15s ease; }
+.wk-tile:hover, .wk-tile:focus-visible { border-color: var(--accent); outline: none; }
+.wk-tile.today { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--glass-inner)); }
+.wk-tile.over { outline: 2px dashed var(--accent); outline-offset: -4px; background: color-mix(in srgb, var(--accent) 18%, var(--glass-inner)); }
+.wk-dow { font-weight: 800; font-size: .85rem; }
+.wk-date { font-size: .7rem; color: var(--muted); }
+.wk-count { font-size: 1.9rem; line-height: 1.1; font-variant-numeric: tabular-nums; color: var(--accent-ink, var(--accent)); }
+.wk-tile.has-due .wk-count { color: #c42b31; }
+.wk-tile small { color: var(--muted); font-size: .66rem; line-height: 1.2; min-height: 1.6em; overflow-wrap: anywhere; }
+.cal-legend { font-size: .75rem; color: var(--muted); }
+.cal-legend .lg-due { color: #c42b31; }
+.planner .planner-foot { flex: 1 1 auto; min-height: 0; grid-template-columns: minmax(0, 1.7fr) minmax(190px, 1fr); align-items: stretch; margin-top: .8rem; }
+.planner-foot .mini-month { min-height: 0; }
+.mini-month.large .mini-grid { flex: 1; min-height: 0; gap: 4px; }
+.mini-month.large .mini-day { height: auto; min-height: 30px; font-size: .9rem; padding: 0 .5rem; border-radius: 10px; }
+.mini-month.large .mini-dow { font-size: .7rem; }
+.mini-month.large .mini-head { font-size: 1rem; }
+.mini-month.large .mini-day i { font-size: .72rem; min-width: 18px; height: 18px; line-height: 18px; }
+.mini-day.in-week { background: color-mix(in srgb, var(--accent) 10%, var(--glass-inner)); }
+.upcoming { overflow-y: auto; min-height: 0; padding-right: .2rem; }
+.upcoming h3 { margin: 0 0 .5rem; }
+.planner-foot.month-only { margin-top: 0; }
+@media (max-width: 520px) {
+  .wk-strip { gap: .25rem; }
+  .wk-tile { padding: .4rem .1rem; }
+  .wk-count { font-size: 1.35rem; }
+  .wk-tile small { display: none; }
+  .wk-date { display: none; }
+  .planner .planner-foot { grid-template-columns: minmax(0, 1fr); overflow-y: auto; }
+  .mini-month.large .mini-day { min-height: 34px; }
+}
