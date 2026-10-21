@@ -11,7 +11,7 @@ import WeekPlanner from '../components/WeekPlanner.jsx'
 import TaskModal from '../components/TaskModal.jsx'
 
 export default function Todo() {
-  const { tasks, error, update, toggle, move: moveRaw, remove: removeRaw, add: addRaw } = useTasks()
+  const { tasks, repeats, error, update, toggle, move: moveRaw, remove: removeRaw, add: addRaw, makeRepeat, changeRepeat, stopRepeat } = useTasks()
   const { xp, refresh } = useMyXp()
   const toast = useToast()
   const [openId, setOpenId] = useState(null)
@@ -81,6 +81,13 @@ export default function Todo() {
           key={openTask.id}
           task={openTask}
           courses={classesFrom(tasks)}
+          repeat={repeats.find(r => r.id === openTask.repeat_id) ?? null}
+          onRepeat={async (change, patch) => {
+            const rep = repeats.find(r => r.id === openTask.repeat_id)
+            if (change.stop) { if (rep && await stopRepeat(rep)) toast('Stopped repeating. Future copies were removed.', 'info', { silent: true }) }
+            else if (rep) { if (await changeRepeat(rep, change.weekdays, change.endsOn)) toast('✓ Repeat updated', 'info', { silent: true }) }
+            else if (await makeRepeat({ ...openTask, ...patch }, change.weekdays, change.endsOn)) toast('✓ Repeats every week. Copies appear on your calendar.', 'info', { silent: true })
+          }}
           onSave={patch => saveTask(openTask, patch)}
           onDelete={() => removeTask(openTask)}
           onClose={() => setOpenId(null)}

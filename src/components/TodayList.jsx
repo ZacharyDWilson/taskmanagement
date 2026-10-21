@@ -24,11 +24,12 @@ export function TaskItem({ task, onToggle, onRemove, onOpen, draggable = false, 
       <button type="button" className="task-main" onClick={() => onOpen?.(task)}>
         <span className="task-title">{task.title}</span>
         {note && <span className="task-note">{note}</span>}
-        {(label || task.course || task.category || task.due_date || task.plan_days?.length > 0) && (
+        {(label || task.course || task.category || task.due_date || task.repeat_id || task.plan_days?.length > 0) && (
           <span className="task-tags">
             {label && <span className="tag day-tag">{label}</span>}
             {task.course && <span className="tag">{task.course}</span>}
             {task.category && <span className="tag alt">{task.category}</span>}
+            {task.repeat_id && <span className="tag repeat" title="Repeats every week">↻ weekly</span>}
             {task.due_date && <span className={'tag due' + (overdue ? ' late' : '')}>Due {fmtDue(task)}</span>}
             {task.plan_days?.length > 0 && <span className="tag work" title="Days you plan to work on it">{task.plan_days.length + (task.day ? 1 : 0)} work days</span>}
           </span>

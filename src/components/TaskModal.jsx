@@ -10,13 +10,15 @@ const CAT_ICON = { Homework: '📝', Exam: '🎯', Project: '🛠️', Reading: 
 const CAT_COLOR = { Homework: '#3b82f6', Exam: '#ef4444', Project: '#a855f7', Reading: '#14b8a6', Study: '#f59e0b', Work: '#64748b', Personal: '#22c55e', Other: '#ec4899' }
 const todayKey = isoDate(new Date())
 // Detail pop-up: what it's for, when it's due, the requirements, and any extra info.
-export default function TaskModal({ task, courses, onSave, onDelete, onClose }) {
+export default function TaskModal({ task, courses, repeat = null, onRepeat, onSave, onDelete, onClose }) {
   const [d, setD] = useState({
     title: task.title,
     course: task.course ?? '',
     category: task.category ?? '',
     work: [...new Set([task.day, ...(task.plan_days ?? [])].filter(Boolean))].sort(),   // every day you will work on it (the first one is stored as its main day)
     notes: { ...(task.plan_notes ?? {}) },   // what you will do on each work day, by date
+    repDays: [...(repeat?.weekdays ?? [])].sort(),   // weekdays it repeats on every week (0 = Sunday)
+    repEnds: repeat?.ends_on ?? '',
     due_date: task.due_date ?? '',
     due_time: task.due_time ? task.due_time.slice(0, 5) : '',
     criteria: task.criteria ?? '',
@@ -63,7 +65,7 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
     const cleanNotes = Object.fromEntries(d.work.map(k => [k, (d.notes[k] ?? '').trim()]).filter(([, v]) => v))   // only for days that are still work days
     const sortedObj = o => JSON.stringify(Object.keys(o).sort().map(k => [k, o[k]]))
     const notesChanged = sortedObj(cleanNotes) !== sortedObj(task.plan_notes ?? {})
-    onSave({
+    const patch = {
       ...(touched ? { day: d.work[0] ?? null, plan_days: d.work.slice(1) } : {}),
       ...(notesChanged ? { plan_notes: cleanNotes } : {}),   // only sent when changed, so saving still works before the database has the column   // plan_days is only sent when changed, so saving still works before the database has the column
       title: d.title.trim() || task.title,
@@ -75,7 +77,12 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
       notes: d.notes,
       color: d.color,
       done: d.done,
-    })
+    }
+    onSave(patch)
+    // weekly repeat: a new one, a change, or stopping it
+    const had = repeat?.weekdays ? [...repeat.weekdays].sort() : []
+    if (d.repDays.length === 0 && repeat) onRepeat?.({ stop: true }, patch)
+    else if (d.repDays.length > 0 && (!repeat || JSON.stringify(had) !== JSON.stringify(d.repDays) || (repeat.ends_on ?? '') !== d.repEnds)) onRepeat?.({ weekdays: d.repDays, endsOn: d.repEnds }, patch)
     onClose()
   }
 
@@ -164,6 +171,23 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
               </label>
             </div>
           </div>
+        </fieldset>
+
+        <fieldset className="repeat-set">
+          <legend>Repeat weekly <strong className={'pick-summary' + (d.repDays.length ? ' set' : '')}>{d.repDays.length ? 'Every ' + d.repDays.map(i => CAL_DAY_NAMES[i]).join(', ') : 'Does not repeat'}</strong></legend>
+          <p className="muted small">Something that happens every week? Pick the days. A copy of this task appears on each of those days, a few weeks ahead, and keeps appearing.</p>
+          <div className="rp-days" role="group" aria-label="Repeat on these days">
+            {CAL_DAY_NAMES.map((n, i) => (
+              <button key={n} type="button" className={'rp-day' + (d.repDays.includes(i) ? ' on' : '')} aria-pressed={d.repDays.includes(i)}
+                onClick={() => set({ repDays: d.repDays.includes(i) ? d.repDays.filter(x => x !== i) : [...d.repDays, i].sort() })}>{n}</button>
+            ))}
+          </div>
+          {d.repDays.length > 0 && (
+            <label className="inline-date">Stop repeating after (optional)
+              <input type="date" value={d.repEnds} min={todayKey} onChange={e => set({ repEnds: e.target.value })} />
+            </label>
+          )}
+          {repeat && <p className="muted small">This task is one of the weekly copies. Deleting or moving a single copy does not stop the rest. Clear all the days above and save to stop repeating.</p>}
         </fieldset>
 
         <label>Class / subject

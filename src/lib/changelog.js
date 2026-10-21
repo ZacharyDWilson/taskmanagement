@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.49', date: '2026-10-21', title: 'Repeat weekly',
+    points: [
+      'Tasks can repeat every week on the days you choose (for example a class every Monday and Wednesday). Open a task, pick the days under Repeat weekly, and a copy appears on each of those days, a few weeks ahead. Tick them off one at a time. Deleting or moving one copy does not stop the rest.',
+    ],
+  },
+  {
     version: '2.48', date: '2026-10-21', title: 'Updates reach you faster',
     points: [
       'When a new version is published, the app now tells you ("A new version is ready. Update now") instead of staying on the old one until you close it.',
