@@ -4785,3 +4785,12 @@ button.feed-section-head .caret { flex: none; }
 .shop-tier p { margin: .15rem 0 0; }
 .style-includes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: .2rem .5rem; font-size: .74rem; font-weight: 600; }
 .style-includes li::before { content: '✓ '; color: #1a9a5c; font-weight: 800; }
+
+/* ---- a note for each work day ---- */
+.wd-notes { display: grid; gap: .4rem; margin-top: .2rem; }
+.wd-notes h5 { margin: 0; font-size: .85rem; }
+.wd-note { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: .5rem; align-items: center; }
+.wd-note-day { display: flex; align-items: center; font-size: .8rem; font-weight: 600; white-space: nowrap; }
+.wd-note input { min-width: 0; }
+@media (max-width: 520px) { .wd-note { grid-template-columns: minmax(0, 1fr); gap: .2rem; } }
+.task-note, .due-note { display: block; font-size: .82rem; color: var(--muted); font-style: italic; font-weight: 400; overflow-wrap: anywhere; }

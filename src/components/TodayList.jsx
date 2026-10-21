@@ -8,7 +8,7 @@ const fmtDue = task => {
 
 // One task row, used in the To Do lists. Click the title for details; drag it to plan it onto a day.
 // `label` is an optional extra tag (used for Sat/Sun inside the combined Weekend column).
-export function TaskItem({ task, onToggle, onRemove, onOpen, draggable = false, label }) {
+export function TaskItem({ task, onToggle, onRemove, onOpen, draggable = false, label, note }) {
   const overdue = task.due_date && !task.done && task.due_date < isoDate(new Date())
   return (
     <li
@@ -23,6 +23,7 @@ export function TaskItem({ task, onToggle, onRemove, onOpen, draggable = false, 
       <input type="checkbox" checked={task.done} onChange={() => onToggle(task)} aria-label="Done" />
       <button type="button" className="task-main" onClick={() => onOpen?.(task)}>
         <span className="task-title">{task.title}</span>
+        {note && <span className="task-note">{note}</span>}
         {(label || task.course || task.category || task.due_date || task.plan_days?.length > 0) && (
           <span className="task-tags">
             {label && <span className="tag day-tag">{label}</span>}

@@ -16,6 +16,7 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
     course: task.course ?? '',
     category: task.category ?? '',
     work: [...new Set([task.day, ...(task.plan_days ?? [])].filter(Boolean))].sort(),   // every day you will work on it (the first one is stored as its main day)
+    notes: { ...(task.plan_notes ?? {}) },   // what you will do on each work day, by date
     due_date: task.due_date ?? '',
     due_time: task.due_time ? task.due_time.slice(0, 5) : '',
     criteria: task.criteria ?? '',
@@ -59,8 +60,12 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
     // the first work day is stored as the task's main day, the rest as extra days. Untouched work days are left exactly as they were.
     const before = [...new Set([task.day, ...(task.plan_days ?? [])].filter(Boolean))].sort()
     const touched = JSON.stringify(before) !== JSON.stringify(d.work)
+    const cleanNotes = Object.fromEntries(d.work.map(k => [k, (d.notes[k] ?? '').trim()]).filter(([, v]) => v))   // only for days that are still work days
+    const sortedObj = o => JSON.stringify(Object.keys(o).sort().map(k => [k, o[k]]))
+    const notesChanged = sortedObj(cleanNotes) !== sortedObj(task.plan_notes ?? {})
     onSave({
-      ...(touched ? { day: d.work[0] ?? null, plan_days: d.work.slice(1) } : {}),   // plan_days is only sent when changed, so saving still works before the database has the column
+      ...(touched ? { day: d.work[0] ?? null, plan_days: d.work.slice(1) } : {}),
+      ...(notesChanged ? { plan_notes: cleanNotes } : {}),   // only sent when changed, so saving still works before the database has the column   // plan_days is only sent when changed, so saving still works before the database has the column
       title: d.title.trim() || task.title,
       course: d.course.trim(),
       category: d.category,
@@ -123,6 +128,18 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
                 )
               })}
             </div>
+            {d.work.length > 0 && (
+              <div className="wd-notes">
+                <h5>What will you do each day? <small className="muted">(optional)</small></h5>
+                {d.work.map(k => (
+                  <label key={k} className="wd-note">
+                    <span className="wd-note-day"><b className="sk sk-work">WORK</b>{shortDay(k)}</span>
+                    <input value={d.notes[k] ?? ''} maxLength={140} placeholder="e.g. Read chapters 1 to 3 and take notes"
+                      onChange={e => set({ notes: { ...d.notes, [k]: e.target.value } })} />
+                  </label>
+                ))}
+              </div>
+            )}
             <div className="row wd-actions">
               <button type="button" className="secondary" onClick={fillUntilDue} disabled={!d.due_date}
                 title={d.due_date ? 'Mark every day from today (or your first work day) until the day before it is due' : 'Set a due date first'}>Every day until it is due</button>

@@ -176,7 +176,7 @@ function Column({ title, dates, tasks, toggle, remove, move, onOpen, onExpand, f
         {items.length > 0 && <li className="day-group-head plan"><b className="sk sk-work">WORK</b> To do this day</li>}
         {items.map(t => (
           <TaskItem key={t.id} task={t} onToggle={toggle} onRemove={remove} onOpen={onOpen}
-            draggable label={dayLabel(t)} />
+            draggable label={dayLabel(t)} note={keys.map(k => t.plan_notes?.[k]).find(Boolean)} />
         ))}
         {dueItems.length > 0 && <li className="day-group-head due"><b className="sk sk-due">DUE</b> Due this day</li>}
         {dueItems.map(t => (

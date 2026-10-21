@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.46', date: '2026-10-21', title: 'A note for each work day',
+    points: [
+      'Each work day of a task can have its own note: what exactly you are doing that day. Add them in the task (under the work-day calendar). The note shows under the task in that day\'s pop-up and on the Overview.',
+    ],
+  },
+  {
     version: '2.45', date: '2026-10-21', title: 'A calendar that shows more',
     points: [
       'The week shows all seven days across without sideways scrolling. A small month sits at the bottom left with how many things are on each day (red when something is due), plus a Coming up list. Tap any day to see it as a pop-up.',

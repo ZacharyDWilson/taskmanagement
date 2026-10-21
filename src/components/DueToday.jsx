@@ -54,6 +54,7 @@ export default function DueToday({ tasks }) {
             <span className="due-dot" style={{ background: colorHex(t.color) }} aria-hidden="true" />
             <div className="due-body">
               <span className="due-title">{t.title}</span>
+              {t.plan_notes?.[today] && <span className="due-note">{t.plan_notes[today]}</span>}
               <span className="task-tags">
                 {t.course && <span className="tag">{t.course}</span>}
                 {t.category && <span className="tag alt">{t.category}</span>}
