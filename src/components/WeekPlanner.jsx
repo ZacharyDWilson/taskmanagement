@@ -116,7 +116,7 @@ function MonthCalendar({ counts, focus, weekKeys, onOpenDay, large }) {
 
 // What is due soon, next to the month.
 const AHEAD_KEY = 'lock-in-coming-up-days'
-const AHEAD_CHOICES = [1, 3, 7, 14, 30, 0]       // 0 = everything
+const AHEAD_CHOICES = [7, 14, 0]                  // 0 = everything (anything else is typed in the box)
 const readAhead = () => { try { const n = Number(localStorage.getItem(AHEAD_KEY)); return n >= 0 && n <= 365 && localStorage.getItem(AHEAD_KEY) !== null ? n : 0 } catch { return 0 } }
 
 function Upcoming({ tasks, onOpen }) {
@@ -134,15 +134,12 @@ function Upcoming({ tasks, onOpen }) {
         <div className="ahead" role="group" aria-label="How far ahead to look">
           {AHEAD_CHOICES.map(n => (
             <button key={n} type="button" className={'ahead-btn' + (ahead === n ? ' on' : '')} aria-pressed={ahead === n} onClick={() => setAhead(n)}>
-              {n === 0 ? 'All' : n + (n === 1 ? ' day' : ' days')}
+              {n === 0 ? 'All' : <><span className="ahead-long">{n} days</span><span className="ahead-short">{n}d</span></>}
             </button>
           ))}
-          <label className="ahead-custom" title="Any number of days">
-            <input type="number" min="1" max="365" inputMode="numeric" placeholder="#" aria-label="Custom number of days ahead"
-              value={AHEAD_CHOICES.includes(ahead) ? '' : ahead}
-              onChange={e => { if (e.target.value === '') setAhead(0); else setAhead(e.target.value) }} />
-            <span>days</span>
-          </label>
+          <input className="ahead-custom" type="number" min="1" max="365" inputMode="numeric" placeholder="days" title="Type any number of days" aria-label="Custom number of days ahead"
+            value={AHEAD_CHOICES.includes(ahead) ? '' : ahead}
+            onChange={e => { if (e.target.value === '') setAhead(0); else setAhead(e.target.value) }} />
         </div>
       </div>
       {soon.length === 0 ? <p className="muted small">{ahead ? (ahead === 1 ? 'Nothing due today.' : `Nothing due in the next ${ahead} days.`) : 'Nothing due soon. Set a due date on a task and it shows up here.'}</p> : (

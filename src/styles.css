@@ -4804,3 +4804,33 @@ button.feed-section-head .caret { flex: none; }
 .ahead-btn.on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 .ahead-custom { display: inline-flex !important; flex-direction: row !important; align-items: center; gap: .25rem; font-size: .72rem; color: var(--muted); }
 .ahead-custom input { width: 3.2rem !important; padding: .15rem .35rem !important; font-size: .75rem; border-radius: 999px !important; text-align: center; }
+
+/* Coming up: everything on one line, also on a phone */
+.upcoming { container-type: inline-size; }
+.upcoming-head { flex-wrap: nowrap; gap: .5rem; }
+.upcoming-head h3 { white-space: nowrap; min-width: 0; }
+.ahead { flex-wrap: nowrap; flex: none; gap: .25rem; }
+.ahead-btn { white-space: nowrap; padding: .2rem .6rem; }
+.ahead-short { display: none; }
+.ahead-custom { width: 3.6rem !important; padding: .2rem .35rem !important; font-size: .74rem; border-radius: 999px !important; text-align: center; flex: none; }
+@container (max-width: 360px) {
+  .ahead-long { display: none; }
+  .ahead-short { display: inline; }
+  .ahead-btn { padding: .2rem .5rem; }
+  .ahead-custom { width: 3.1rem !important; }
+}
+/* in a narrow column the title sits above the buttons (the buttons stay on one line); with room, title and buttons share a line */
+.upcoming-head { flex-direction: column; align-items: flex-start; gap: .35rem; }
+@container (min-width: 420px) { .upcoming-head { flex-direction: row; align-items: center; justify-content: space-between; } }
+
+/* ---- Planner on a phone / narrow screen: the card grows with its content (no fixed height), the month has real row heights, Coming up sits underneath ---- */
+@media (max-width: 860px) {
+  .todo .planner, .page.stretch > .todo .planner { height: auto; min-height: 0; overflow: visible; }
+  .planner .planner-foot { flex: none; min-height: 0; overflow: visible; }
+  .planner-foot .mini-month { min-height: 0; }
+  .mini-month.large .mini-grid { flex: none; grid-template-rows: auto !important; grid-auto-rows: 42px; }
+  .mini-month.large .mini-day { height: 42px; min-height: 0; }
+  .upcoming { overflow: visible; max-height: none; }
+}
+@media (max-width: 700px) { .planner .planner-foot { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 860px) { .ahead-btn { min-width: 44px; } .ahead-custom { height: 44px; } }
