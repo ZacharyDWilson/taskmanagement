@@ -111,8 +111,8 @@ export default function Shop() {
                 <div className="shop-tier">
                   <h3>{tier === 1 ? 'Signature themes' : 'Style packs'}</h3>
                   <p className="muted small">{tier === 1
-                    ? 'A theme with its own dock: the side buttons change shape. Colours and scene too.'
-                    : 'The most complete look. A floating dock, reshaped boxes, buttons and fields, its own sounds and its own music.'}</p>
+                    ? 'A theme with its own dock: the side buttons change shape. The boxes themselves stay the same.'
+                    : 'Goes further than a theme: every box, button and text field is reshaped (not just recoloured), and it brings its own sounds and its own background music. Its own dock too.'}</p>
                 </div>
               )}
               <div className={'theme-opt shop-card' + (theme === item.id ? ' on' : '')} data-t={item.id}>
@@ -121,7 +121,7 @@ export default function Shop() {
                 <small>{t.blurb}</small>
                 {t.style && (
                   <ul className="style-includes" aria-label="What a Style pack includes">
-                    <li>Floating side dock</li><li>Reshaped boxes &amp; buttons</li><li>Own sound pack</li><li>Own music</li>
+                    <li>Every box reshaped</li><li>Buttons &amp; fields too</li><li>Own sound pack</li><li>Own music</li>
                   </ul>
                 )}
                 {t.signature && <span className="sig-chip">✦ Signature dock: {t.signature}</span>}

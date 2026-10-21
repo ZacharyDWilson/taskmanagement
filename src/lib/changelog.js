@@ -7,7 +7,7 @@ export const CHANGELOG = [
     points: [
       'The week shows all seven days across without sideways scrolling. A small month sits at the bottom left with how many things are on each day (red when something is due), plus a Coming up list. Tap any day to see it as a pop-up.',
       'Task details has a new Schedule section with two kinds of day: WORK (every day you will work on it, tap as many as you like on a little calendar, for example half one day and half another) and DUE (the deadline). A live strip shows how it will look on your calendar, and the pop-up for a day groups its tasks the same way.',
-      'The five Style packs each have their own floating side dock (and bottom bar on a phone) instead of the standard one, and now cost 900 coins since they change the most: dock, boxes, sounds and music. Anyone who already owns one keeps it. The Shop now groups themes into colour themes, signature themes and Style packs.',
+      'The five Style packs each have their own side dock (and bottom bar on a phone), and now cost 900 coins because they change the most: every box, button and field is reshaped, plus their own sounds and music. Anyone who already owns one keeps it. The Shop now groups themes into colour themes, signature themes and Style packs.',
       'Changing week slides the day tiles in and counts the numbers up.',
     ],
   },
