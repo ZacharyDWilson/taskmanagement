@@ -4834,3 +4834,12 @@ button.feed-section-head .caret { flex: none; }
 }
 @media (max-width: 700px) { .planner .planner-foot { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 860px) { .ahead-btn { min-width: 44px; } .ahead-custom { height: 44px; } }
+
+/* long titles in Coming up are cut with "…" and can never widen the page (a phone showed the whole page pushed sideways) */
+.planner-foot > * { min-width: 0; }
+.upcoming, .upcoming ul, .upcoming li { min-width: 0; max-width: 100%; }
+.upcoming ul { grid-template-columns: minmax(0, 1fr); }
+.upcoming li button.link { min-width: 0; max-width: 100%; }
+.upcoming li span { min-width: 0; flex: 1 1 auto; }
+.planner { overflow-x: clip; }
+@media (max-width: 860px) { .todo .planner, .page.stretch > .todo .planner { overflow-x: clip; overflow-y: visible; } }
