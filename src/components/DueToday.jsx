@@ -57,8 +57,7 @@ export default function DueToday({ tasks }) {
               <span className="task-tags">
                 {t.course && <span className="tag">{t.course}</span>}
                 {t.category && <span className="tag alt">{t.category}</span>}
-                {t.day === today && <span className="tag plan">Plan day</span>}
-                {(t.plan_days ?? []).includes(today) && t.day !== today && <span className="tag work">Work day</span>}
+                {(t.day === today || (t.plan_days ?? []).includes(today)) && <span className="tag work">Work day</span>}
                 {t.due_date === today && <span className="tag due">Due {t.due_time ? fmtTime(t.due_time) : 'today'}</span>}
               </span>
             </div>

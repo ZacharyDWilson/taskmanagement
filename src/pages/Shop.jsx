@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import Coin from '../components/Coin.jsx'
 import { Link } from 'react-router-dom'
 import { useShop } from '../lib/shop.jsx'
@@ -27,7 +27,9 @@ export default function Shop() {
 
   // earn-only styles (achievement rewards) are never for sale
   const sellable = items.filter(i => !i.exclusive)
-  const themes = sellable.filter(i => i.kind === 'theme').sort((a, b) => Number(!!themeById[a.id]?.style) - Number(!!themeById[b.id]?.style))   // Style packs last
+  // three tiers, cheapest first: plain colour themes, signature-dock themes, then Style packs (which change everything)
+  const tierOf = id => (themeById[id]?.style ? 2 : themeById[id]?.signature ? 1 : 0)
+  const themes = sellable.filter(i => i.kind === 'theme').sort((a, b) => tierOf(a.id) - tierOf(b.id) || a.price - b.price || (a.sort ?? 0) - (b.sort ?? 0))
   const banners = sellable.filter(i => i.kind === 'banner')
   const frames = sellable.filter(i => i.kind === 'frame')
   const timers = items.filter(i => i.kind === 'timer')
@@ -101,12 +103,27 @@ export default function Shop() {
             const t = themeById[item.id]
             const has = owned.has(item.id)
             const short = item.price - balance
+            const tier = tierOf(item.id)
+            const first = themes.findIndex(x => tierOf(x.id) === tier) === themes.indexOf(item)
             return (
-              <div key={item.id} className={'theme-opt shop-card' + (theme === item.id ? ' on' : '')} data-t={item.id}>
+              <Fragment key={item.id}>
+              {first && tier > 0 && (
+                <div className="shop-tier">
+                  <h3>{tier === 1 ? 'Signature themes' : 'Style packs'}</h3>
+                  <p className="muted small">{tier === 1
+                    ? 'A theme with its own dock: the side buttons change shape. Colours and scene too.'
+                    : 'The most complete look. A floating dock, reshaped boxes, buttons and fields, its own sounds and its own music.'}</p>
+                </div>
+              )}
+              <div className={'theme-opt shop-card' + (theme === item.id ? ' on' : '')} data-t={item.id}>
                 <Swatch id={item.id} colors={t.preview} />
                 <strong>{item.name}</strong>
                 <small>{t.blurb}</small>
-                {t.style && <span className="sig-chip style-chip">✦ Style pack: reshapes the boxes, plus its own sounds and music</span>}
+                {t.style && (
+                  <ul className="style-includes" aria-label="What a Style pack includes">
+                    <li>Floating side dock</li><li>Reshaped boxes &amp; buttons</li><li>Own sound pack</li><li>Own music</li>
+                  </ul>
+                )}
                 {t.signature && <span className="sig-chip">✦ Signature dock: {t.signature}</span>}
                 {has && theme === item.id && <span className="owned">✓ Equipped</span>}
                 {has && theme !== item.id && (
@@ -123,6 +140,7 @@ export default function Shop() {
                   </button>
                 )}
               </div>
+              </Fragment>
             )
           })}
         </div>

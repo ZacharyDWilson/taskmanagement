@@ -15,13 +15,12 @@ function dayCounts(tasks) {
   for (const t of tasks) {
     if (t.done) continue
     if (t.due_date) bump(t.due_date, 'due')
-    if (t.day && t.day !== t.due_date) bump(t.day, 'plan')
-    for (const k of t.plan_days ?? []) if (k !== t.day && k !== t.due_date) bump(k, 'work')
+    for (const k of new Set([t.day, ...(t.plan_days ?? [])].filter(Boolean))) if (k !== t.due_date) bump(k, 'plan')   // every work day counts the same
   }
   return counts
 }
 const totalOf = c => (c ? c.due + c.plan + c.work : 0)
-const partsOf = c => [c?.due && c.due + ' due', c?.plan && c.plan + ' planned', c?.work && c.work + ' work'].filter(Boolean).join(' · ')
+const partsOf = c => [c?.due && c.due + ' due', c?.plan && c.plan + ' to do'].filter(Boolean).join(' · ')
 
 // A number that counts up to its value when it appears (the tiles and badges re-appear when you change week).
 function CountUp({ value, ms = 380 }) {
@@ -143,9 +142,10 @@ function Column({ title, dates, tasks, toggle, remove, move, onOpen, onExpand, f
   const [over, setOver] = useState(false)
   const keys = dates.map(isoDate)
   const isWeekend = dates.length > 1
-  const items = tasks.filter(t => keys.includes(t.day))
-  const dueItems = tasks.filter(t => t.due_date && keys.includes(t.due_date) && !t.done && !keys.includes(t.day))
-  const workItems = tasks.filter(t => !t.done && !keys.includes(t.day) && !keys.includes(t.due_date) && (t.plan_days ?? []).some(k => keys.includes(k)))
+  const onWorkDay = t => keys.includes(t.day) || (t.plan_days ?? []).some(k => keys.includes(k))
+  const items = tasks.filter(onWorkDay)
+  const dueItems = tasks.filter(t => t.due_date && keys.includes(t.due_date) && !t.done && !onWorkDay(t))
+  const workItems = []
   const done = items.filter(t => t.done).length
 
   const dayLabel = t => (isWeekend ? (new Date(t.day + 'T00:00:00').getDay() === 6 ? 'Sat' : 'Sun') : undefined)
@@ -173,7 +173,7 @@ function Column({ title, dates, tasks, toggle, remove, move, onOpen, onExpand, f
       </h3>
       <ul className="tasks scroll">
         {items.length === 0 && dueItems.length === 0 && workItems.length === 0 && <li className="muted small">Nothing here. Drop a task to plan it for this day.</li>}
-        {items.length > 0 && <li className="day-group-head plan"><b className="sk sk-plan">PLAN</b> To do this day</li>}
+        {items.length > 0 && <li className="day-group-head plan"><b className="sk sk-work">WORK</b> To do this day</li>}
         {items.map(t => (
           <TaskItem key={t.id} task={t} onToggle={toggle} onRemove={remove} onOpen={onOpen}
             draggable label={dayLabel(t)} />

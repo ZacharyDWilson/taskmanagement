@@ -5,11 +5,10 @@ export const CHANGELOG = [
   {
     version: '2.45', date: '2026-10-21', title: 'A calendar that shows more',
     points: [
-      'The planner opens on the month view. Each day now marks three different things: tasks planned for it, tasks due on it (red "Due" tag) and work days (striped "Work" tag).',
       'The week shows all seven days across without sideways scrolling. A small month sits at the bottom left with how many things are on each day (red when something is due), plus a Coming up list. Tap any day to see it as a pop-up.',
-      'Task details has a new Schedule section: PLAN (the day you do it), WORK (extra days, tap them on a little calendar) and DUE (the deadline) each look different everywhere, and a live strip shows how it will look on your calendar. The pop-up for a day groups its tasks the same way.',
+      'Task details has a new Schedule section with two kinds of day: WORK (every day you will work on it, tap as many as you like on a little calendar, for example half one day and half another) and DUE (the deadline). A live strip shows how it will look on your calendar, and the pop-up for a day groups its tasks the same way.',
+      'The five Style packs each have their own floating side dock (and bottom bar on a phone) instead of the standard one, and now cost 900 coins since they change the most: dock, boxes, sounds and music. Anyone who already owns one keeps it. The Shop now groups themes into colour themes, signature themes and Style packs.',
       'Changing week slides the day tiles in and counts the numbers up.',
-      'In a task, pick Work days: extra days you plan to work on it, shown as their own marker on the calendar.',
     ],
   },
   {

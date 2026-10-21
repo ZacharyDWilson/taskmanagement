@@ -29,7 +29,7 @@ export function TaskItem({ task, onToggle, onRemove, onOpen, draggable = false, 
             {task.course && <span className="tag">{task.course}</span>}
             {task.category && <span className="tag alt">{task.category}</span>}
             {task.due_date && <span className={'tag due' + (overdue ? ' late' : '')}>Due {fmtDue(task)}</span>}
-            {task.plan_days?.length > 0 && <span className="tag work" title="Extra days you plan to work on it">{task.plan_days.length} work {task.plan_days.length === 1 ? 'day' : 'days'}</span>}
+            {task.plan_days?.length > 0 && <span className="tag work" title="Days you plan to work on it">{task.plan_days.length + (task.day ? 1 : 0)} work days</span>}
           </span>
         )}
       </button>
