@@ -6,6 +6,7 @@ export const CHANGELOG = [
     version: '2.45', date: '2026-10-21', title: 'A calendar that shows more',
     points: [
       'The planner opens on the month view. Each day now marks three different things: tasks planned for it, tasks due on it (red "Due" tag) and work days (striped "Work" tag).',
+      'The week shows all seven days across without sideways scrolling. A small month sits at the bottom left with how many things are on each day (red when something is due), plus a Coming up list. Tap any day to see it as a pop-up.',
       'In a task, pick Work days: extra days you plan to work on it, shown as their own marker on the calendar.',
     ],
   },

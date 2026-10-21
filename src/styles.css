@@ -4505,3 +4505,40 @@ button.feed-section-head .caret { flex: none; }
 .work-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .5rem; }
 .work-chip { display: inline-flex; align-items: center; gap: .3rem; padding: .15rem .35rem .15rem .6rem; border-radius: 999px; font-size: .8rem; font-weight: 600; border: 1px dashed var(--accent); background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--accent) 14%, transparent) 0 4px, transparent 4px 8px); }
 .work-chip button.link { padding: 0 .25rem; text-decoration: none; font-size: 1rem; line-height: 1; }
+
+/* ---- Planner: seven days across, a small month in the corner, a pop-up for any day ---- */
+.planner { container-type: inline-size; }
+@container (min-width: 720px) {
+  .week:not(.day-view) { grid-auto-columns: minmax(0, 1fr); overflow-x: hidden; gap: .45rem; scroll-snap-type: none; }
+  .week:not(.day-view) .day { padding: .5rem .45rem; gap: .45rem; }
+  .week:not(.day-view) .day-head { font-size: .88rem; display: flex; flex-direction: column; gap: .05rem; }
+  .week:not(.day-view) .day-head small { display: block; font-size: .72rem; }
+  /* narrow day columns: smaller task rows, no clutter (the full details are one tap away) */
+  .week:not(.day-view) .task { position: relative; gap: .35rem; padding: .4rem .4rem; font-size: .8rem; }
+  .week:not(.day-view) .task input[type='checkbox'] { width: 15px; height: 15px; margin-top: .1rem; }
+  .week:not(.day-view) .task .link { position: absolute; top: 1px; right: 3px; opacity: 0; font-size: 1rem; }
+  .week:not(.day-view) .task:hover .link, .week:not(.day-view) .task .link:focus-visible { opacity: 1; }
+  .week:not(.day-view) .task-tags .tag.alt, .week:not(.day-view) .task-tags .tag.due { display: none; }
+  .week:not(.day-view) .task-main { gap: .2rem; }
+}
+.planner-foot { flex: none; display: grid; grid-template-columns: minmax(210px, 250px) minmax(0, 1fr); gap: .8rem 1.2rem; align-items: start; margin-top: .6rem; padding-top: .6rem; border-top: 1px solid var(--line); }
+.mini-month { display: flex; flex-direction: column; gap: .25rem; }
+.mini-head { display: flex; align-items: center; justify-content: space-between; font-size: .85rem; }
+.mini-head button.link { text-decoration: none; font-size: 1.1rem; padding: 0 .4rem; color: var(--text); }
+.mini-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.mini-dow { text-align: center; font-size: .62rem; font-weight: 700; color: var(--muted); }
+.mini-day { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 1px; height: 26px; padding: 0 .22rem; border-radius: 7px; background: var(--glass-inner); color: var(--text); border: 1px solid transparent; box-shadow: none; font-size: .72rem; font-weight: 600; }
+.mini-day:hover:not(:disabled) { border-color: var(--accent); filter: none; }
+.mini-day.out { opacity: .45; }
+.mini-day.today { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--glass-inner)); }
+.mini-day i { font-style: normal; font-size: .6rem; font-weight: 800; min-width: 14px; height: 14px; line-height: 14px; text-align: center; border-radius: 999px; background: color-mix(in srgb, var(--accent) 30%, var(--glass-strong)); color: var(--text); }
+.mini-day.has-due i { background: #e5484d; color: #fff; }
+.upcoming h3 { font-size: .85rem; margin: 0 0 .3rem; }
+.upcoming ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .2rem; }
+.upcoming li button.link { display: flex; gap: .5rem; width: 100%; text-align: left; text-decoration: none; color: var(--text); padding: .22rem .45rem; border-radius: var(--r-sm); background: var(--glass-inner); font-size: .8rem; }
+.upcoming li b { flex: none; color: #c42b31; font-size: .72rem; }
+.upcoming li span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.modal.day-pop { width: min(560px, 94vw); max-height: 86dvh; overflow: auto; }
+.modal.day-pop h2 { margin: 0; font-size: 1.05rem; text-align: center; flex: 1; }
+.modal.day-pop .day { margin-top: .6rem; }
+@media (max-width: 520px) { .planner-foot { grid-template-columns: minmax(0, 1fr); } }

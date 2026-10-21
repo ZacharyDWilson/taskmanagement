@@ -78,6 +78,71 @@ function MonthGrid({ tasks, anchor, onOpenDay, onOpenTask, move }) {
   )
 }
 
+// A small month for the bottom corner. Each day shows how many things are on it (red when something is due); tap a day to see it.
+function MiniMonth({ tasks, onOpenDay }) {
+  const [month, setMonth] = useState(() => new Date(new Date().getFullYear(), new Date().getMonth(), 1))
+  const first = month
+  const last = new Date(month.getFullYear(), month.getMonth() + 1, 0)
+  const weeks = []
+  for (let w = startOfWeek(first); w <= last; w = addDays(w, 7)) weeks.push(w)
+  const todayKey = isoDate(new Date())
+  const counts = {}
+  for (const t of tasks) {
+    if (t.done) continue
+    if (t.due_date) { const c = (counts[t.due_date] ??= { due: 0, plan: 0 }); c.due++ }
+    if (t.day && t.day !== t.due_date) { const c = (counts[t.day] ??= { due: 0, plan: 0 }); c.plan++ }
+  }
+  return (
+    <div className="mini-month" aria-label="Month overview">
+      <div className="mini-head">
+        <button type="button" className="link" onClick={() => setMonth(m => new Date(m.getFullYear(), m.getMonth() - 1, 1))} aria-label="Previous month">‹</button>
+        <strong>{MONTHS[month.getMonth()].slice(0, 3)} {month.getFullYear()}</strong>
+        <button type="button" className="link" onClick={() => setMonth(m => new Date(m.getFullYear(), m.getMonth() + 1, 1))} aria-label="Next month">›</button>
+      </div>
+      <div className="mini-grid">
+        {DAY_NAMES.map(d => <span key={d} className="mini-dow">{d[0]}</span>)}
+        {weeks.flatMap(w => Array.from({ length: 7 }, (_, i) => addDays(w, i))).map(d => {
+          const key = isoDate(d)
+          const c = counts[key]
+          const total = c ? c.due + c.plan : 0
+          return (
+            <button key={key} type="button"
+              className={'mini-day' + (d.getMonth() !== month.getMonth() ? ' out' : '') + (key === todayKey ? ' today' : '') + (c?.due ? ' has-due' : total ? ' has-plan' : '')}
+              onClick={() => onOpenDay(d)}
+              title={total ? [c.due && c.due + ' due', c.plan && c.plan + ' planned'].filter(Boolean).join(', ') : 'Nothing yet'}>
+              <span>{d.getDate()}</span>
+              {total > 0 && <i>{total}</i>}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+// What is due soon, next to the small month.
+function Upcoming({ tasks, onOpen }) {
+  const todayKey = isoDate(new Date())
+  const soon = tasks.filter(t => t.due_date && !t.done && t.due_date >= todayKey).sort((a, b) => a.due_date.localeCompare(b.due_date) || String(a.due_time ?? '').localeCompare(String(b.due_time ?? ''))).slice(0, 6)
+  return (
+    <div className="upcoming">
+      <h3>Coming up</h3>
+      {soon.length === 0 ? <p className="muted small">Nothing due soon. Set a due date on a task and it shows up here.</p> : (
+        <ul>
+          {soon.map(t => (
+            <li key={t.id}>
+              <button type="button" className="link" onClick={() => onOpen(t)}>
+                <b>{new Date(t.due_date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}</b>
+                <span>{t.title}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+
 // One column of the planner: a single weekday, or Saturday + Sunday together as "Weekend".
 function Column({ title, dates, tasks, toggle, remove, move, onOpen, onExpand, full }) {
   const [over, setOver] = useState(false)
@@ -130,7 +195,8 @@ function Column({ title, dates, tasks, toggle, remove, move, onOpen, onExpand, f
 
 // The planner: Day, Week or Month, with a filter to show one class or subject at a time.
 export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
-  const [mode, setMode] = useState('month')                // 'day' | 'week' | 'month' (the month is the first thing you see)
+  const [mode, setMode] = useState('week')                 // 'day' | 'week' | 'month'
+  const [popup, setPopup] = useState(null)                // a day opened as a pop-up (from either calendar)
   const [anchor, setAnchor] = useState(() => new Date())    // the day / week / month being looked at
   const [filter, setFilter] = useState(ALL)                 // class filter
   const phone = usePhone()
@@ -142,8 +208,7 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
 
   const start = startOfWeek(anchor)
   const columns = [
-    ...[0, 1, 2, 3, 4].map(i => ({ title: DAY_NAMES[i], dates: [addDays(start, i)] })),
-    { title: 'Weekend', dates: [addDays(start, 5), addDays(start, 6)] },
+    ...[0, 1, 2, 3, 4, 5, 6].map(i => ({ title: DAY_NAMES[i], dates: [addDays(start, i)] })),
   ]
   const weekKeys = new Set(columns.flatMap(c => c.dates.map(isoDate)))
   const weekTasks = visible.filter(t => weekKeys.has(t.day))
@@ -223,9 +288,33 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
         </div>
       )}
 
+      {mode !== 'month' && (
+        <div className="planner-foot">
+          <MiniMonth tasks={visible} onOpenDay={d => setPopup(d)} />
+          <Upcoming tasks={visible} onOpen={onOpen} />
+        </div>
+      )}
+
       {mode === 'month' && (
         <MonthGrid tasks={visible} anchor={anchor} move={move} onOpenTask={onOpen}
-          onOpenDay={d => { setAnchor(d); setMode('day') }} />
+          onOpenDay={d => setPopup(d)} />
+      )}
+      {popup && createPortal(
+        <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setPopup(null) }}>
+          <div className="modal day-pop" role="dialog" aria-modal="true" aria-label="Day view">
+            <div className="row between">
+              <span className="row">
+                <button type="button" className="secondary" onClick={() => setPopup(d => addDays(d, -1))} aria-label="Previous day">‹</button>
+                <button type="button" className="secondary" onClick={() => setPopup(d => addDays(d, 1))} aria-label="Next day">›</button>
+              </span>
+              <h2>{popup.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</h2>
+              <button type="button" className="link" onClick={() => setPopup(null)} aria-label="Close">×</button>
+            </div>
+            <Column title={popup.toLocaleDateString(undefined, { weekday: 'long' })} dates={[popup]} tasks={visible}
+              toggle={toggle} remove={remove} move={move} onOpen={t => { setPopup(null); onOpen(t) }} full />
+          </div>
+        </div>,
+        document.body,
       )}
       {big && (() => {
         const c = columns.find(x => x.title === big)
