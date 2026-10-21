@@ -7,6 +7,8 @@ export const CHANGELOG = [
     points: [
       'The planner opens on the month view. Each day now marks three different things: tasks planned for it, tasks due on it (red "Due" tag) and work days (striped "Work" tag).',
       'The week shows all seven days across without sideways scrolling. A small month sits at the bottom left with how many things are on each day (red when something is due), plus a Coming up list. Tap any day to see it as a pop-up.',
+      'Task details has a new Schedule section: PLAN (the day you do it), WORK (extra days, tap them on a little calendar) and DUE (the deadline) each look different everywhere, and a live strip shows how it will look on your calendar. The pop-up for a day groups its tasks the same way.',
+      'Changing week slides the day tiles in and counts the numbers up.',
       'In a task, pick Work days: extra days you plan to work on it, shown as their own marker on the calendar.',
     ],
   },

@@ -23,8 +23,26 @@ function dayCounts(tasks) {
 const totalOf = c => (c ? c.due + c.plan + c.work : 0)
 const partsOf = c => [c?.due && c.due + ' due', c?.plan && c.plan + ' planned', c?.work && c.work + ' work'].filter(Boolean).join(' · ')
 
+// A number that counts up to its value when it appears (the tiles and badges re-appear when you change week).
+function CountUp({ value, ms = 380 }) {
+  const [n, setN] = useState(0)
+  useEffect(() => {
+    if (!value || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || document.documentElement.dataset.motion === 'reduced') { setN(value); return }
+    let raf = 0
+    const t0 = performance.now()
+    const tick = now => {
+      const p = Math.min(1, (now - t0) / ms)
+      setN(Math.round(value * (1 - Math.pow(1 - p, 3))))
+      if (p < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [value, ms])
+  return <>{n}</>
+}
+
 // The week as seven tiles. Each shows how many things that day holds; tap one for the day. Drop a task on a tile to plan it for that day.
-function WeekStrip({ days, counts, onOpenDay, tasks, move }) {
+function WeekStrip({ days, counts, onOpenDay, tasks, move, dir }) {
   const [over, setOver] = useState('')
   const todayKey = isoDate(new Date())
   function drop(e, key) {
@@ -34,7 +52,7 @@ function WeekStrip({ days, counts, onOpenDay, tasks, move }) {
     if (task && task.day !== key) move(task, key)
   }
   return (
-    <div className="wk-strip" role="list">
+    <div className={'wk-strip' + (dir ? ' go-' + dir : '')} key={isoDate(days[0])} role="list">
       {days.map((d, i) => {
         const key = isoDate(d)
         const c = counts[key]
@@ -47,10 +65,11 @@ function WeekStrip({ days, counts, onOpenDay, tasks, move }) {
             onDragOver={e => { e.preventDefault(); if (over !== key) setOver(key) }}
             onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget)) setOver(o => (o === key ? '' : o)) }}
             onDrop={e => drop(e, key)}
+            style={{ '--i': i }}
             title={total ? partsOf(c) : 'Nothing yet. Drop a task here to plan it.'}>
             <span className="wk-dow">{DAY_NAMES[i]}</span>
             <span className="wk-date">{fmtDay(d)}</span>
-            <strong className="wk-count">{total || '–'}</strong>
+            <strong className="wk-count">{total ? <CountUp value={total} /> : '–'}</strong>
             <small>{total ? partsOf(c) : 'Free'}</small>
           </div>
         )
@@ -75,7 +94,7 @@ function MonthCalendar({ counts, focus, weekKeys, onOpenDay, large }) {
         <strong>{MONTHS[month.getMonth()]} {month.getFullYear()}</strong>
         <button type="button" className="link" onClick={() => setMonth(m => new Date(m.getFullYear(), m.getMonth() + 1, 1))} aria-label="Next month">›</button>
       </div>
-      <div className="mini-grid" style={{ gridTemplateRows: `auto repeat(${weeks.length}, minmax(0, 1fr))` }}>
+      <div className="mini-grid" key={month.getFullYear() * 12 + month.getMonth()} style={{ gridTemplateRows: `auto repeat(${weeks.length}, minmax(0, 1fr))` }}>
         {DAY_NAMES.map(d => <span key={d} className="mini-dow">{d}</span>)}
         {weeks.flatMap(w => Array.from({ length: 7 }, (_, i) => addDays(w, i))).map(d => {
           const key = isoDate(d)
@@ -87,7 +106,7 @@ function MonthCalendar({ counts, focus, weekKeys, onOpenDay, large }) {
               onClick={() => onOpenDay(d)}
               title={total ? partsOf(c) : 'Nothing yet'}>
               <span>{d.getDate()}</span>
-              {total > 0 && <i>{total}</i>}
+              {total > 0 && <i><CountUp value={total} ms={320} /></i>}
             </button>
           )
         })}
@@ -125,8 +144,8 @@ function Column({ title, dates, tasks, toggle, remove, move, onOpen, onExpand, f
   const keys = dates.map(isoDate)
   const isWeekend = dates.length > 1
   const items = tasks.filter(t => keys.includes(t.day))
-  const dueItems = tasks.filter(t => t.due_date && keys.includes(t.due_date) && !t.done)
-  const workItems = tasks.filter(t => !t.done && !keys.includes(t.day) && (t.plan_days ?? []).some(k => keys.includes(k)))
+  const dueItems = tasks.filter(t => t.due_date && keys.includes(t.due_date) && !t.done && !keys.includes(t.day))
+  const workItems = tasks.filter(t => !t.done && !keys.includes(t.day) && !keys.includes(t.due_date) && (t.plan_days ?? []).some(k => keys.includes(k)))
   const done = items.filter(t => t.done).length
 
   const dayLabel = t => (isWeekend ? (new Date(t.day + 'T00:00:00').getDay() === 6 ? 'Sat' : 'Sun') : undefined)
@@ -153,16 +172,19 @@ function Column({ title, dates, tasks, toggle, remove, move, onOpen, onExpand, f
         {items.length > 0 && <small className="count">{done}/{items.length} done</small>}
       </h3>
       <ul className="tasks scroll">
-        {items.length === 0 && dueItems.length === 0 && workItems.length === 0 && <li className="muted small">Drop a task here</li>}
-        {dueItems.map(t => (
-          <li key={'due' + t.id} className="day-extra due"><button type="button" className="link" onClick={() => onOpen(t)} title="Open this task"><b>Due</b> {t.title}{t.due_time ? ' · ' + t.due_time.slice(0, 5) : ''}</button></li>
-        ))}
-        {workItems.map(t => (
-          <li key={'work' + t.id} className="day-extra work"><button type="button" className="link" onClick={() => onOpen(t)} title="Open this task"><b>Work</b> {t.title}</button></li>
-        ))}
+        {items.length === 0 && dueItems.length === 0 && workItems.length === 0 && <li className="muted small">Nothing here. Drop a task to plan it for this day.</li>}
+        {items.length > 0 && <li className="day-group-head plan"><b className="sk sk-plan">PLAN</b> To do this day</li>}
         {items.map(t => (
           <TaskItem key={t.id} task={t} onToggle={toggle} onRemove={remove} onOpen={onOpen}
             draggable label={dayLabel(t)} />
+        ))}
+        {dueItems.length > 0 && <li className="day-group-head due"><b className="sk sk-due">DUE</b> Due this day</li>}
+        {dueItems.map(t => (
+          <li key={'due' + t.id} className="day-extra due"><button type="button" className="link" onClick={() => onOpen(t)} title="Open this task"><b className="sk sk-due">DUE</b> {t.title}{t.due_time ? ' · ' + t.due_time.slice(0, 5) : ''}</button></li>
+        ))}
+        {workItems.length > 0 && <li className="day-group-head work"><b className="sk sk-work">WORK</b> Work on this day</li>}
+        {workItems.map(t => (
+          <li key={'work' + t.id} className="day-extra work"><button type="button" className="link" onClick={() => onOpen(t)} title="Open this task"><b className="sk sk-work">WORK</b> {t.title}</button></li>
         ))}
       </ul>
     </div>
@@ -175,6 +197,7 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
   const [anchor, setAnchor] = useState(() => new Date())    // the week / month being looked at
   const [filter, setFilter] = useState(ALL)                 // class filter
   const [popup, setPopup] = useState(null)                  // a day opened as a pop-up
+  const [dir, setDir] = useState('')                        // which way the last week change went ('next' | 'prev'), so the tiles slide that way
 
   const classes = classesFrom(tasks)
   const hasUnclassed = tasks.some(t => !t.course)
@@ -189,7 +212,8 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
   const shown = mode === 'week' ? weekTasks : monthTasks
   const done = shown.filter(t => t.done).length
 
-  const step = dir => setAnchor(a => (mode === 'week' ? addDays(a, dir * 7) : new Date(a.getFullYear(), a.getMonth() + dir, 1)))
+  const step = d => { setDir(d > 0 ? 'next' : 'prev'); setAnchor(a => (mode === 'week' ? addDays(a, d * 7) : new Date(a.getFullYear(), a.getMonth() + d, 1))) }
+  const goToday = () => { const now = new Date(); setDir(startOfWeek(now) < start ? 'prev' : startOfWeek(now) > start ? 'next' : ''); setAnchor(now) }
   const label = mode === 'week' ? `${fmtDay(start)} – ${fmtDay(addDays(start, 6))}` : `${MONTHS[anchor.getMonth()]} ${anchor.getFullYear()}`
 
   return (
@@ -211,7 +235,7 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
           </div>
           <div className="row">
             <button className="secondary" onClick={() => step(-1)} aria-label={'Previous ' + mode}>‹</button>
-            <button className="secondary" onClick={() => setAnchor(new Date())}>Today</button>
+            <button className="secondary" onClick={goToday}>Today</button>
             <button className="secondary" onClick={() => step(1)} aria-label={'Next ' + mode}>›</button>
           </div>
         </div>
@@ -231,7 +255,7 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
         <span className="cal-legend"><span>Numbers are how many things are on a day. <b className="lg-due">Red</b> = something is due. Tap a day to see it.</span></span>
       </div>
 
-      {mode === 'week' && <WeekStrip days={days} counts={counts} onOpenDay={setPopup} tasks={visible} move={move} />}
+      {mode === 'week' && <WeekStrip days={days} counts={counts} onOpenDay={setPopup} tasks={visible} move={move} dir={dir} />}
 
       <div className={'planner-foot' + (mode === 'month' ? ' month-only' : '')}>
         <MonthCalendar counts={counts} focus={anchor} weekKeys={mode === 'week' ? weekKeys : new Set()} onOpenDay={setPopup} large />

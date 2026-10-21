@@ -12,7 +12,7 @@ export default function DueToday({ tasks }) {
   const timer = usePomodoro()
   const today = isoDate(new Date())
   const items = tasks
-    .filter(t => t.day === today || t.due_date === today)
+    .filter(t => t.day === today || t.due_date === today || (t.plan_days ?? []).includes(today))
     .sort((a, b) =>
       Number(a.done) - Number(b.done) ||
       String(a.due_time ?? '99').localeCompare(String(b.due_time ?? '99')) ||
@@ -27,7 +27,7 @@ export default function DueToday({ tasks }) {
 
   return (
     <section className="card fill">
-      <h2>Due today <small>{heading}</small></h2>
+      <h2>Today <small>{heading}</small></h2>
       <Link to="/study" className="lock-in-btn" aria-label="Open the focus timer">
         <span className="lock-in-main">LOCK IN: Focus</span>
         {timer.running && <small>{timer.mode === 'focus' ? 'Focusing' : 'On break'} · {mmss(timer.left)} left</small>}
@@ -57,9 +57,9 @@ export default function DueToday({ tasks }) {
               <span className="task-tags">
                 {t.course && <span className="tag">{t.course}</span>}
                 {t.category && <span className="tag alt">{t.category}</span>}
-                {t.due_date === today
-                  ? <span className="tag due">Due {t.due_time ? fmtTime(t.due_time) : 'today'}</span>
-                  : <span className="tag due">Planned for today</span>}
+                {t.day === today && <span className="tag plan">Plan day</span>}
+                {(t.plan_days ?? []).includes(today) && t.day !== today && <span className="tag work">Work day</span>}
+                {t.due_date === today && <span className="tag due">Due {t.due_time ? fmtTime(t.due_time) : 'today'}</span>}
               </span>
             </div>
             <span className="due-status">{t.done ? '✓ Done' : ''}</span>
