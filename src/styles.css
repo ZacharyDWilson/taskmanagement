@@ -4843,3 +4843,9 @@ button.feed-section-head .caret { flex: none; }
 .upcoming li span { min-width: 0; flex: 1 1 auto; }
 .planner { overflow-x: clip; }
 @media (max-width: 860px) { .todo .planner, .page.stretch > .todo .planner { overflow-x: clip; overflow-y: visible; } }
+
+/* new-version banner */
+.update-notice { position: fixed; z-index: 70; left: 50%; translate: -50% 0; bottom: calc(96px + env(safe-area-inset-bottom)); display: flex; align-items: center; gap: .7rem; max-width: min(92vw, 420px);
+  padding: .55rem .6rem .55rem 1rem; border-radius: 999px; background: var(--accent); color: var(--on-accent); box-shadow: 0 10px 28px rgba(0, 0, 0, .28); font-weight: 700; font-size: .88rem; }
+.update-notice button { background: var(--glass-strong); color: var(--text); border: 0; box-shadow: none; border-radius: 999px; padding: .35rem .8rem; font-size: .82rem; white-space: nowrap; }
+@media (min-width: 701px) { .update-notice { bottom: 1.4rem; } }

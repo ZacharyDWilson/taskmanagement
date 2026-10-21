@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.48', date: '2026-10-21', title: 'Updates reach you faster',
+    points: [
+      'When a new version is published, the app now tells you ("A new version is ready. Update now") instead of staying on the old one until you close it.',
+    ],
+  },
+  {
     version: '2.47', date: '2026-10-21', title: 'Coming up, your way',
     points: [
       'Coming up has buttons to only show what is due in the next 1, 3, 7, 14 or 30 days, or all of it. You can also type any number of days. It remembers your choice.',
