@@ -4481,3 +4481,27 @@ button.feed-section-head .caret { flex: none; }
 .sp.sp[data-pack='scrap'] input:not([type='checkbox']):not([type='radio']):not([type='file']), .sp.sp[data-pack='scrap'] textarea, .sp.sp[data-pack='scrap'] select { background: #fffdf4; border: 1px solid #cdb88f; border-bottom: 2px solid #b39a68; border-radius: 3px; }
 .sp.sp[data-pack='scrap'] .me-plate, .sp.sp[data-pack='scrap'] .timer-chip { border: 1px dashed #b9a47a; }
 
+
+/* ---- Calendar marks: planned, due and work days look different ---- */
+.cal-legend { display: flex; flex-wrap: wrap; gap: .3rem .9rem; font-size: .75rem; color: var(--muted); margin: -.2rem 0 .6rem; }
+.cal-legend .lg { display: inline-flex; align-items: center; gap: .35rem; }
+.cal-legend i { width: 14px; height: 10px; border-radius: 3px; display: inline-block; }
+.cal-legend .plan i { background: var(--glass-inner); border: 1px solid var(--glass-line); border-left: 4px solid var(--accent); }
+.cal-legend .due i { background: color-mix(in srgb, #e5484d 22%, var(--glass-strong)); border: 1px solid #e5484d; }
+.cal-legend .work i { background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--accent) 28%, transparent) 0 3px, transparent 3px 6px); border: 1px dashed var(--accent); }
+.mg-task b { font-size: .6rem; letter-spacing: .05em; text-transform: uppercase; margin-right: .3rem; }
+.mg-task.mg-due { display: flex; align-items: center; background: color-mix(in srgb, #e5484d 18%, var(--glass-strong)); border-left-color: #e5484d; color: var(--text); font-weight: 700; }
+.mg-task.mg-due b { color: #c42b31; }
+.mg-task.mg-work { display: flex; align-items: center; background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--accent) 16%, transparent) 0 4px, transparent 4px 8px); border-left: 3px dashed var(--accent); }
+.mg-task.mg-work b { color: var(--accent-ink, var(--accent)); }
+.mg-task.mg-due span, .mg-task.mg-work span { flex: 1; min-width: 0; }
+.day-extra { list-style: none; }
+.day-extra button.link { display: block; width: 100%; text-align: left; text-decoration: none; color: var(--text); padding: .3rem .5rem; border-radius: var(--r-sm); font-size: .85rem; }
+.day-extra b { font-size: .65rem; letter-spacing: .05em; text-transform: uppercase; margin-right: .3rem; }
+.day-extra.due button.link { background: color-mix(in srgb, #e5484d 16%, var(--glass-strong)); border-left: 3px solid #e5484d; font-weight: 700; }
+.day-extra.due b { color: #c42b31; }
+.day-extra.work button.link { background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--accent) 14%, transparent) 0 4px, transparent 4px 8px); border-left: 3px dashed var(--accent); }
+.work-set .row { gap: .5rem; }
+.work-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .5rem; }
+.work-chip { display: inline-flex; align-items: center; gap: .3rem; padding: .15rem .35rem .15rem .6rem; border-radius: 999px; font-size: .8rem; font-weight: 600; border: 1px dashed var(--accent); background: repeating-linear-gradient(45deg, color-mix(in srgb, var(--accent) 14%, transparent) 0 4px, transparent 4px 8px); }
+.work-chip button.link { padding: 0 .25rem; text-decoration: none; font-size: 1rem; line-height: 1; }

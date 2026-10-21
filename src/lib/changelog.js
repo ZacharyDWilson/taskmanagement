@@ -3,6 +3,13 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.45', date: '2026-10-21', title: 'A calendar that shows more',
+    points: [
+      'The planner opens on the month view. Each day now marks three different things: tasks planned for it, tasks due on it (red "Due" tag) and work days (striped "Work" tag).',
+      'In a task, pick Work days: extra days you plan to work on it, shown as their own marker on the calendar.',
+    ],
+  },
+  {
     version: '2.44', date: '2026-10-15', title: 'Two more Style packs',
     points: [
       'Cybercore (neon on black, glowing outlines, a terminal font) and Scrapbook (kraft paper, taped notes, handwritten titles) join Clay Pop, Neo Brutal and Wabi-Sabi in the Shop, 700 coins each.',

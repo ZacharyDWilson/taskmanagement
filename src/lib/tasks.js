@@ -30,7 +30,7 @@ export function useTasks() {
     const { data, error } = await supabase
       .from('tasks')
       .select('*')
-      .or(`day.is.null,and(day.gte.${from},day.lte.${to})`)
+      .or(`day.is.null,and(day.gte.${from},day.lte.${to}),and(due_date.gte.${from},due_date.lte.${to})`)
       .order('created_at')
     if (error) setError(error.message)
     else setTasks(data)

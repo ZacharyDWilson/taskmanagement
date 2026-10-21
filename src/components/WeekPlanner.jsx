@@ -18,8 +18,12 @@ function MonthGrid({ tasks, anchor, onOpenDay, onOpenTask, move }) {
   const weeks = []
   for (let w = startOfWeek(first); w <= last; w = addDays(w, 7)) weeks.push(w)
   const todayKey = isoDate(new Date())
-  const byDay = {}
-  for (const t of tasks) if (t.day) (byDay[t.day] ??= []).push(t)
+  const byDay = {}, dueBy = {}, workBy = {}
+  for (const t of tasks) {
+    if (t.day) (byDay[t.day] ??= []).push(t)
+    if (t.due_date && !t.done) (dueBy[t.due_date] ??= []).push(t)               // the day it is due
+    for (const k of t.plan_days ?? []) if (k !== t.day && !t.done) (workBy[k] ??= []).push(t)   // extra days to work on it
+  }
   const [over, setOver] = useState('')
 
   function drop(e, key) {
@@ -35,7 +39,11 @@ function MonthGrid({ tasks, anchor, onOpenDay, onOpenTask, move }) {
       {weeks.flatMap(w => Array.from({ length: 7 }, (_, i) => addDays(w, i))).map(d => {
         const key = isoDate(d)
         const list = byDay[key] ?? []
-        const open = list.filter(t => !t.done).length
+        const due = dueBy[key] ?? []
+        const work = workBy[key] ?? []
+        const open = list.filter(t => !t.done).length + due.length + work.length
+        const shownRows = 4
+        const extraRows = list.length + due.length + work.length - shownRows
         return (
           <div key={key} role="gridcell" tabIndex={0}
             className={'mg-cell' + (d.getMonth() !== anchor.getMonth() ? ' out' : '') + (key === todayKey ? ' today' : '') + (over === key ? ' over' : '')}
@@ -46,17 +54,23 @@ function MonthGrid({ tasks, anchor, onOpenDay, onOpenTask, move }) {
             onDrop={e => drop(e, key)}>
             <span className="mg-num">{d.getDate()}</span>
             <ul className="mg-tasks">
-              {list.slice(0, 3).map(t => (
-                <li key={t.id} className={'mg-task' + (t.done ? ' done' : '')} style={{ borderLeftColor: colorHex(t.color) }}
-                  draggable title={t.title}
+              {[
+                ...due.map(t => ({ t, kind: 'due' })),
+                ...list.map(t => ({ t, kind: 'plan' })),
+                ...work.map(t => ({ t, kind: 'work' })),
+              ].slice(0, shownRows).map(({ t, kind }) => (
+                <li key={kind + t.id} className={'mg-task mg-' + kind + (t.done ? ' done' : '')}
+                  style={kind === 'plan' ? { borderLeftColor: colorHex(t.color) } : undefined}
+                  draggable={kind === 'plan'} title={(kind === 'due' ? 'Due: ' : kind === 'work' ? 'Work on: ' : '') + t.title}
                   onClick={e => { e.stopPropagation(); onOpenTask(t) }}
-                  onDragStart={e => { e.stopPropagation(); e.dataTransfer.setData('text/task-id', t.id); e.dataTransfer.effectAllowed = 'move' }}>
+                  onDragStart={kind === 'plan' ? e => { e.stopPropagation(); e.dataTransfer.setData('text/task-id', t.id); e.dataTransfer.effectAllowed = 'move' } : undefined}>
+                  {kind === 'due' && <b>Due</b>}{kind === 'work' && <b>Work</b>}
                   <span>{t.title}</span>
                 </li>
               ))}
             </ul>
-            {list.length > 3 && <small className="mg-more">+{list.length - 3} more</small>}
-            {list.length > 0 && <i className="mg-count" aria-label={open + ' open'}>{open || '✓'}</i>}
+            {extraRows > 0 && <small className="mg-more">+{extraRows} more</small>}
+            {(list.length > 0 || due.length > 0 || work.length > 0) && <i className="mg-count" aria-label={open + ' open'}>{open || '✓'}</i>}
           </div>
         )
       })}
@@ -70,6 +84,8 @@ function Column({ title, dates, tasks, toggle, remove, move, onOpen, onExpand, f
   const keys = dates.map(isoDate)
   const isWeekend = dates.length > 1
   const items = tasks.filter(t => keys.includes(t.day))
+  const dueItems = tasks.filter(t => t.due_date && keys.includes(t.due_date) && !t.done)
+  const workItems = tasks.filter(t => !t.done && !keys.includes(t.day) && (t.plan_days ?? []).some(k => keys.includes(k)))
   const done = items.filter(t => t.done).length
 
   const dayLabel = t => (isWeekend ? (new Date(t.day + 'T00:00:00').getDay() === 6 ? 'Sat' : 'Sun') : undefined)
@@ -96,7 +112,13 @@ function Column({ title, dates, tasks, toggle, remove, move, onOpen, onExpand, f
         {items.length > 0 && <small className="count">{done}/{items.length} done</small>}
       </h3>
       <ul className="tasks scroll">
-        {items.length === 0 && <li className="muted small">Drop a task here</li>}
+        {items.length === 0 && dueItems.length === 0 && workItems.length === 0 && <li className="muted small">Drop a task here</li>}
+        {dueItems.map(t => (
+          <li key={'due' + t.id} className="day-extra due"><button type="button" className="link" onClick={() => onOpen(t)} title="Open this task"><b>Due</b> {t.title}{t.due_time ? ' · ' + t.due_time.slice(0, 5) : ''}</button></li>
+        ))}
+        {workItems.map(t => (
+          <li key={'work' + t.id} className="day-extra work"><button type="button" className="link" onClick={() => onOpen(t)} title="Open this task"><b>Work</b> {t.title}</button></li>
+        ))}
         {items.map(t => (
           <TaskItem key={t.id} task={t} onToggle={toggle} onRemove={remove} onOpen={onOpen}
             draggable label={dayLabel(t)} />
@@ -108,7 +130,7 @@ function Column({ title, dates, tasks, toggle, remove, move, onOpen, onExpand, f
 
 // The planner: Day, Week or Month, with a filter to show one class or subject at a time.
 export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
-  const [mode, setMode] = useState('week')                 // 'day' | 'week' | 'month'
+  const [mode, setMode] = useState('month')                // 'day' | 'week' | 'month' (the month is the first thing you see)
   const [anchor, setAnchor] = useState(() => new Date())    // the day / week / month being looked at
   const [filter, setFilter] = useState(ALL)                 // class filter
   const phone = usePhone()
@@ -175,6 +197,12 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
             </select>
           </label>
         )}
+      </div>
+
+      <div className="cal-legend" aria-label="What the calendar marks mean">
+        <span className="lg plan"><i /> Planned (drag to move)</span>
+        <span className="lg due"><i /> Due date</span>
+        <span className="lg work"><i /> Work day</span>
       </div>
 
       {mode !== 'month' && <DragTray columns={columns} tasks={tasks} move={move} />}

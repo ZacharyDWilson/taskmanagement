@@ -22,6 +22,7 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
     course: task.course ?? '',
     category: task.category ?? '',
     day: task.day ?? '',
+    plan_days: [...(task.plan_days ?? [])].sort(),
     due_date: task.due_date ?? '',
     due_time: task.due_time ? task.due_time.slice(0, 5) : '',
     criteria: task.criteria ?? '',
@@ -30,6 +31,9 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
     done: task.done,
   })
   const set = patch => setD(prev => ({ ...prev, ...patch }))
+  const [workPick, setWorkPick] = useState('')
+  const addWork = () => { if (workPick && !d.plan_days.includes(workPick) && d.plan_days.length < 31) set({ plan_days: [...d.plan_days, workPick].sort() }); setWorkPick('') }
+  const prettyDay = k => new Date(k + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
 
   useEffect(() => {
     const onKey = e => { if (e.key === 'Escape') onClose() }
@@ -39,7 +43,9 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
 
   function save(e) {
     e.preventDefault()
+    const sameWork = JSON.stringify(d.plan_days) === JSON.stringify([...(task.plan_days ?? [])].sort())
     onSave({
+      ...(sameWork ? {} : { plan_days: d.plan_days }),   // only sent when changed, so saving still works before the database has the column
       title: d.title.trim() || task.title,
       course: d.course.trim(),
       category: d.category,
@@ -88,6 +94,27 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
               )
             })}
           </div>
+        </fieldset>
+
+        <fieldset className="pick-set work-set">
+          <legend>
+            Work days
+            <strong className={'pick-summary' + (d.plan_days.length ? ' set' : '')}>{d.plan_days.length ? d.plan_days.length + ' picked' : 'None'}</strong>
+          </legend>
+          <p className="muted small">Extra days to work on this, besides the day you plan it for. They show as a separate "Work" marker on the calendar.</p>
+          <div className="row">
+            <input type="date" value={workPick} onChange={e => setWorkPick(e.target.value)} aria-label="Add a work day" />
+            <button type="button" className="secondary" onClick={addWork} disabled={!workPick}>Add day</button>
+          </div>
+          {d.plan_days.length > 0 && (
+            <div className="work-chips">
+              {d.plan_days.map(k => (
+                <span key={k} className="work-chip">{prettyDay(k)}
+                  <button type="button" className="link" aria-label={'Remove ' + prettyDay(k)} onClick={() => set({ plan_days: d.plan_days.filter(x => x !== k) })}>×</button>
+                </span>
+              ))}
+            </div>
+          )}
         </fieldset>
 
         <div className="form-grid">
