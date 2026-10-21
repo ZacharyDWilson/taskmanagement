@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { addDays, DAY_NAMES, fmtDay, isoDate, startOfWeek } from '../lib/dates.js'
+import { addDays, CAL_DAY_NAMES, fmtDay, isoDate, startOfCalWeek } from '../lib/dates.js'
 import { classesFrom } from '../lib/tasks.js'
 import { TaskItem } from './TodayList.jsx'
 
@@ -66,7 +66,7 @@ function WeekStrip({ days, counts, onOpenDay, tasks, move, dir }) {
             onDrop={e => drop(e, key)}
             style={{ '--i': i }}
             title={total ? partsOf(c) : 'Nothing yet. Drop a task here to plan it.'}>
-            <span className="wk-dow">{DAY_NAMES[i]}</span>
+            <span className="wk-dow">{CAL_DAY_NAMES[i]}</span>
             <span className="wk-date">{fmtDay(d)}</span>
             <strong className="wk-count">{total ? <CountUp value={total} /> : '–'}</strong>
             <small>{total ? partsOf(c) : 'Free'}</small>
@@ -84,7 +84,7 @@ function MonthCalendar({ counts, focus, weekKeys, onOpenDay, large }) {
   useEffect(() => { setMonth(new Date(focus.getFullYear(), focus.getMonth(), 1)) }, [focusKey]) // eslint-disable-line
   const last = new Date(month.getFullYear(), month.getMonth() + 1, 0)
   const weeks = []
-  for (let w = startOfWeek(month); w <= last; w = addDays(w, 7)) weeks.push(w)
+  for (let w = startOfCalWeek(month); w <= last; w = addDays(w, 7)) weeks.push(w)
   const todayKey = isoDate(new Date())
   return (
     <div className={'mini-month' + (large ? ' large' : '')} aria-label="Month overview">
@@ -94,7 +94,7 @@ function MonthCalendar({ counts, focus, weekKeys, onOpenDay, large }) {
         <button type="button" className="link" onClick={() => setMonth(m => new Date(m.getFullYear(), m.getMonth() + 1, 1))} aria-label="Next month">›</button>
       </div>
       <div className="mini-grid" key={month.getFullYear() * 12 + month.getMonth()} style={{ gridTemplateRows: `auto repeat(${weeks.length}, minmax(0, 1fr))` }}>
-        {DAY_NAMES.map(d => <span key={d} className="mini-dow">{d}</span>)}
+        {CAL_DAY_NAMES.map(d => <span key={d} className="mini-dow">{d}</span>)}
         {weeks.flatMap(w => Array.from({ length: 7 }, (_, i) => addDays(w, i))).map(d => {
           const key = isoDate(d)
           const c = counts[key]
@@ -204,7 +204,7 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
   const visible = tasks.filter(t => (filter === ALL ? true : filter === NONE ? !t.course : t.course === filter))
   const counts = dayCounts(visible)
 
-  const start = startOfWeek(anchor)
+  const start = startOfCalWeek(anchor)
   const days = [0, 1, 2, 3, 4, 5, 6].map(i => addDays(start, i))
   const weekKeys = new Set(days.map(isoDate))
   const weekTasks = visible.filter(t => weekKeys.has(t.day))
@@ -213,7 +213,7 @@ export default function WeekPlanner({ tasks, toggle, remove, move, onOpen }) {
   const done = shown.filter(t => t.done).length
 
   const step = d => { setDir(d > 0 ? 'next' : 'prev'); setAnchor(a => (mode === 'week' ? addDays(a, d * 7) : new Date(a.getFullYear(), a.getMonth() + d, 1))) }
-  const goToday = () => { const now = new Date(); setDir(startOfWeek(now) < start ? 'prev' : startOfWeek(now) > start ? 'next' : ''); setAnchor(now) }
+  const goToday = () => { const now = new Date(); setDir(startOfCalWeek(now) < start ? 'prev' : startOfCalWeek(now) > start ? 'next' : ''); setAnchor(now) }
   const label = mode === 'week' ? `${fmtDay(start)} – ${fmtDay(addDays(start, 6))}` : `${MONTHS[anchor.getMonth()]} ${anchor.getFullYear()}`
 
   return (

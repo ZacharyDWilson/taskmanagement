@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { CATEGORIES } from '../lib/tasks.js'
 import ColorPicker from './ColorPicker.jsx'
-import { addDays, DAY_NAMES, isoDate, startOfWeek } from '../lib/dates.js'
+import { addDays, CAL_DAY_NAMES, isoDate, startOfCalWeek } from '../lib/dates.js'
 
 const parseDay = k => new Date(k + 'T00:00:00')
 const shortDay = k => parseDay(k).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
@@ -42,7 +42,7 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
   const gridFrom = parseDay([todayKey, ...marks].sort()[0])
   const gridTo = parseDay([isoDate(addDays(new Date(), 13)), ...marks].sort().slice(-1)[0])
   const gridWeeks = []
-  for (let w = startOfWeek(gridFrom); w <= gridTo && gridWeeks.length < 8; w = addDays(w, 7)) gridWeeks.push(w)
+  for (let w = startOfCalWeek(gridFrom); w <= gridTo && gridWeeks.length < 8; w = addDays(w, 7)) gridWeeks.push(w)
   // how this task will look on the calendar, in order
   const timeline = [
     ...d.work.filter(k => k !== d.due_date).map(k => ({ k, kind: 'work' })),
@@ -112,7 +112,7 @@ export default function TaskModal({ task, courses, onSave, onDelete, onClose }) 
             <h4><b className="sk sk-work">WORK</b> Work days <strong className={'pick-summary' + (d.work.length ? ' set' : '')}>{d.work.length ? d.work.length + (d.work.length === 1 ? ' day' : ' days') : 'None yet'}</strong></h4>
             <p className="muted small">Tap each day you will work on this. Doing half one day and half another? Pick both. It shows on all of them.</p>
             <div className="wd-grid" role="group" aria-label="Pick work days">
-              {DAY_NAMES.map(n => <span key={n} className="wd-dow">{n}</span>)}
+              {CAL_DAY_NAMES.map(n => <span key={n} className="wd-dow">{n}</span>)}
               {gridWeeks.flatMap(w => Array.from({ length: 7 }, (_, i) => addDays(w, i))).map(date => {
                 const key = isoDate(date)
                 const isDue = key === d.due_date, isWork = d.work.includes(key)
