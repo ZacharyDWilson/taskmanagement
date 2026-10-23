@@ -3,6 +3,13 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.51', date: '2026-10-23', title: 'Scrapbook comes alive',
+    points: [
+      'The Scrapbook look now has a moving background: washi tape, polaroids, star stickers, buttons and torn notes drift slowly across the paper.',
+      'Its bars (study time each day, level, timer) are strips of washi tape with torn edges on a line of stitches, and today gets a star sticker.',
+    ],
+  },
+  {
     version: '2.50', date: '2026-10-23', title: 'Old Library theme',
     points: [
       'A new Shop theme, Old Library (500 coins): walls of bookshelves in warm lamplight with dust drifting by, and a dock where every button is a leather-bound book. The open page is the book pulled halfway off the shelf.',
