@@ -45,6 +45,8 @@ export const THEMES = [
     preview: ['#5a2fd8', '#b9a3ff', '#1f8fd0', '#f0a21c', '#1fa77d'] },
   { id: 'golden', name: 'Golden Hour', exclusive: true, signature: 'gold coin buttons', blurb: 'Earned, never bought: warm cream and gold glass in low sun, with glossy gold coin buttons.',
     preview: ['#7a4a0a', '#d9a21b', '#ffe08a', '#fff3d0', '#2b1b05'] },
+  { id: 'library', name: 'Old Library', signature: 'books', blurb: 'Walls of bookshelves in warm lamplight with dust drifting by, and a dock of leather-bound books.',
+    preview: ['#2c1d12', '#7b2d26', '#b08d57', '#2f4a3a', '#f3e9d2'] },
   // Style packs: a step above a theme. They reshape the boxes and buttons, and bring their own sounds and music.
   { id: 'clay', name: 'Clay Pop', style: true, music: 'coffee', blurb: 'Claymorphism: soft, puffy, pastel boxes you could squish, with round bloopy sounds and easy coffee-shop music.',
     preview: ['#fdeee8', '#ffd1c4', '#ff7f9e', '#8fb8ff', '#4a3f55'] },

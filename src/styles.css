@@ -4858,3 +4858,85 @@ button.feed-section-head .caret { flex: none; }
 .rp-day { padding: .45rem 0; border-radius: 10px; font-weight: 700; font-size: .82rem; background: var(--glass-inner); color: var(--text); border: 1px solid var(--glass-line); box-shadow: none; }
 .rp-day.on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 .tag.repeat { background: color-mix(in srgb, #14b8a6 22%, var(--glass-strong)); color: #0f766e; font-weight: 700; }
+
+/* =====================================================================
+   Old Library: bookshelves for a background, warm lamplight, and a dock of books.
+   ===================================================================== */
+:root[data-theme='library'] {
+  --text: #3a2618; --muted: #6e5a45; --accent: #7b2d26; --accent-2: #b08d57; --on-accent: #fbf3e0; --danger: #b4231f;
+  --glass: rgba(251, 243, 224, .94); --glass-inner: rgba(240, 228, 198, .85); --glass-field: rgba(255, 251, 240, .96);
+  --glass-strong: rgba(253, 247, 232, .99); --glass-line: rgba(120, 84, 44, .3); --glass-shadow: 0 12px 32px rgba(25, 12, 4, .4);
+  --blur: 0px; --r: 8px; --sky-1: #2c1d12; --sky-2: #4a3220;
+  --font: 'Lora', Georgia, serif; --font-head: 'Cinzel', 'Lora', Georgia, serif; --head-weight: 700; --head-scale: .95;
+  --card-shape: 8px; --tile-shape: 6px; --btn-shape: 6px; --field-shape: 5px; --dock-shape: 4px;
+}
+:root[data-theme='library'] .scene {
+  background:
+    radial-gradient(70vmax 50vmax at 12% 0%, rgba(255, 196, 110, .34), transparent 62%),
+    linear-gradient(rgba(18, 9, 3, .34), rgba(18, 9, 3, .34)),
+    url('./assets/library/shelves.svg') center top / auto 100vh repeat;
+  background-color: #2c1d12;
+}
+:root[data-theme='library'] .scene::before, :root[data-theme='library'] .scene::after { content: none; }
+:root[data-theme='library'] .scene .g1 { width: 60vmax; height: 60vmax; left: -16vmax; top: -22vmax; background: radial-gradient(circle, rgba(255, 190, 100, .38), transparent 66%); animation: drift-a 34s ease-in-out infinite alternate; }
+:root[data-theme='library'] .scene .g2 { width: 50vmax; height: 50vmax; right: -14vmax; bottom: -22vmax; background: radial-gradient(circle, rgba(120, 60, 20, .45), transparent 66%); animation: drift-b 40s ease-in-out infinite alternate; }
+:root[data-theme='library'] .scene span {            /* dust in the lamplight */
+  left: calc(var(--i) * 7.2% + 2%); bottom: -6vh; width: calc(3px + var(--i) * .5px); aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle, #fff3cf, rgba(255, 214, 140, .55) 55%, transparent 72%); opacity: .7;
+  --drift: calc(var(--i) * .6vw - 3.5vw);
+  animation: rise calc(18s + var(--i) * 1.7s) linear infinite; animation-delay: calc(var(--i) * -2.7s);
+}
+:root[data-theme='library'] .scene span:nth-of-type(n + 11) { display: none; }
+:root[data-theme='library'] .card, :root[data-theme='library'] .profile-head { border: 1px solid rgba(120, 84, 44, .38); border-top: 3px solid #7b2d26; }
+:root[data-theme='library'] h1, :root[data-theme='library'] h2 { letter-spacing: .03em; }
+:root[data-theme='library'] button:not(.link):not(.secondary):not(.customize-row):not(.style-opt):not(.theme-opt):not(.week-chip):not(.task-main):not(.sound-chip):not(.wd-day):not(.mini-day):not(.ahead-btn):not(.rp-day) {
+  background: linear-gradient(180deg, #8f3a31, #6a241d); border: 1px solid #4a1713; box-shadow: 0 3px 0 #3d120f, 0 6px 10px rgba(30, 10, 5, .3); color: #fbf3e0;
+}
+:root[data-theme='library'] button:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #3d120f; }
+:root[data-theme='library'] .brand, :root[data-theme='library'] .brand-text { color: #f6e7c4; text-shadow: 0 1px 6px rgba(0, 0, 0, .6); }
+:root[data-theme='library'] .nav .secondary { background: rgba(251, 243, 224, .92); }
+
+/* ---- the dock: every button is a book ---- */
+:root[data-theme='library'] .dock { background: none; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; padding: .4rem; gap: .9rem; overflow: visible; }
+:root[data-theme='library'] .dock a {
+  width: 46px; height: 64px; border-radius: 3px 6px 6px 3px; opacity: 1; color: #e8c97a; border: 0;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, .34) 0 7px, rgba(255, 255, 255, .08) 7px 9px, transparent 9px),
+    linear-gradient(180deg, transparent 10px, #d8b765 10px 12px, transparent 12px calc(100% - 12px), #d8b765 calc(100% - 12px) calc(100% - 10px), transparent calc(100% - 10px)),
+    linear-gradient(135deg, var(--b1), var(--b2));
+  box-shadow: 5px 0 0 -1px #f1e4c3, 6px 1px 0 -1px #cdbd97, 3px 9px 14px rgba(15, 6, 2, .55), inset -1px 0 2px rgba(255, 255, 255, .18);
+  transform-origin: 20% 100%;
+}
+:root[data-theme='library'] .dock a:nth-child(1) { --b1: #8f3a31; --b2: #5b1f1b; }
+:root[data-theme='library'] .dock a:nth-child(2) { --b1: #3d6650; --b2: #234233; }
+:root[data-theme='library'] .dock a:nth-child(3) { --b1: #2f5a85; --b2: #1b3856; }
+:root[data-theme='library'] .dock a:nth-child(4) { --b1: #7a4f2b; --b2: #4a2f19; }
+:root[data-theme='library'] .dock a:nth-child(5) { --b1: #7a4668; --b2: #4a2640; }
+:root[data-theme='library'] .dock a .icon { stroke-width: 1.9; margin-left: 5px; filter: drop-shadow(0 1px 0 rgba(0, 0, 0, .5)); }
+:root[data-theme='library'] .dock a .avatar { margin-left: 5px; }
+:root[data-theme='library'] .dock a:hover, :root[data-theme='library'] .dock a:focus-visible { scale: 1; translate: 4px -3px; rotate: -3deg; }
+:root[data-theme='library'] .dock a:hover + a, :root[data-theme='library'] .dock a:has(+ a:hover), :root[data-theme='library'] .dock a:hover + a + a, :root[data-theme='library'] .dock a:has(+ a + a:hover),
+:root[data-theme='library'] .dock a:focus-visible + a, :root[data-theme='library'] .dock a:has(+ a:focus-visible) { scale: 1; translate: 0 0; }
+:root[data-theme='library'] .dock a:active { translate: 0 1px; rotate: 0deg; }
+:root[data-theme='library'] .dock a.active { translate: 12px 0; rotate: -4deg; box-shadow: 5px 0 0 -1px #f1e4c3, 6px 1px 0 -1px #cdbd97, 8px 12px 18px rgba(15, 6, 2, .65), 0 0 16px rgba(255, 200, 110, .45); color: #ffe9a8; }
+:root[data-theme='library'] .dock a.active::before { display: none; }
+:root[data-theme='library'] .dock a::after { border: 1px solid #b08d57; border-radius: 3px 8px 8px 3px; background: #fbf3e0; color: #3a2618; font-family: 'Lora', serif; font-weight: 600; }
+
+@media (max-width: 700px) {
+  :root[data-theme='library'] .tabbar .liquid { display: none; }
+  :root[data-theme='library'] .tabbar {
+    background: linear-gradient(180deg, #8a6038, #5a3a1f 70%, #3f2917); border: 0; border-top: 3px solid #b98652; border-radius: 6px; -webkit-backdrop-filter: none; backdrop-filter: none;
+    box-shadow: 0 10px 24px rgba(15, 6, 2, .55), inset 0 2px 0 rgba(255, 255, 255, .15); padding: 0 8px;
+  }
+  :root[data-theme='library'] .tabbar a {
+    margin: 8px 3px 6px; height: 56px; padding: 4px 0 3px; border-radius: 2px 5px 5px 2px; color: #f6e7c4; font-size: .6rem; font-weight: 700; text-shadow: none;
+    background: linear-gradient(90deg, rgba(0, 0, 0, .3) 0 5px, transparent 5px), linear-gradient(135deg, var(--b1), var(--b2)); box-shadow: 2px 0 0 #f1e4c3, 0 4px 8px rgba(15, 6, 2, .5);
+  }
+  :root[data-theme='library'] .tabbar a:nth-of-type(1) { --b1: #8f3a31; --b2: #5b1f1b; }
+  :root[data-theme='library'] .tabbar a:nth-of-type(2) { --b1: #3d6650; --b2: #234233; }
+  :root[data-theme='library'] .tabbar a:nth-of-type(3) { --b1: #2f5a85; --b2: #1b3856; }
+  :root[data-theme='library'] .tabbar a:nth-of-type(4) { --b1: #7a4f2b; --b2: #4a2f19; }
+  :root[data-theme='library'] .tabbar a:nth-of-type(5) { --b1: #7a4668; --b2: #4a2640; }
+  :root[data-theme='library'] .tabbar a .icon { filter: none; }
+  :root[data-theme='library'] .tabbar a.active { transform: translateY(-9px); color: #ffe9a8; box-shadow: 2px 0 0 #f1e4c3, 0 10px 14px rgba(15, 6, 2, .6), 0 0 14px rgba(255, 200, 110, .4); }
+}

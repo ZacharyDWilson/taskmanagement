@@ -29,6 +29,7 @@ export const SOUND_PACKS = {
   golden: 'studio',     // warm and a little ceremonial
   handheld: 'soft',     // gentle, rounded blips
   rose: 'soft',         // muted, like felt and paper
+  library: 'organic',   // soft wood and paper
   clay: 'clay',         // style packs: their sounds are built in styleSound.js
   brutal: 'brutal',
   wabi: 'wabi',

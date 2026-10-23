@@ -327,6 +327,14 @@
  ],
  "shop_items": [
   {
+   "id": "library",
+   "kind": "theme",
+   "name": "Old Library",
+   "price": 500,
+   "sort": 26,
+   "exclusive": false
+  },
+  {
    "id": "cyber",
    "kind": "theme",
    "name": "Cybercore",

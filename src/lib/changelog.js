@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.50', date: '2026-10-23', title: 'Old Library theme',
+    points: [
+      'A new Shop theme, Old Library (500 coins): walls of bookshelves in warm lamplight with dust drifting by, and a dock where every button is a leather-bound book. The open page is the book pulled halfway off the shelf.',
+    ],
+  },
+  {
     version: '2.49', date: '2026-10-21', title: 'Repeat weekly',
     points: [
       'Tasks can repeat every week on the days you choose (for example a class every Monday and Wednesday). Open a task, pick the days under Repeat weekly, and a copy appears on each of those days, a few weeks ahead. Tick them off one at a time. Deleting or moving one copy does not stop the rest.',
