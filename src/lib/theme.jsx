@@ -19,7 +19,7 @@ export const THEMES = [
     preview: ['#ffffff', '#bebebe', '#990000', '#002244', '#1791ad'] },
   { id: 'umaine', name: 'University of Maine', free: true, blurb: 'Black Bear navy and ice blue under a still, cold winter sky.',
     preview: ['#ffffff', '#eaf3fb', '#b0d7ff', '#2d6aa3', '#003263'] },
-  { id: 'aero', name: 'Frutiger Aero', blurb: 'Glossy aqua glass, bubbles and bright skies, with its own bubbly sounds.',
+  { id: 'aero', name: 'Frutiger Aero', signature: 'glass bubbles', blurb: 'Glossy aqua glass, bubbles and bright skies, with its own bubbly sounds.',
     preview: ['#ffffff', '#bfeaff', '#5fd3e8', '#1a8fe3', '#7fd34a'] },
   { id: 'sprout', name: 'Sprout Squad', blurb: 'Olive leaves, cream and warm amber, with pollen floating up.',
     preview: ['#606c38', '#283618', '#fefae0', '#dda15e', '#bc6c25'] },
