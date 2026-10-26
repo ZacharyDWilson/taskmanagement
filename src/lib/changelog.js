@@ -3,6 +3,13 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.52', date: '2026-10-26', title: 'A clearer Shop',
+    points: [
+      'The Shop is split into categories you pick from (Themes, Style packs, Banners, Frames, Timer styles, Perks) instead of one long page.',
+      'A new tab, How XP & coins work, shows exactly what earns XP and coins, the daily limits, how levels work, and where you are now.',
+    ],
+  },
+  {
     version: '2.51', date: '2026-10-23', title: 'Scrapbook comes alive',
     points: [
       'The Scrapbook look now has a moving background: washi tape, polaroids, star stickers, buttons and torn notes drift slowly across the paper.',

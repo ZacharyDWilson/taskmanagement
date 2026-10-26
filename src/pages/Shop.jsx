@@ -10,6 +10,7 @@ import { TIMER_STYLES } from '../lib/timerStyles.js'
 import TimerFace from '../components/TimerFace.jsx'
 import { FramePreview } from '../components/Avatar.jsx'
 import ThemePreview from '../components/ThemePreview.jsx'
+import XpCoinGuide from '../components/XpCoinGuide.jsx'
 
 const themeById = Object.fromEntries(THEMES.map(t => [t.id, t]))
 
@@ -24,6 +25,8 @@ export default function Shop() {
   const { bundles = [], buyBundle } = useShop()
   const toast = useToast()
   const [busy, setBusy] = useState('')
+  const [tab, setTabState] = useState(() => { try { return localStorage.getItem('lock-in-shop-tab') || 'themes' } catch { return 'themes' } })
+  const setTab = id => { setTabState(id); try { localStorage.setItem('lock-in-shop-tab', id) } catch { /* ignore */ } }
 
   // earn-only styles (achievement rewards) are never for sale
   const sellable = items.filter(i => !i.exclusive)
@@ -34,6 +37,19 @@ export default function Shop() {
   const frames = sellable.filter(i => i.kind === 'frame')
   const timers = items.filter(i => i.kind === 'timer')
   const perks = items.filter(i => i.kind === 'perk')
+
+  const tierItems = tier => themes.filter(i => (tier === 2 ? tierOf(i.id) === 2 : tierOf(i.id) < 2))
+  const TABS = [
+    { id: 'themes', label: 'Themes', icon: '🎨', show: true },
+    { id: 'style', label: 'Style packs', icon: '✨', show: tierItems(2).length > 0 },
+    { id: 'banner', label: 'Banners', icon: '🏞️', show: banners.length > 0 },
+    { id: 'frame', label: 'Frames', icon: '🖼️', show: frames.length > 0 },
+    { id: 'timer', label: 'Timer styles', icon: '⏳', show: timers.length > 0 || bundles.length > 0 },
+    { id: 'perk', label: 'Perks', icon: '🎁', show: perks.length > 0 },
+    { id: 'how', label: 'How XP & coins work', icon: '💡', show: true },
+  ].filter(t => t.show)
+  const active = TABS.some(t => t.id === tab) ? tab : 'themes'
+  const list = tierItems(active === 'style' ? 2 : 0)
 
   async function run(id, action, success) {
     setBusy(id)
@@ -58,7 +74,7 @@ export default function Shop() {
       <header className="card shop-head">
         <div>
           <h1>Shop</h1>
-          <p className="muted">Spend coins on themes for your page. Coins come from XP, and spending them never lowers your level.</p>
+          <p className="muted">Spend coins on how your page looks. Pick a category below. Coins come from XP, and spending them never lowers your level.</p>
         </div>
         <div className="balance" aria-label={`${balance} coins`}>
           <span className="balance-coin"><Coin size="1.4rem" /></span>
@@ -67,9 +83,22 @@ export default function Shop() {
         </div>
       </header>
 
+      <nav className="card shop-tabs" role="tablist" aria-label="Shop categories">
+        {TABS.map(t => (
+          <button key={t.id} type="button" role="tab" aria-selected={active === t.id} className={'shop-tab' + (active === t.id ? ' on' : '')} onClick={() => setTab(t.id)}>
+            <span aria-hidden="true">{t.icon}</span> {t.label}
+          </button>
+        ))}
+      </nav>
+
+      {active === 'how' && <XpCoinGuide xp={xp} level={level} balance={balance} />}
+
+      {(active === 'themes' || active === 'style') && (
       <section className="card">
-        <h2>Themes</h2>
+        <h2>{active === 'style' ? 'Style packs' : 'Themes'}</h2>
+        {active === 'style' && <p className="muted small">Goes further than a theme: every box, button and text field is reshaped (not just recoloured), and each pack brings its own sounds and its own background music. Its own dock too.</p>}
         <div className="themes">
+          {active === 'themes' && <>
           <div className={'theme-opt shop-card' + (theme === 'default' ? ' on' : '')} data-t="default">
             <Swatch id="default" colors={themeById.default.preview} />
             <strong>Classic</strong>
@@ -98,16 +127,17 @@ export default function Shop() {
                 : <button className="secondary" onClick={() => setTheme(id)}>Equip</button>}
             </div>
           ))}
+          </>}
 
-          {themes.map(item => {
+          {list.map(item => {
             const t = themeById[item.id]
             const has = owned.has(item.id)
             const short = item.price - balance
             const tier = tierOf(item.id)
-            const first = themes.findIndex(x => tierOf(x.id) === tier) === themes.indexOf(item)
+            const first = list.findIndex(x => tierOf(x.id) === tier) === list.indexOf(item)
             return (
               <Fragment key={item.id}>
-              {first && tier > 0 && (
+              {first && tier === 1 && (
                 <div className="shop-tier">
                   <h3>{tier === 1 ? 'Signature themes' : 'Style packs'}</h3>
                   <p className="muted small">{tier === 1
@@ -144,10 +174,11 @@ export default function Shop() {
             )
           })}
         </div>
-        {themes.length === 0 && <p className="muted">The shop is empty right now.</p>}
+        {list.length === 0 && active === 'style' && <p className="muted">The shop is empty right now.</p>}
       </section>
+      )}
 
-      {bundles.length > 0 && (
+      {active === 'timer' && bundles.length > 0 && (
         <section className="card">
           <h2>Timer bundles <small>buy styles together for less. Every style works for Pomodoro and Count up.</small></h2>
           <div className="themes">
@@ -187,7 +218,7 @@ export default function Shop() {
         </section>
       )}
 
-      {[['Banners', banners, 'banner'], ['Frames', frames, 'frame'], ['Timer styles', timers, 'timer'], ['Profile perks', perks, 'perk']].map(([title, list, kind]) => list.length > 0 && (
+      {[['Banners', banners, 'banner'], ['Frames', frames, 'frame'], ['Timer styles', timers, 'timer'], ['Profile perks', perks, 'perk']].map(([title, list, kind]) => list.length > 0 && active === kind && (
         <section className="card" key={kind}>
           <h2>{title} <small>{kind === 'timer' ? 'for the Study timer' : kind === 'perk' ? 'unlock once, keep forever' : 'show on your profile'}</small></h2>
           <div className="themes">
@@ -217,16 +248,6 @@ export default function Shop() {
           </div>
         </section>
       ))}
-
-      <section className="card">
-        <h2>How to earn coins</h2>
-        <ul className="earn">
-          <li><strong>Achievements:</strong> every badge pays coins, and a few unlock styles you can't buy. <Link to="/achievements">See them all</Link>.</li>
-          <li><strong>1 coin</strong> for every 5 XP you earn (focus minutes, finished tasks, posts, reactions).</li>
-          <li><strong>Level-up bonus:</strong> 25 coins × the level you reach. Level {nextLevel} pays <strong>{25 * nextLevel} coins</strong>, and you're {toNext.toLocaleString()} XP away.</li>
-        </ul>
-        <p className="muted small">Keep an eye on your level in the top bar. <Link to="/todo">Finish a task</Link> or <Link to="/study">start a focus session</Link> to earn.</p>
-      </section>
     </div>
   )
 }
