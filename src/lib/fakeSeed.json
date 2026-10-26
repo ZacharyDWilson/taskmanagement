@@ -327,6 +327,14 @@
  ],
  "shop_items": [
   {
+   "id": "perk-gif-banner",
+   "kind": "perk",
+   "name": "Animated banner (GIF)",
+   "price": 500,
+   "sort": 61,
+   "exclusive": false
+  },
+  {
    "id": "library",
    "kind": "theme",
    "name": "Old Library",

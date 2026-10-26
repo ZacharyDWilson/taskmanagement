@@ -3,6 +3,12 @@
 // { version, date: 'YYYY-MM-DD', title, points: [short bullet, ...] }
 export const CHANGELOG = [
   {
+    version: '2.53', date: '2026-10-26', title: 'Animated banners',
+    points: [
+      'A new Shop perk, Animated banner (GIF), 500 coins: put your own picture or an animated GIF across your profile banner. It also shows behind your name in the top bar. Add it on your profile under Style.',
+    ],
+  },
+  {
     version: '2.52', date: '2026-10-26', title: 'A clearer Shop',
     points: [
       'The Shop is split into categories you pick from (Themes, Style packs, Banners, Frames, Timer styles, Perks) instead of one long page.',

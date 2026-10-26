@@ -234,7 +234,7 @@ export default function Shop() {
                     : <span className={'swatch-preview shop-' + kind + ' ' + item.id} aria-hidden="true" />}
                   <strong>{item.name}</strong>
                   {has
-                    ? <span className="owned">✓ Owned {kind === 'timer' ? <Link to="/study" className="small">Use it on Study</Link> : kind === 'perk' ? <Link to="/profile" className="small">Upload a GIF on your profile</Link> : <Link to="/profile" className="small">Equip on your profile</Link>}</span>
+                    ? <span className="owned">✓ Owned {kind === 'timer' ? <Link to="/study" className="small">Use it on Study</Link> : kind === 'perk' ? <Link to="/profile" className="small">{item.id === 'perk-gif-banner' ? 'Add a banner picture on your profile' : 'Upload a GIF on your profile'}</Link> : <Link to="/profile" className="small">Equip on your profile</Link>}</span>
                     : (
                       <button onClick={() => purchase(item.id, item.name)} disabled={short > 0 || !!busy}
                         title={short > 0 ? `You need ${short} more coins` : ''}>

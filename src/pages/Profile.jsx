@@ -76,6 +76,7 @@ export default function Profile() {
   const shop = useShop()
   const toast = useToast()
   const baseline = useRef(null)    // picture / frame / banner as last saved, to tell what changed
+  const pendingBanner = useRef(null)   // same for a banner picture
   const pendingAvatar = useRef(null)   // a picture uploaded but not saved yet (deleted if you pick another or leave)
 
   const [profile, setProfile] = useState(null)
@@ -104,7 +105,7 @@ export default function Profile() {
     supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
       .then(({ data }) => {
         setProfile(data ?? false); setLockedAtLoad(!!data?.username)
-        baseline.current = data ? { avatar_path: data.avatar_path, frame: data.frame, banner: data.banner } : null
+        baseline.current = data ? { avatar_path: data.avatar_path, frame: data.frame, banner: data.banner, banner_path: data.banner_path ?? null } : null
       })
     supabase.from('posts').select('id, image_path, body, created_at').eq('user_id', userId)
       .order('created_at', { ascending: false }).limit(30)
@@ -129,13 +130,14 @@ export default function Profile() {
   async function save(e) {
     e.preventDefault()
     const { display_name, bio, color, avatar_path, frame, banner } = profile
+    const banner_path = profile.banner_path ?? null
     const username = (profile.username ?? '').trim()
     if (username) {
       const problem = usernameProblem(username)
       if (problem) return setMsg(problem)
     }
     const { error } = await supabase.from('profiles')
-      .update({ display_name: display_name.trim() || 'Friend', ...(lockedUsername ? {} : { username: username || null }), college: (profile.college ?? '').trim() || null, bio, color, avatar_path, frame, banner })
+      .update({ display_name: display_name.trim() || 'Friend', ...(lockedUsername ? {} : { username: username || null }), college: (profile.college ?? '').trim() || null, bio, color, avatar_path, frame, banner, ...(banner_path !== (baseline.current?.banner_path ?? null) ? { banner_path } : {}) })   // banner_path is only sent when changed, so saving works before the database has it
       .eq('id', user.id)
     setMsg(error
       ? (IS_ADMIN && /reach level/i.test(error.message)
@@ -159,11 +161,28 @@ export default function Profile() {
       // the picture you replaced is no longer used by anything: remove the file (only ever your own folder)
       if (was.avatar_path && was.avatar_path !== avatar_path && was.avatar_path.startsWith(user.id + '/')) removeImage(was.avatar_path).catch(() => {})
       pendingAvatar.current = null
-      baseline.current = { avatar_path, frame, banner }
+      if (was.banner_path && was.banner_path !== banner_path && was.banner_path.startsWith(user.id + '/')) removeImage(was.banner_path).catch(() => {})
+      pendingBanner.current = null
+      baseline.current = { avatar_path, frame, banner, banner_path }
     }
   }
 
   const canGif = IS_ADMIN || shop.owned.has('perk-gif')
+  const canBannerPic = IS_ADMIN || shop.owned.has('perk-gif-banner')
+
+  async function onBanner(e) {
+    const file = e.target.files[0]
+    e.target.value = ''
+    if (!file) return
+    try {
+      const path = await uploadImage(file, user.id, { allowGif: canBannerPic, kind: 'banner' })
+      if (pendingBanner.current && pendingBanner.current !== baseline.current?.banner_path) removeImage(pendingBanner.current).catch(() => {})
+      pendingBanner.current = path
+      edit({ banner_path: path })
+      toast(`🖼️ Banner picture chosen: ${file.name}. Press Save profile to keep it.`, 'info', { silent: true })
+    } catch (err) { setMsg(err.message) }
+  }
+  const removeBanner = () => { edit({ banner_path: null }); toast('Banner picture removed. Press Save profile to keep that.', 'info', { silent: true }) }
 
   async function onAvatar(e) {
     const file = e.target.files[0]
@@ -185,7 +204,7 @@ export default function Profile() {
       <div className="col">
         {/* Who this is */}
         <section className="card profile-head">
-          <div className={'banner ' + profile.banner} style={{ '--mc': colorHex(profile.color) }} />
+          <div className={'banner ' + profile.banner + (profile.banner_path ? ' banner-pic' : '')} style={{ '--mc': colorHex(profile.color), ...(profile.banner_path ? { '--pic': `url("${publicUrl(profile.banner_path)}")` } : {}) }} />
           <div className="profile-id">
             <Avatar name={profile.display_name} path={profile.avatar_path} color={profile.color}
               frame={profile.frame} size={88} />
@@ -306,6 +325,18 @@ export default function Profile() {
             <CustomizeRow label="Banner" name={cosmetics.find(c => c.id === profile.banner)?.name ?? 'Checker'}
               onClick={() => setPicker('banner')}
               preview={<span className={'swatch-preview ' + profile.banner} style={{ '--mc': colorHex(profile.color) }} aria-hidden="true" />} />
+            <div className="banner-pic-row">
+              <strong>Banner picture</strong>
+              {canBannerPic ? (
+                <>
+                  <input type="file" accept="image/*" onChange={onBanner} aria-label="Choose a banner picture or GIF" />
+                  <small className="muted">A wide picture or an animated GIF (up to 1.5 MB). It sits over the banner above.</small>
+                  {profile.banner_path && <button type="button" className="secondary" onClick={removeBanner}>Remove banner picture</button>}
+                </>
+              ) : (
+                <small className="muted">Put a picture or an animated GIF across your profile. <Link to="/shop">Get the animated banner in the Shop</Link>.</small>
+              )}
+            </div>
           </div>
           )}
           {picker === 'theme' && (

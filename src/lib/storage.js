@@ -3,6 +3,7 @@ import { supabase } from './supabase.js'
 const BUCKET = 'uploads'
 const MAX_SIDE = 1080         // post photos
 const THUMB_SIDE = 480        // the small copy the feed shows until you tap a photo
+const BANNER_SIDE = 1200       // banner pictures are wide
 const AVATAR_SIDE = 384       // profile pictures are only ever shown small
 const CACHE = '31536000'      // files never change once uploaded, so browsers may keep them for a year
 
@@ -39,7 +40,7 @@ export async function uploadImage(file, userId, { allowGif = false, kind = 'post
     if (up.error) throw up.error
     return gifPath
   }
-  const blob = await shrink(file, kind === 'avatar' ? AVATAR_SIDE : MAX_SIDE, kind === 'avatar' ? 0.82 : 0.78)
+  const blob = await shrink(file, kind === 'avatar' ? AVATAR_SIDE : kind === 'banner' ? BANNER_SIDE : MAX_SIDE, kind === 'avatar' ? 0.82 : 0.78)
   const path = `${userId}/${stamp}.jpg`
   const { error } = await supabase.storage.from(BUCKET).upload(path, blob, { contentType: 'image/jpeg', cacheControl: CACHE })
   if (error) throw error

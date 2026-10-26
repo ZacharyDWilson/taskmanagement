@@ -38,6 +38,7 @@ import DevPanel from './components/DevPanel.jsx'
 import TimerOverlay from './components/TimerOverlay.jsx'
 import UpdateNotice from './components/UpdateNotice.jsx'
 import PipTimer from './components/PipTimer.jsx'
+import { publicUrl } from './lib/storage.js'
 import { APP_TITLE, IS_ADMIN, IS_DEV_BUILD, IS_FAKE } from './lib/env.js'
 import { DEMO } from './lib/demo.js' // DEMO
 
@@ -79,7 +80,7 @@ export default function App() {
   }, [])
   useEffect(() => {
     if (!user || !supabase) { setMe(null); return }
-    supabase.from('profiles').select('display_name, avatar_path, color, frame, banner').eq('id', user.id).maybeSingle()
+    supabase.from('profiles').select('*').eq('id', user.id).maybeSingle()
       .then(({ data }) => setMe(data))
   }, [user?.id, pathname, profileTick]) // eslint-disable-line
 
@@ -157,7 +158,8 @@ export default function App() {
           )}
           {user && (
             // one small "you" card instead of separate level and coin chips: your banner behind your picture, level and coins
-            <div className={'me-chip ' + (me?.banner || 'banner-solid')} aria-label="You">
+            <div className={'me-chip ' + (me?.banner || 'banner-solid') + (me?.banner_path ? ' banner-pic' : '')} aria-label="You"
+              style={me?.banner_path ? { '--pic': `url("${publicUrl(me.banner_path)}")` } : undefined}>
               <Link to="/profile" title="Your profile. Finish tasks and focus sessions to earn XP.">
                 <Avatar name={me?.display_name ?? 'Me'} path={me?.avatar_path} color={me?.color} frame={me?.frame} size={26} />
                 <span className="me-plate">Lv {xp !== null ? level : '–'}</span>
