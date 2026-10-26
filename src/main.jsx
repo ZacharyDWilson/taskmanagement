@@ -19,6 +19,21 @@ import './lib/motion.js'      // applies the saved "calm mode" before anything i
 import './lib/install.js'     // starts listening for the browser's install offer right away
 import './styles.css'
 
+// Developer helper for the test build only: http://localhost:5176/?shot=rose opens the fake account on its Profile page in that
+// theme, with no intro or pop-ups, ready to be photographed for the Shop's preview pictures. It never runs on the live site.
+if (import.meta.env.DEV && import.meta.env.VITE_FAKE_BACKEND === 'true') {
+  const m = location.search.match(/[?&]shot=([A-Za-z0-9_-]+)/)
+  if (m) {
+    try {
+      localStorage.setItem('friends-site-theme', m[1])
+      localStorage.setItem('lock-in-intro', '0')
+      localStorage.setItem('lock-in-fake-session', '1')
+    } catch { /* ignore */ }
+    location.hash = '#/profile'
+    document.documentElement.classList.add('shotmode')
+  }
+}
+
 installDragLift()
 
 // Register the service worker in production builds only (it would get in the way of dev hot reload).
