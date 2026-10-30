@@ -25,7 +25,7 @@ async function shrink(file, side = MAX_SIDE, quality = 0.78) {
   return new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality))
 }
 
-export const MAX_GIF_BYTES = 5 * 1024 * 1024   // the uploads bucket itself stops at 5 MB
+export const MAX_GIF_BYTES = 3 * 1024 * 1024
 
 // `allowGif`: the person owns the animated-picture perk, so a GIF is stored as is (it would lose its
 // movement if redrawn to a canvas). Without it a GIF becomes a still of its first frame, like any photo.
@@ -34,7 +34,7 @@ export async function uploadImage(file, userId, { allowGif = false, kind = 'post
   if (!file.type.startsWith('image/')) throw new Error('Please choose an image file.')
   const stamp = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
   if (allowGif && file.type === 'image/gif') {
-    if (file.size > MAX_GIF_BYTES) throw new Error('That GIF is over 5 MB. Try a shorter or smaller one.')
+    if (file.size > MAX_GIF_BYTES) throw new Error('That GIF is over 3 MB. Try a shorter or smaller one.')
     const gifPath = `${userId}/${stamp}.gif`
     const up = await supabase.storage.from(BUCKET).upload(gifPath, file, { contentType: 'image/gif', cacheControl: CACHE })
     if (up.error) throw up.error
