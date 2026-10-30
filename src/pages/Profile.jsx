@@ -301,7 +301,7 @@ export default function Profile() {
           </label>
           <label>Profile picture
             <input type="file" accept="image/*" onChange={onAvatar} />
-            <small className="muted">{canGif ? 'Animated GIFs work for you (up to 3 MB).' : <>Want it to move? <Link to="/shop">Animated pictures are in the Shop</Link>.</>}</small>
+            <small className="muted">{canGif ? 'Animated GIFs work for you (up to 5 MB).' : <>Want it to move? <Link to="/shop">Animated pictures are in the Shop</Link>.</>}</small>
           </label>
           </div>
           <label>Bio
@@ -330,7 +330,7 @@ export default function Profile() {
               {canBannerPic ? (
                 <>
                   <input type="file" accept="image/*" onChange={onBanner} aria-label="Choose a banner picture or GIF" />
-                  <small className="muted">A wide picture or an animated GIF (up to 1.5 MB). It sits over the banner above.</small>
+                  <small className="muted">A wide picture or an animated GIF (up to 5 MB). It sits over the banner above.</small>
                   {profile.banner_path && <button type="button" className="secondary" onClick={removeBanner}>Remove banner picture</button>}
                 </>
               ) : (
